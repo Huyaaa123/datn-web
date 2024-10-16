@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +23,12 @@ Route::get('/', function () {
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+
+
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    Route::resource('category', CategoryController::class);
+
+    Route::resource('product', ProductController::class);
+});
+

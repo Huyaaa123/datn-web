@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+
     <link rel="stylesheet" href="../admindb/style.css">
     <title>Admin Dashboard | Iamwhuy </title>
 </head>
@@ -31,8 +32,8 @@
 
     </div>
 
-    <script src="../admindb/orders.js"></script>
-    <script src="../admindb/index.js"></script>
+    {{-- <script src="../admindb/orders.js"></script> --}}
+    {{-- <script src="../admindb/index.js"></script> --}}
 </body>
 
 </html>

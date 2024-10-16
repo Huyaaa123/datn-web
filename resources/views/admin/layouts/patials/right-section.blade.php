@@ -4,14 +4,14 @@
             menu
         </span>
     </button>
-    <div class="dark-mode">
+    {{-- <div class="dark-mode">
         <span class="material-icons-sharp active">
             light_mode
         </span>
         <span class="material-icons-sharp">
             dark_mode
         </span>
-    </div>
+    </div> --}}
 
     <div class="profile">
         <div class="info">
@@ -19,7 +19,7 @@
             <small class="text-muted">Admin</small>
         </div>
         <div class="profile-photo">
-            <img src="../admindb/images/profile-1.jpg">
+            <img src="../../../admindb/images/profile-1.jpg">
         </div>
     </div>
 
@@ -28,7 +28,7 @@
 
 <div class="user-profile">
     <div class="logo">
-        <img src="../admindb/images/logo.png">
+        <img src="../../../admindb/images/lg1.png" width="100%">
         <h2>Rolex<span class="danger">Watch</span></h2>
         <p>Chất lượng vượt thời gian.</p>
     </div>

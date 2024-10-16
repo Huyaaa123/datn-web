@@ -1,6 +1,6 @@
 <div class="toggle">
     <div class="logo">
-        <img src="../admindb/images/logo.png">
+        <img src="../../../admindb/images/lg.jpg">
         <h2>Rolex<span class="danger">Watch</span></h2>
     </div>
     <div class="close" id="close-btn">
@@ -23,24 +23,24 @@
         </span>
         <h3>Users</h3>
     </a>
-    <a href="#">
+    <a href="{{ route('admin.category.index') }}">
         <span class="material-icons-sharp">
-            receipt_long
+            category
         </span>
-        <h3>History</h3>
+        <h3>Category</h3>
     </a>
-    <a href="#" >
+    <a href="{{ route('admin.product.index') }}" >
         <span class="material-icons-sharp">
-            insights
+            inventory_2
         </span>
-        <h3>Analytics</h3>
+        <h3>Products</h3>
     </a>
     <a href="#">
         <span class="material-icons-sharp">
             mail_outline
         </span>
         <h3>Tickets</h3>
-        <span class="message-count">27</span>
+        {{-- <span class="message-count">27</span> --}}
     </a>
     <a href="#">
         <span class="material-icons-sharp">
