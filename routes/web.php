@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('user.index');
 });
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
@@ -31,4 +31,3 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('product', ProductController::class);
 });
-
