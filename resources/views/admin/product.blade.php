@@ -156,12 +156,12 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>SKU</th>
                 <th>Name</th>
                 <th>Image</th>
                 <th>Price</th>
                 <th>Description</th>
                 <th>Category</th>
-                <th>Time Add</th>
                 <th>Time Edit</th>
                 <th>Acction</th>
             </tr>

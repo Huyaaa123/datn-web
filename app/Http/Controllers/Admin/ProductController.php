@@ -42,6 +42,7 @@ class ProductController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,
+                'product_code' => $request->product_code,
             ];
             if($request->hasFile('image_path')){
                 $dataProduct['image_path'] = Storage::put('products', $request->file('image_path'));
