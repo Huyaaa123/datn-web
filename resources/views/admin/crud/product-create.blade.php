@@ -9,6 +9,17 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <link rel="stylesheet" href="../../admindb/style.css">
         <style>
+            .form-group-container {
+                display: flex;
+                gap: 20px;
+                /* Tạo khoảng cách giữa các cột */
+            }
+
+            .form-group {
+                flex: 1;
+                /* Mỗi form-group chiếm 50% chiều rộng */
+            }
+
             h1 {
                 font-size: 24px;
                 margin-bottom: 20px;
@@ -20,33 +31,28 @@
             }
 
             label {
-                font-size: 16px;
-                font-weight: bold;
                 display: block;
-                margin-bottom: 5px;
+                font-size: 16px;
+                margin-bottom: 8px;
+                color: #555;
             }
 
             input.form-control {
                 width: 100%;
-                padding: 10px;
-                font-size: 16px;
+                padding: 5px;
+                font-size: 14px;
                 border: 1px solid #ced4da;
                 border-radius: 4px;
                 box-sizing: border-box;
             }
 
-            .text-danger {
-                color: #dc3545;
-                font-size: 14px;
-                margin-top: 5px;
-            }
 
             button.btn-primary {
                 background-color: #007bff;
                 border: none;
                 color: white;
                 padding: 10px 20px;
-                font-size: 16px;
+                font-size: 12px;
                 border-radius: 4px;
                 cursor: pointer;
                 margin-top: 10px;
@@ -61,7 +67,7 @@
                 border: none;
                 color: white;
                 padding: 10px 20px;
-                font-size: 14px;
+                font-size: 10px;
                 border-radius: 4px;
                 cursor: pointer;
                 margin-top: 10px;
@@ -80,8 +86,7 @@
 
             select.form-control {
                 width: 100%;
-                /* Đảm bảo chiều rộng của select giống với input */
-                padding: 10px;
+                padding: 5px;
                 font-size: 16px;
                 border: 1px solid #ced4da;
                 border-radius: 4px;
@@ -95,15 +100,30 @@
 
         <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
+            <div class="form-group">
+                <label for="sku">SKU</label>
+                <input type="text" class="form-control" id="sku" name="sku" value="{{ old('sku') }}"
+                    required>
+            </div>
+
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
             </div>
 
-            <div class="form-group">
-                <label for="image_path">Image</label>
-                <input type="file" class="form-control" id="image_path" name="image_path"  >
+            <div class="form-group-container">
+                <div class="form-group">
+                    <label for="image_path">Image</label>
+                    <input type="file" class="form-control" id="image_path" name="image_path">
+                </div>
+
+                <div class="form-group">
+                    <label for="galleries">Galleries</label>
+                    <input type="file" class="form-control" id="galleries" name="galleries[]" multiple>
+                </div>
             </div>
+
 
             <div class="form-group">
                 <label for="price">Price</label>
@@ -121,6 +141,17 @@
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="discount">Discount</label>
+                <select class="form-control" id="discount" name="discount_id">
+                    @foreach ($discounts as $discount)
+                        <option value="{{ $discount->id }}" {{ old('discount_id') == $discount->id ? 'selected' : '' }}>
+                            {{ round($discount->discount_percent, 2) }}%
                         </option>
                     @endforeach
                 </select>

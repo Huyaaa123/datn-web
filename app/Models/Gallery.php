@@ -11,6 +11,7 @@ class Gallery extends Model
 
     protected $fillable = [
         'id',
+        'product_id',
         'image_path'
     ];
 

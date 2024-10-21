@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('galleries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor( Product::class)->unique()->constrained();
+            $table->foreignIdFor( Product::class)->constrained();
             $table->string('image_path')->nullable();
             $table->timestamps();
         });

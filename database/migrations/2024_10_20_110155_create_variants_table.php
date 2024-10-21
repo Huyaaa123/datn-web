@@ -14,7 +14,6 @@ return new class extends Migration
     {
         Schema::create('variants', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor( Product::class)->unique()->constrained();
             $table->string('color')->nullable();
             $table->string('size')->nullable();
             $table->timestamps();

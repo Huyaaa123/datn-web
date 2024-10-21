@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->text('desc');
             $table->decimal('discount_percent', 5, 2);
             $table->timestamps();
         });

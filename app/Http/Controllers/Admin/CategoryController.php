@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Str;
 
 class CategoryController extends Controller
 {
@@ -15,7 +16,6 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Lấy tất cả danh mục
         $categories = Category::all();
         return view('admin.category', compact('categories'));
     }
@@ -33,16 +33,22 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        // Lưu danh mục mới vào cơ sở dữ liệu
-        Category::create($request->validated());
+        $slug = Str::slug($request->name);
+
+        Category::create([
+            'name' => $request->name,
+            'slug' => $slug,
+        ]);
 
         // Quay lại trang danh sách với thông báo thành công
-        return redirect()->route('admin.category.index')->with('success', 'Category add successfully!');
+        return redirect()->route('admin.category.index')->with('success', 'Category added successfully!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    public function show(Category $category)
+    {
+        return view('admin.show.category-show', compact('category'));
+    }
+
     public function edit(Category $category)
     {
         return view('admin.crud.category-edit', compact('category'));
@@ -53,8 +59,12 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        // Cập nhật danh mục hiện tại
-        $category->update($request->all());
+
+        $category->update([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+        ]+$request->except('name', 'slug')
+        );
 
         // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.category.index')->with('success', 'Category update successfully!');
