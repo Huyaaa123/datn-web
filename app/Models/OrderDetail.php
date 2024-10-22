@@ -10,23 +10,20 @@ class OrderDetail extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'order_id',
+        'product_id',
+        'quantity',
+        'price',
         'total',
-        'payment_id'
     ];
 
-    public function user()
+    public function order()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Order::class);
     }
 
-    public function paymentDetail()
+    public function product()
     {
-        return $this->hasOne(PaymentDetail::class);
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(Product::class);
     }
 }

@@ -35,14 +35,14 @@
         </span>
         <h3>Products</h3>
     </a>
-    <a href="#">
+    <a href="{{ route('admin.orders.index') }}">
         <span class="material-icons-sharp">
-            mail_outline
+            shopping_bag
         </span>
-        <h3>Tickets</h3>
+        <h3>Orders</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
-    <a href="#">
+    {{-- <a href="#">
         <span class="material-icons-sharp">
             inventory
         </span>
@@ -65,7 +65,7 @@
             add
         </span>
         <h3>New Login</h3>
-    </a>
+    </a> --}}
     <a href="#">
         <span class="material-icons-sharp">
             logout

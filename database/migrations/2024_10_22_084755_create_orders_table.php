@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\PaymentDetail;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_details', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->decimal('total', 10, 2)->nullable();
-            $table->foreignIdFor(PaymentDetail::class)->constrained();
-            $table->foreignIdFor(User::class)->unique()->constrained();
+            $table->foreignIdFor(User::class)->constrained();
+            $table->string('status'); // Trạng thái đơn hàng: pending, completed, cancelled
+            $table->decimal('total_amount', 10, 2); // Tổng giá trị đơn hàng
+            $table->timestamp('order_date')->nullable(); // Ngày đặt hàng
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_details');
+        Schema::dropIfExists('orders');
     }
 };

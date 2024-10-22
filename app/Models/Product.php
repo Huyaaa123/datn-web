@@ -29,15 +29,6 @@ class Product extends Model
         return $this->hasMany(Gallery::class);
     }
 
-    public function variants()
-    {
-        return $this->hasMany(Variant::class);
-    }
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-
     public function discount()
     {
         return $this->belongsTo(Discount::class);

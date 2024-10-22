@@ -11,26 +11,17 @@ use Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $categories = Category::all();
         return view('admin.category', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.crud.category-create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCategoryRequest $request)
     {
         $slug = Str::slug($request->name);
@@ -40,7 +31,6 @@ class CategoryController extends Controller
             'slug' => $slug,
         ]);
 
-        // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.category.index')->with('success', 'Category added successfully!');
     }
 
@@ -66,7 +56,6 @@ class CategoryController extends Controller
         ]+$request->except('name', 'slug')
         );
 
-        // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.category.index')->with('success', 'Category update successfully!');
     }
 
@@ -78,7 +67,6 @@ class CategoryController extends Controller
         // Xóa danh mục
         $category->delete();
 
-        // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.category.index')->with('success', 'Category delete successfully!');
     }
 }

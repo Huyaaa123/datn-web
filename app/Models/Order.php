@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ShoppingSession extends Model
+class Order extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'total'
+        'status',
+        'total_amount',
+        'order_date',
     ];
 
     public function user()
@@ -19,8 +21,8 @@ class ShoppingSession extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function cartItems()
+    public function orderDetails()
     {
-        return $this->hasMany(CartItem::class);
+        return $this->hasMany(OrderDetail::class);
     }
 }

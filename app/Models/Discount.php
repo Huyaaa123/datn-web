@@ -14,7 +14,7 @@ class Discount extends Model
         'discount_percent'
     ];
 
-    public function products()
+    public function product()
     {
         return $this->hasMany(Product::class);
     }
