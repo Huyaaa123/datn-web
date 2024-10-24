@@ -23,7 +23,8 @@
             .form-group label {
                 display: block;
                 font-size: 16px;
-                margin-bottom: 5px;
+                margin-bottom: 8px;
+                color: #555;
             }
 
             .form-group input {
@@ -39,18 +40,24 @@
                 color: white;
                 border: none;
                 padding: 10px 15px;
-                font-size: 14px;
+                font-size: 12px;
                 border-radius: 4px;
                 cursor: pointer;
-            }
-
-            button:hover {
-                background-color: #0056b3;
             }
 
             .text-danger {
                 color: #dc3545;
                 font-size: 14px;
+            }
+            a.btn-success {
+                background-color: #ff1616;
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                font-size: 11px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 10px;
             }
         </style>
     </head>
@@ -73,6 +80,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Update Category</button>
+            <a href="{{ route('admin.category.index') }}" class="btn btn-success">Cancel</a>
         </form>
         @if (session('success'))
             <p class="text-success">{{ session('success') }}</p>
