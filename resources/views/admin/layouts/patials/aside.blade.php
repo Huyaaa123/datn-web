@@ -17,7 +17,7 @@
         </span>
         <h3>Dashboard</h3>
     </a>
-    <a href="{{ route('admin.users') }}">
+    <a href="">
         <span class="material-icons-sharp">
             person_outline
         </span>
@@ -65,11 +65,22 @@
             add
         </span>
         <h3>New Login</h3>
+<<<<<<< Updated upstream
     </a>
     <a href="#">
+=======
+    </a> --}}
+    <a class="dropdown-item" href="{{ route('logout') }}"
+    onclick="event.preventDefault();
+                  document.getElementById('logout-form').submit();">
+>>>>>>> Stashed changes
         <span class="material-icons-sharp">
             logout
         </span>
         <h3>Logout</h3>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
     </a>
+
 </div>
