@@ -18,10 +18,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
             $table->string('type')->default(User::TYPE_MEMBER);
 >>>>>>> Stashed changes
+=======
+            $table->string('role')->default('user');;
+>>>>>>> d3095273774a102eb315a388e35927c001914c5a
             $table->rememberToken();
             $table->timestamps();
         });

@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
@@ -17,6 +18,13 @@ use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 >>>>>>> Stashed changes
+=======
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
+use Illuminate\Support\Facades\Auth;
+>>>>>>> d3095273774a102eb315a388e35927c001914c5a
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,6 +52,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
 
     Route::resource('orders', OrderController::class);
+<<<<<<< HEAD
 
 });
 
@@ -77,3 +86,11 @@ Route::get('/categories/{slug}', [CategoryDetailController::class, 'view'])->nam
 //cong tt
 
 
+=======
+});
+
+
+Auth::routes(['verify' => true]);
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+>>>>>>> d3095273774a102eb315a388e35927c001914c5a

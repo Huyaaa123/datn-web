@@ -20,10 +20,10 @@
             }
 
             label {
-                font-size: 16px;
-                font-weight: bold;
                 display: block;
-                margin-bottom: 5px;
+                font-size: 16px;
+                margin-bottom: 8px;
+                color: #555;
             }
 
             input.form-control {
@@ -46,29 +46,23 @@
                 border: none;
                 color: white;
                 padding: 10px 20px;
-                font-size: 16px;
+                font-size: 12px;
                 border-radius: 4px;
                 cursor: pointer;
                 margin-top: 10px;
             }
 
-            button.btn-primary:hover {
-                background-color: #0056b3;
-            }
             a.btn-success {
                 background-color: #ff1616;
                 border: none;
                 color: white;
                 padding: 10px 20px;
-                font-size: 14px;
+                font-size: 11px;
                 border-radius: 4px;
                 cursor: pointer;
                 margin-top: 10px;
             }
 
-            a.btn-success:hover {
-                background-color: #d2010c;
-            }
         </style>
     </head>
 
@@ -80,7 +74,7 @@
 
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+                <input type="text" id="name" name="name" class="form-control" >
                 @error('name')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror

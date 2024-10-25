@@ -55,7 +55,7 @@
         .btn {
             display: inline-block;
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 12px;
             border: none;
             border-radius: 4px;
             color: #fff;
@@ -71,9 +71,13 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+        .btn-success {
+            background-color: #08d839;
+        }
 
         .btn-danger {
             background-color: #dc3545;
+            font-size: 14px;
         }
 
         .btn-danger:hover {
@@ -155,31 +159,32 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>SKU</th>
                 <th>Name</th>
+                <th>Slug</th>
                 <th>Image</th>
                 <th>Price</th>
                 <th>Description</th>
                 <th>Category</th>
-                <th>Time Add</th>
-                <th>Time Edit</th>
-                <th>Acction</th>
+                <th>Discount</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($products as $product)
+            @foreach ($data as $product)
                 <tr>
-                    <td>{{ $product->id }}</td>
-                    <td>{{ Str::limit($product->name, 10, '...') }}</td>
+                    <td>{{ $product->sku }}</td>
+                    <td>{{ Str::limit($product->name, 5, '...') }}</td>
+                    <td>{{ Str::limit($product->name, 5, '...') }}</td>
                     <td>
-                        <img src="{{ Storage::url($product->image_path) }}" height="50px">
+                        <img src="{{ Storage::url($product->image_path) }}" style="width: 100px; height: auto;">
                     </td>
-                    <td>{{ round($product->price, 2) }}</td>
+                    <td>{{ number_format($product->price) }}VND</td>
                     <td>{{ Str::limit($product->description, 10, '...') }}</td>
                     <td>{{ Str::limit($product->category->name, 10, '...') }}</td>
-                    <td>{{ $product->created_at->format('H:i:s d/m/Y ') }}</td>
-                    <td>{{ $product->updated_at->format('H:i:s d/m/Y ') }}</td>
+                    <td>{{ number_format($product->discount->discount_percent) }}%</td>
                     <td>
+                        <a href="{{ route('admin.product.show', $product->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Edit</a>
                         <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf

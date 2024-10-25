@@ -55,7 +55,7 @@
         .btn {
             display: inline-block;
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 12px;
             border: none;
             border-radius: 4px;
             color: #fff;
@@ -67,6 +67,9 @@
         .btn-primary {
             background-color: #007bff;
         }
+        .btn-success {
+            background-color: #08d839;
+        }
 
         .btn-primary:hover {
             background-color: #0056b3;
@@ -74,6 +77,7 @@
 
         .btn-danger {
             background-color: #dc3545;
+            font-size: 14px;
         }
 
         .btn-danger:hover {
@@ -108,42 +112,16 @@
             color: white;
             border: none;
             padding: 10px 15px;
-            font-size: 14px;
+            font-size: 12px;
             border-radius: 4px;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #0056b3;
-        }
 
         .btn-add {
             background-color: #28a745;
         }
 
-        .btn-add:hover {
-            background-color: #218838;
-        }
-
-        /* Bảng trong chế độ tối */
-        .dark-mode-variables table {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        .dark-mode-variables th {
-            background-color: #444;
-            color: #fff;
-        }
-
-        .dark-mode-variables tbody tr:nth-child(even) {
-            background-color: #3a3a3a;
-        }
-
-        .dark-mode-variables tbody tr:hover {
-            background-color: #555;
-        }
     </style>
 
     <a href="{{ route('admin.category.create') }}" class="text-center btn btn-add">Addnew</a>
@@ -155,21 +133,18 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Name</th>
-                <th>Time Add</th>
-                <th>Time Edit</th>
-                <th>Acction</th>
+                <th>Slug</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($categories as $category)
                 <tr>
-                    <td>{{ $category->id }}</td>
-                    <td>{{ Str::limit($category->name, 10, '...') }}</td>
-                    <td>{{ $category->created_at->format('H:i:s d/m/Y ') }}</td>
-                    <td>{{ $category->updated_at->format('H:i:s d/m/Y ') }}</td>
+                    <td>{{ Str::limit($category->name, 15, '...') }}</td>
+                    <td>{{ Str::limit($category->slug, 15, '...') }}</td>
                     <td>
+                        <a href="{{ route('admin.category.show', $category->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Edit</a>
                         <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf
