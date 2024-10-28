@@ -15,9 +15,13 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->string('status'); // Trạng thái đơn hàng: pending, completed, cancelled
-            $table->decimal('total_amount', 10, 2); // Tổng giá trị đơn hàng
-            $table->timestamp('order_date')->nullable(); // Ngày đặt hàng
+            $table->string('status')->default('pending'); // Trạng thái đơn hàng
+            $table->decimal('total_amount', 15, 2); // Tổng tiền
+            $table->date('order_date')->nullable(); // Ngày đặt hàng
+            $table->string('telephone')->nullable();;
+            $table->string('shipping_address')->nullable();; // Địa chỉ giao hàng
+            $table->string('payment_method'); // Phương thức thanh toán
+            $table->text('notes')->nullable(); // Ghi chú
             $table->timestamps();
         });
     }

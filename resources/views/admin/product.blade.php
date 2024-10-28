@@ -166,7 +166,6 @@
                 <th>Price</th>
                 <th>Description</th>
                 <th>Category</th>
-                <th>Discount</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -182,7 +181,6 @@
                     <td>{{ number_format($product->price) }}VND</td>
                     <td>{{ Str::limit($product->description, 10, '...') }}</td>
                     <td>{{ Str::limit($product->category->name, 10, '...') }}</td>
-                    <td>{{ number_format($product->discount->discount_percent) }}%</td>
                     <td>
                         <a href="{{ route('admin.product.show', $product->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Edit</a>

@@ -133,10 +133,14 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>User</th>
                 <th>Status</th>
                 <th>Total</th>
                 <th>Date Order</th>
+                <th>Ship</th>
+                <th>Phone</th>
+                <th>Payment_method</th>
+                <th>Note</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -145,12 +149,16 @@
                 <tr>
                     <td>{{ Str::limit($order->user->name, 15, '...') }}</td>
                     <td>{{ Str::limit($order->status, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->total_amount, 15, '...') }}</td>
+                    <td>{{ number_format($order->total_amount) }}VND</td>
                     <td>{{ Str::limit($order->order_date, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->shipping_address, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->telephone, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->notes, 15, '...') }}</td>
                     <td>
-                        <a href="{{ route('admin.order.show', $order->id) }}" class="btn btn-success">Show</a>
-                        <a href="{{ route('admin.order.edit', $order->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('admin.order.destroy', $order->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
+                        <a href="" class="btn btn-success">Show</a>
+                        <a href="" class="btn btn-primary">Edit</a>
+                        <form action="" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Delete</button>

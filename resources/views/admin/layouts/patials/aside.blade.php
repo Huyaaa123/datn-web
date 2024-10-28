@@ -17,7 +17,7 @@
         </span>
         <h3>Dashboard</h3>
     </a>
-    <a href="{{ route('admin.users') }}">
+    <a href="">
         <span class="material-icons-sharp">
             person_outline
         </span>
@@ -29,7 +29,7 @@
         </span>
         <h3>Category</h3>
     </a>
-    <a href="{{ route('admin.product.index') }}" >
+    <a href="{{ route('admin.product.index') }}">
         <span class="material-icons-sharp">
             inventory_2
         </span>
@@ -66,10 +66,16 @@
         </span>
         <h3>New Login</h3>
     </a> --}}
-    <a href="#">
+    <a class="dropdown-item" href="{{ route('logout') }}"
+        onclick="event.preventDefault();
+                  document.getElementById('logout-form').submit();">
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
         <span class="material-icons-sharp">
             logout
         </span>
         <h3>Logout</h3>
     </a>
+
 </div>
