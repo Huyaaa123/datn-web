@@ -1,6 +1,13 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+    .product-name {
+    color: black; /* Màu đen cho tên sản phẩm */
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <div class="container">
     <h1 class="text-center my-4">Thanh Toán</h1>
 
@@ -58,18 +65,19 @@
                 <input type="text" class="form-control form-control-sm" id="address" name="address" required value="{{ $address->address ?? '' }}">
             </div>
 
-            <h4 style="color:rgb(37, 36, 36); font-weight: bold" class="my-4">Chi tiết đơn hàng</h4>
+            <h4 style="color: rgb(37, 36, 36); font-weight: bold" class="my-4">Sản phẩm cần phải thanh toán</h4>
             @foreach ($cart as $product)
                 <div class="row border-bottom py-3 align-items-center">
                     <div class="col-md-2">
                         <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" style="width: 75px; height: auto;">
                     </div>
                     <div class="col-md-6">
-                        <p>{{ $product['name'] }}</p>
+                        <p class="product-name">{{ $product['name'] }}</p> <!-- Sử dụng lớp CSS cho tên sản phẩm -->
                         <p>Số lượng: {{ $product['quantity'] }}</p>
                     </div>
                 </div>
             @endforeach
+
 
             <div class="total my-4">
                 <h4 style="color:rgb(37, 36, 36); font-weight: bold" class="text-right">Tổng giá trị:
@@ -80,10 +88,17 @@
             </div>
 
             <div class="text-center my-3">
-                <button type="submit" name="cod" value="cod" class="btn btn-success">Thanh toán cod</button>
-                <button type="submit" name="payUrl" value="momo" class="btn btn-success">Thanh toán Momo</button>
-                <button type="submit" name="vnpay" value="vnpay" class="btn btn-success">Thanh toán vnpay</button>
+                <button type="submit" name="cod" value="cod" class="btn border">
+                    <i class="fas fa-money-bill-wave"></i> Thanh toán COD
+                </button>
+                <button type="submit" name="payUrl" value="momo" class="btn border">
+                    <i class="fab fa-cc-mastercard"></i> Thanh toán Momo
+                </button>
+                <button type="submit" name="vnpay" value="vnpay" class="btn border">
+                    <i class="fab fa-cc-visa"></i> Thanh toán VNPay
+                </button>
             </div>
+
         </form>
     </div>
     <br>

@@ -64,7 +64,12 @@ class CheckoutController extends Controller
 
                 // Xóa giỏ hàng khỏi session
                 session()->forget('cart');
-
+                // Xóa giỏ hàng khỏi cơ sở dữ liệu
+                $user = Auth::user();
+                $cartItems = $user->carts; // Lấy tất cả bản ghi giỏ hàng của người dùng
+                foreach ($cartItems as $cartItem) {
+                    $cartItem->delete(); // Xóa từng bản ghi
+                }
                 // Chuyển hướng đến trang cảm ơn
                 return redirect()->route('order.success')->with('success', 'Đơn hàng đã được tạo thành công!');
             }
@@ -155,7 +160,11 @@ class CheckoutController extends Controller
             }
 
             session()->forget('cart');
-
+            $user = Auth::user();
+            $cartItems = $user->carts; // Lấy tất cả bản ghi giỏ hàng của người dùng
+            foreach ($cartItems as $cartItem) {
+                $cartItem->delete(); // Xóa từng bản ghi
+            }
             // Kiểm tra và xử lý phản hồi từ MoMo
             if (isset($jsonResult['payUrl'])) {
                 return redirect()->to($jsonResult['payUrl']); // Chuyển hướng đến URL thanh toán
@@ -234,7 +243,11 @@ class CheckoutController extends Controller
             // vui lòng tham khảo thêm tại code demo
 
         }
-
+        $user = Auth::user();
+        $cartItems = $user->carts; // Lấy tất cả bản ghi giỏ hàng của người dùng
+        foreach ($cartItems as $cartItem) {
+            $cartItem->delete(); // Xóa từng bản ghi
+        }
         // Nếu không có phương thức thanh toán hợp lệ
         return redirect()->back()->with('error', 'Phương thức thanh toán không hợp lệ.');
     }

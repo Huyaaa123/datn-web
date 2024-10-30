@@ -59,6 +59,9 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/increase', [CartController::class, 'increase'])->name('cart.increase');
+Route::post('/cart/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
+
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout/online_checkout', [CheckoutController::class, 'online_checkout'])->name('checkout.online_checkout');

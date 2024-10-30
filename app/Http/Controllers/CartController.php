@@ -74,7 +74,21 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     }
 
+    public function increase(Request $request) {
+        $productId = $request->input('product_id');
+        // Tăng số lượng sản phẩm trong giỏ hàng
+        session()->increment("cart.$productId.quantity");
+        return redirect()->back();
+    }
 
+    public function decrease(Request $request) {
+        $productId = $request->input('product_id');
+        // Giảm số lượng sản phẩm trong giỏ hàng
+        if (session("cart.$productId.quantity") > 1) {
+            session()->decrement("cart.$productId.quantity");
+        } 
+        return redirect()->back();
+    }
 
 
     public function remove(Request $request)

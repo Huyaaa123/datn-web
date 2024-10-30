@@ -17,10 +17,13 @@ class MyOrderController extends Controller
     {
         $user = Auth::user();
         $categories = Category::all();
-        $orders = Order::where('user_id', $user->id)->get(); // Giả sử bạn có trường user_id trong bảng orders
+
+        // Retrieve the user's orders, sorted by order_date in descending order
+        $orders = Order::where('user_id', $user->id)->orderBy('order_date', 'desc')->get();
 
         return view('user-client.orders', compact('orders', 'categories'));
     }
+
 
     /**
      * Show the form for creating a new resource.

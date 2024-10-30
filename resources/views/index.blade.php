@@ -188,14 +188,18 @@ a:hover {
             @csrf
             <input type="hidden" name="product_id" id="modal_product_id">
             <div class="form-group">
-              <label for="quantity">Số lượng:</label>
-              <input type="number" class="form-control" id="quantity" name="quantity" min="1"  value="1">
+                <div class="form-group d-flex align-items-center">
+                    <label for="quantity" class="mr-2">Số lượng:</label>
+                    <button type="button" class="btn btn-secondary " id="decrement">-</button>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="10" class="form-control mx-2" required style="width: 50px;">
+                    <button type="button" class="btn btn-secondary" id="increment">+</button>
+                </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-          <button type="button" class="btn btn-primary" id="confirm-add-to-cart">Xác nhận</button>
+          <button type="button" class="btn btn-success" id="confirm-add-to-cart">Xác nhận</button>
         </div>
       </div>
     </div>
@@ -292,6 +296,23 @@ showProducts();
         document.getElementById('add-to-cart-form').submit();
     });
 });
+
+        // Xử lý tăng giảm số lượng
+        document.getElementById('increment').addEventListener('click', function() {
+            let quantityInput = document.getElementById('quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity < parseInt(quantityInput.max)) {
+                quantityInput.value = currentQuantity + 1;
+            }
+        });
+
+        document.getElementById('decrement').addEventListener('click', function() {
+            let quantityInput = document.getElementById('quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity > parseInt(quantityInput.min)) {
+                quantityInput.value = currentQuantity - 1;
+            }
+        });
 </script>
 
 @endsection

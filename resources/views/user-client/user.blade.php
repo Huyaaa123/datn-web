@@ -17,14 +17,14 @@
             <div class="col-md-4">
                 <!-- Sidebar -->
                 <div class="sidebar bg-light p-4 rounded">
-                    <h2 class="h4" style="color:rgb(37, 36, 36); font-weight: bold">Tài khoản của tôi</h2>
+                    <h2 class="h4" style="color:rgb(37, 36, 36); font-weight: bold">Tài khoản </h2>
                     <ul class="list-group">
                         <li class="list-group-item"><a href="{{ route('user.index') }}" class="text-decoration-none">Thông tin
                                 tài khoản</a></li>
                         <li class="list-group-item"><a href="{{ route('orders.user') }}" class="text-decoration-none">Đơn
-                                hàng của tôi</a></li>
+                                hàng </a></li>
                         <li class="list-group-item"><a href="{{ route('addresses.index') }}"
-                                class="text-decoration-none">Địa chỉ của tôi</a></li>
+                                class="text-decoration-none">Địa chỉ </a></li>
                         <li class="list-group-item"><a href="{{ route('password.change') }}"
                                 class="text-decoration-none">Đổi mật khẩu</a></li>
                         <!-- Bạn có thể thêm các mục khác nếu cần -->
