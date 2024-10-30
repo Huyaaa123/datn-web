@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'male',
+        'birth_date',
+        'phone',
     ];
 
     /**
@@ -50,5 +53,17 @@ class User extends Authenticatable
     }
     public function isMember() {
         return $this->type == self::TYPE_MEMBER;
+    }
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
     }
 }

@@ -71,6 +71,7 @@
     }
 
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <div class="container">
     <div class="col-md-12 mb-0">
         <strong class="text-black">Trang chủ</strong>

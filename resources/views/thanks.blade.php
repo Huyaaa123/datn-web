@@ -32,7 +32,7 @@
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Cảm ơn bạn!</h2>
             <p class="lead mb-3">Đơn hàng của bạn đã được xử lý thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
-            <p><a href="/" class="btn btn-sm btn-success"> Tiếp tục mua sắm</a></p>
+            <p><a href="{{route('orders.user')}}" class="btn btn-sm btn-success"> Đơn hàng của bạn </a></p>
 
           </div>
         </div>

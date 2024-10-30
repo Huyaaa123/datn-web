@@ -17,8 +17,8 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'iamwhuy2004@gmail.com',
-            'password' => Hash::make('11111111'), // Bạn nên thay đổi mật khẩu này
-            'role' => 'admin', // Gán vai trò mặc định là 'admin'
+            'password' => Hash::make('11111111'),
+            'type' => 'admin',
         ]);
     }
 }

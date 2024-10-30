@@ -162,10 +162,16 @@ a:hover {
             </div>
         @endforeach
     </div>
+    <div class="d-flex justify-content-center ">
+        <button id="prev-btn" class="btn btn-primary mx-1" disabled>
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button id="next-btn" class="btn btn-primary mx-1">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
 
-
-
-</div>
+</div> <br>
 
 <!-- Modal -->
 <div class="modal" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
@@ -195,24 +201,8 @@ a:hover {
     </div>
   </div>
 
-<script>
-   document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.overlay a').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
+<script >
 
-            var productId = this.getAttribute('data-product-id');
-
-            document.getElementById('modal_product_id').value = productId;
-
-            $('#quantityModal').modal('show');
-        });
-    });
-
-    document.getElementById('confirm-add-to-cart').addEventListener('click', function () {
-        document.getElementById('add-to-cart-form').submit();
-    });
-});
 
 let slideIndex = 0;
 showSlides();
@@ -246,6 +236,62 @@ function changeSlide(n) {
     slides[slideIndex-1].style.display = "block";
 }
 
+let currentProductIndex = 0; // Bắt đầu từ sản phẩm đầu tiên
+const products = document.querySelectorAll('.row .col-md-3'); // Lấy tất cả sản phẩm
+
+function showProducts() {
+    products.forEach((product, index) => {
+        product.style.display = (index >= currentProductIndex && index < currentProductIndex + 4) ? 'block' : 'none';
+    });
+
+    // Cập nhật trạng thái của nút "Trước" và "Tiếp theo"
+    document.getElementById('prev-btn').disabled = currentProductIndex === 0;
+    document.getElementById('next-btn').disabled = currentProductIndex >= products.length - 4;
+}
+
+// Chuyển đến sản phẩm tiếp theo
+document.getElementById('next-btn').addEventListener('click', () => {
+    if (currentProductIndex < products.length - 4) {
+        currentProductIndex += 1; // Chuyển đến sản phẩm tiếp theo
+        showProducts(); // Cập nhật hiển thị sản phẩm
+    }
+});
+
+// Chuyển đến sản phẩm trước đó
+document.getElementById('prev-btn').addEventListener('click', () => {
+    if (currentProductIndex > 0) {
+        currentProductIndex -= 1; // Quay lại sản phẩm trước đó
+        showProducts(); // Cập nhật hiển thị sản phẩm
+    }
+});
+
+// Khởi tạo hiển thị sản phẩm đầu tiên
+showProducts();
+
+
+</script>
+<script >
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.overlay a').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Kiểm tra đăng nhập
+            @if(auth()->check())
+                var productId = this.getAttribute('data-product-id');
+                document.getElementById('modal_product_id').value = productId;
+                $('#quantityModal').modal('show');
+            @else
+                // Chưa đăng nhập: chuyển hướng đến trang login
+                window.location.href = "{{ route('login') }}";
+            @endif
+        });
+    });
+
+    document.getElementById('confirm-add-to-cart').addEventListener('click', function () {
+        document.getElementById('add-to-cart-form').submit();
+    });
+});
 </script>
 
 @endsection

@@ -5,22 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
 {
     public function index()
     {
         // Lấy giỏ hàng từ session
+        $user = Auth::user();
         $cart = session()->get('cart');
         $categories = Category::all(); // Lấy tất cả danh mục
+
+        // Kiểm tra xem người dùng có địa chỉ nào không
+        $address = $user->addresses()->first(); // Thay đổi từ $user->address sang $user->addresses()->first()
 
         // Nếu giỏ hàng rỗng, chuyển hướng về giỏ hàng
         if (!$cart || count($cart) == 0) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        return view('cart.checkout', compact('cart', 'categories'));
+        return view('cart.checkout', compact('cart', 'categories', 'address', 'user'));
     }
+
     public function online_checkout(Request $request)
     {
         // Kiểm tra nếu phương thức thanh toán là COD
@@ -149,7 +155,7 @@ class CheckoutController extends Controller
             }
 
             session()->forget('cart');
-            
+
             // Kiểm tra và xử lý phản hồi từ MoMo
             if (isset($jsonResult['payUrl'])) {
                 return redirect()->to($jsonResult['payUrl']); // Chuyển hướng đến URL thanh toán

@@ -5,7 +5,7 @@
     <style>
         h1 {
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #333;
         }
 
@@ -19,8 +19,7 @@
         .text-center {
             text-align: center;
             display: block;
-            margin-bottom: 20px;
-
+            margin-bottom: 10px;
         }
 
         table {
@@ -33,7 +32,7 @@
 
         th,
         td {
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
         }
@@ -148,6 +147,42 @@
         .dark-mode-variables tbody tr:hover {
             background-color: #555;
         }
+
+        .pagination {
+    display: flex;                 /* Sử dụng Flexbox để căn giữa */
+    justify-content: center;      /* Căn giữa các nút */
+    align-items: center;          /* Căn giữa theo chiều dọc */
+    list-style: none;             /* Xóa các dấu chấm */
+    padding: 0;                   /* Xóa padding */
+    margin: 20px 0;               /* Khoảng cách trên và dưới */
+}
+
+.pagination li {
+    margin: 0 5px;                /* Khoảng cách giữa các nút */
+}
+
+.page-link {
+    padding: 8px 12px;            /* Padding cho các nút */
+    border: 1px solid #007bff;    /* Đường viền cho các nút */
+    border-radius: 4px;           /* Bo góc */
+    color: #007bff;                /* Màu chữ */
+    text-decoration: none;         /* Xóa gạch chân */
+}
+
+.page-link:hover {
+    background-color: #007bff;    /* Màu nền khi hover */
+    color: #fff;                   /* Màu chữ khi hover */
+}
+
+.pagination .disabled .page-link {
+    color: #ccc;                   /* Màu chữ cho nút bị vô hiệu hóa */
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;    /* Màu nền cho trang đang hoạt động */
+    color: #fff;                   /* Màu chữ cho trang đang hoạt động */
+}
+
     </style>
 
     <a href="{{ route('admin.product.create') }}" class="text-center btn btn-add">Addnew</a>
@@ -194,6 +229,39 @@
             @endforeach
         </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+        <ul class="pagination">
+            {{-- Nếu trang hiện tại không phải là trang đầu tiên --}}
+            @if ($data->currentPage() > 1)
+                <li class="page-item">
+                    <a class="page-link" href="{{ $data->url(1) }}">1</a>
+                </li>
+            @endif
+
+            {{-- Hiển thị các trang trước trang hiện tại --}}
+            @for ($i = 2; $i < $data->currentPage(); $i++)
+                <li class="page-item">
+                    <a class="page-link" href="{{ $data->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+
+            {{-- Trang hiện tại --}}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ $data->currentPage() }}</a>
+            </li>
+
+            {{-- Hiển thị các trang sau trang hiện tại --}}
+            @for ($i = $data->currentPage() + 1; $i <= $data->lastPage(); $i++)
+                <li class="page-item">
+                    <a class="page-link" href="{{ $data->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+        </ul>
+    </div>
+
+
+
+
     <script>
         function confirmDelete(event) {
             if (!confirm('Are you sure?')) {

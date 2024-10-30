@@ -12,7 +12,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="../  client///fonts.bunny.net">
     <link href="../client/https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="../client/../client/https://fonts.googleapis.com/css?family=Mukta:300,400,700">
     <link rel="stylesheet" href="../client/../client/fonts/icomoon/style.css">

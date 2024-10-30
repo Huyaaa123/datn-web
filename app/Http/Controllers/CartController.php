@@ -13,11 +13,13 @@ class CartController extends Controller
     {
         $cart = session()->get('cart');
         $categories = Category::all();
-        return view('cart.cart', compact('cart','categories'));
+
+        return view('cart.cart', compact('cart', 'categories'));
     }
 
     public function add(Request $request)
     {
+
         $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1',
@@ -66,9 +68,6 @@ class CartController extends Controller
             }
         }
 
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('message', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
-        } 
         // Cập nhật lại giỏ hàng trong session
         session()->put('cart', $cart);
 
@@ -102,11 +101,5 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
     }
 
-    public function removeAll(Request $request)
-{
-    session()->forget('cart');
-
-    return redirect()->route('cart.index')->with('success', 'Đã xóa tất cả sản phẩm trong giỏ hàng.');
-}
 
 }
