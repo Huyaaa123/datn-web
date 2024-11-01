@@ -42,7 +42,7 @@ class CheckoutController extends Controller
                 // Lưu thông tin đơn hàng vào cơ sở dữ liệu
                 $order = new Order();
                 $order->user_id = auth()->check() ? auth()->id() : null; // Lưu ID người dùng nếu đã đăng nhập
-                $order->status = 'Đang xử lý';
+                $order->order_status_id = 1;
                 $order->total_amount = $amount;
                 $order->order_date = now();
                 $order->payment_method = 'COD';
@@ -135,7 +135,7 @@ class CheckoutController extends Controller
             // Lưu đơn hàng vào cơ sở dữ liệu
             $order = new Order();
             $order->user_id = auth()->id(); // Nếu người dùng đã đăng nhập
-            $order->status = 'Đang xử lý'; // Hoặc trạng thái khác
+            $order->order_status_id = 1; // Hoặc trạng thái khác
             $order->total_amount = $amount;
             $order->order_date = now();
             $order->shipping_address = implode(', ', [

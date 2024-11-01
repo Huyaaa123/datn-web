@@ -41,7 +41,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                     <a class="dropdown-item" href="{{ route('user.index') }}">Thông tin tài khoản</a>
-                                    <a class="dropdown-item" href="{{ route('orders.user') }}">Đơn hàng của tôi</a>
+                                    <a class="dropdown-item" href="{{ route('order.client.user') }}">Đơn hàng của tôi</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

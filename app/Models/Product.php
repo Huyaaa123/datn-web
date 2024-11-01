@@ -29,9 +29,4 @@ class Product extends Model
         return $this->hasMany(Gallery::class);
     }
 
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
-    }
-
 }

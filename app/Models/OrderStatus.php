@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Discount extends Model
+class OrderStatus extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'id',
-        'discount_percent'
+        'name',
     ];
 
-    public function product()
+    public function order()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasOne(Order::class);
     }
 }

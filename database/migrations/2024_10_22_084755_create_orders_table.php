@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\OrderStatus;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,13 +16,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->string('status')->default('pending'); // Trạng thái đơn hàng
+            $table->foreignIdFor(OrderStatus::class)->constrained();
             $table->decimal('total_amount', 15, 2); // Tổng tiền
             $table->date('order_date')->nullable(); // Ngày đặt hàng
             $table->string('telephone')->nullable();
             $table->string('shipping_address')->nullable(); // Địa chỉ giao hàng
             $table->string('payment_method'); // Phương thức thanh toán
             $table->text('notes')->nullable(); // Ghi chú
+            $table->text('cancel')->nullable(); // Huy đơn hang neu co
             $table->timestamps();
         });
     }

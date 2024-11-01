@@ -1,4 +1,3 @@
-
 @extends('admin.layouts.master')
 @section('content')
     <h1>Orders</h1>
@@ -20,7 +19,6 @@
             text-align: center;
             display: block;
             margin-bottom: 20px;
-
         }
 
         table {
@@ -117,14 +115,10 @@
             cursor: pointer;
         }
 
-
         .btn-add {
             background-color: #28a745;
         }
-
     </style>
-
-    {{-- <a href="{{ route('admin.orders.create') }}" class="text-center btn btn-add">Addnew</a> --}}
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
@@ -133,13 +127,15 @@
     <table class="table">
         <thead>
             <tr>
-                <th>User</th>
                 <th>Status</th>
+                <th>Cancel</th>
+                <th>User</th>
+                <th>Products</th>
                 <th>Total</th>
                 <th>Date Order</th>
                 <th>Ship</th>
                 <th>Phone</th>
-                <th>Payment_method</th>
+                <th>Payment</th>
                 <th>Note</th>
                 <th>Action</th>
             </tr>
@@ -147,32 +143,41 @@
         <tbody>
             @foreach ($orders as $order)
                 <tr>
-                    <td>{{ Str::limit($order->user->name, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->status, 15, '...') }}</td>
-                    <td>{{ number_format($order->total_amount) }}VND</td>
-                    <td>{{ Str::limit($order->order_date, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->orderStatus->name, 15, '...') }}</td>
+                    <td>
+                        @if($order->cancel)
+                            {{ Str::limit($order->cancel, 15, '...') }}
+                        @else
+                            No Problem
+                        @endif
+                    </td>
+                    <td>{{ Str::limit($order->user->name, 10, '...') }}</td>
+                    <td>
+                        @foreach ($order->orderDetails as $item)
+                            <div>
+                                {{ Str::limit($item->product->name, 10, '...') }}  (SL: x{{ $item->quantity }})
+                            </div>
+                        @endforeach
+                    </td>
+                    <td>{{ number_format($order->total_amount) }} VND</td>
+                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
                     <td>{{ Str::limit($order->shipping_address, 15, '...') }}</td>
                     <td>{{ Str::limit($order->telephone, 15, '...') }}</td>
                     <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
                     <td>{{ Str::limit($order->notes, 15, '...') }}</td>
+
                     <td>
-                        <a href="" class="btn btn-success">Show</a>
-                        <a href="" class="btn btn-primary">Edit</a>
-                        <form action="" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                        @if($order->order_status_id !== 1) <!-- Kiểm tra order_status_id -->
+                        <span style="color: #c82333; font-weight:bold;">Undefined</span>
+
+                        @else
+                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-success">Edit</a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
         </tbody>
+
     </table>
-    <script>
-        function confirmDelete(event) {
-            if (!confirm('Are you sure?')) {
-                event.preventDefault();
-            }
-        }
-    </script>
+
 @endsection

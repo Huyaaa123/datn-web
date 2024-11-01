@@ -48,15 +48,21 @@
             <div class="mb-3 row">
                 <div class="col-md-4">
                     <label for="city" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Thành phố</label>
-                    <input type="text" class="form-control form-control-sm" id="city" name="city" required value="{{ $address->city ?? '' }}">
+                    <select id="province" name="city" class="form-control" required onchange="loadDistricts()">
+                        <option value="{{ $address->city ?? 'Chọn thành phố' }}">{{ $address->city ?? 'Chọn thành phố' }}</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="district" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Quận huyện</label>
-                    <input type="text" class="form-control form-control-sm" id="district" name="district" required value="{{ $address->district ?? '' }}">
+                    <select id="district" name="district" class="form-control" required onchange="loadWards()">
+                        <option value="{{ $address->district ?? 'Chọn quận/huyện' }}">{{ $address->district ?? 'Chọn quận/huyện' }}</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="ward" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Phường xã</label>
-                    <input type="text" class="form-control form-control-sm" id="ward" name="ward" required value="{{ $address->ward ?? '' }}">
+                    <select id="ward" name="ward" required class="form-control">
+                        <option value="{{ $address->ward ?? 'Chọn phường/xã' }}">{{ $address->ward ?? 'Chọn phường/xã' }}</option>
+                    </select>
                 </div>
             </div>
 
@@ -107,4 +113,63 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lấy danh sách tỉnh/thành phố
+        fetch('https://provinces.open-api.vn/api/?depth=1')
+            .then(response => response.json())
+            .then(provinces => {
+                const provinceSelect = document.getElementById("province");
+                provinces.forEach(province => {
+                    const option = document.createElement("option");
+                    option.value = province.name; // Sử dụng tên tỉnh làm giá trị
+                    option.textContent = province.name;
+                    option.setAttribute('data-code', province.code); // Lưu mã code trong attribute
+                    provinceSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Lỗi khi tải danh sách tỉnh/thành phố:", error));
+
+        // Lấy quận/huyện khi chọn tỉnh/thành phố
+        document.getElementById("province").addEventListener("change", function() {
+            const provinceCode = this.selectedOptions[0].getAttribute('data-code'); // Lấy mã code từ attribute
+            fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`)
+                .then(response => response.json())
+                .then(data => {
+                    const districtSelect = document.getElementById("district");
+                    districtSelect.innerHTML = ""; // Xóa các tùy chọn quận/huyện cũ
+                    const wardSelect = document.getElementById("ward");
+                    wardSelect.innerHTML = "<option value=''>Chọn Phường/Xã</option>"; // Đặt lại phường/xã
+
+                    data.districts.forEach(district => {
+                        const option = document.createElement("option");
+                        option.value = district.name; // Sử dụng tên quận/huyện làm giá trị
+                        option.textContent = district.name;
+                        option.setAttribute('data-code', district.code); // Lưu mã code trong attribute
+                        districtSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Lỗi khi tải danh sách quận/huyện:", error));
+        });
+
+        // Lấy phường/xã khi chọn quận/huyện
+        document.getElementById("district").addEventListener("change", function() {
+            const districtCode = this.selectedOptions[0].getAttribute('data-code'); // Lấy mã code từ attribute
+            fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`)
+                .then(response => response.json())
+                .then(data => {
+                    const wardSelect = document.getElementById("ward");
+                    wardSelect.innerHTML = ""; // Xóa các tùy chọn phường/xã cũ
+                    data.wards.forEach(ward => {
+                        const option = document.createElement("option");
+                        option.value = ward.name; // Sử dụng tên phường/xã làm giá trị
+                        option.textContent = ward.name;
+                        wardSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Lỗi khi tải danh sách phường/xã:", error));
+        });
+    });
+
+        </script>
 @endsection

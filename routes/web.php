@@ -79,7 +79,8 @@ Route::delete('/addresses/{id}', [UserInformationController::class, 'destroy'])-
 Route::middleware(['auth'])->group(function () {
     Route::get('/change-password/user', [UserInformationController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/change-password/user', [UserInformationController::class, 'changePassword'])->name('password.update');
-    Route::get('/orders', [MyOrderController::class, 'index'])->name('orders.user');
+    Route::get('/order', [MyOrderController::class, 'index'])->name('order.client.user');
+    Route::get('/order{id}', [MyOrderController::class, 'edit'])->name('order.client.show');
 });
 //menu
 

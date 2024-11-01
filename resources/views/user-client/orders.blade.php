@@ -21,7 +21,7 @@
                 <ul class="list-group">
                     <li class="list-group-item"><a href="{{ route('user.index') }}" class="text-decoration-none">Thông tin
                             tài khoản</a></li>
-                    <li class="list-group-item"><a href="{{ route('orders.user') }}" class="text-decoration-none">Đơn
+                    <li class="list-group-item"><a href="{{ route('order.client.user') }}" class="text-decoration-none">Đơn
                             hàng </a></li>
                     <li class="list-group-item"><a href="{{ route('addresses.index') }}"
                             class="text-decoration-none">Địa chỉ </a></li>
@@ -42,7 +42,7 @@
 
             <!-- Status Filter -->
             <div class="mb-3">
-                <form action="{{ route('orders.user') }}" method="GET" class="form-inline">
+                <form action="{{ route('order.client.user') }}" method="GET" class="form-inline">
                     <label for="status" class="mr-2">Lọc :</label>
                     <select name="status" id="status" class="form-control mr-2">
                         <option value="">Tất cả</option>
@@ -79,13 +79,13 @@
                                 <tr>
                                     <td>{{ $order->id }}</td>
                                     <td>{{ $order->order_date }}</td>
-                                    <td>{{ $order->telephone }}</td> <!-- Hiển thị số điện thoại từ địa chỉ -->
+                                    <td>{{ Str::limit($order->telephone,5, '...') }}</td> <!-- Hiển thị số điện thoại từ địa chỉ -->
                                     <td>{{ Str::limit($order->shipping_address, 10, '...')}}</td> <!-- Hiển thị địa chỉ từ địa chỉ -->
-                                    <td>{{ number_format($order->total_amount, 0, ',', '.') }} VNĐ</td>
-                                    <td>{{ $order->status }}</td>
+                                    <td>{{ number_format($order->total_amount, 0, ',', '.') }} </td>
+                                    <td>{{ $order->orderStatus->name }}</td>
                                     <td>{{ $order->payment_method }}</td>
                                     <td>
-                                        <a href="" class="btn btn-info btn-sm">Chi tiết</a>
+                                        <a href="{{route('order.client.show', $order->id )}}" >Chi tiết</a>
                                     </td>
                                 </tr>
                             @endforeach

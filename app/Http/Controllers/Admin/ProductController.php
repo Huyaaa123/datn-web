@@ -31,8 +31,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $discounts = Discount::all();
-        return view('admin.crud.product-create', compact('categories','discounts'));
+        return view('admin.crud.product-create', compact('categories'));
     }
 
     /**
@@ -43,7 +42,6 @@ class ProductController extends Controller
         DB::transaction(function () use ($request) {
             $dataProduct = [
                 'category_id' => $request->category_id,
-                'discount_id' => $request->discount_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
@@ -79,14 +77,13 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $product->load('category','galleries','discount');
+        $product->load('category','galleries');
 
         $categories = Category::pluck('name', 'id')->all();
 
-        $discounts = Discount::pluck('discount_percent', 'id')->all();
 
 
-        return view('admin.crud.product-edit', compact('categories', 'product','discounts'));
+        return view('admin.crud.product-edit', compact('categories', 'product'));
     }
 
     /**
@@ -97,7 +94,6 @@ class ProductController extends Controller
         DB::transaction(function () use ($request, $product) {
             $dataProduct = [
                 'category_id' => $request->category_id,
-                'discount_id' => $request->discount_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,

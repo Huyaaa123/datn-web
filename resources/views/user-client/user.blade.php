@@ -21,7 +21,7 @@
                     <ul class="list-group">
                         <li class="list-group-item"><a href="{{ route('user.index') }}" class="text-decoration-none">Thông tin
                                 tài khoản</a></li>
-                        <li class="list-group-item"><a href="{{ route('orders.user') }}" class="text-decoration-none">Đơn
+                        <li class="list-group-item"><a href="{{ route('order.client.user') }}" class="text-decoration-none">Đơn
                                 hàng </a></li>
                         <li class="list-group-item"><a href="{{ route('addresses.index') }}"
                                 class="text-decoration-none">Địa chỉ </a></li>

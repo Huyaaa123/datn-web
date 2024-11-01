@@ -6,46 +6,54 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     public function index()
     {
+        $orderStatus = OrderStatus::all();
         $orders = Order::with('user')->get(); // Lấy tất cả đơn hàng
-        return view('admin.orders', compact('orders'));
+        return view('admin.orders', compact('orders','orderStatus'));
     }
 
     public function create()
     {
-        return view('admin.orders.create'); // Hiển thị form tạo đơn hàng
+
     }
 
     public function store(StoreOrderRequest $request)
     {
-        $order = Order::create($request->validated()); // Tạo đơn hàng
-        return redirect()->route('admin.orders.index')->with('success', 'Đơn hàng đã được tạo thành công.');
+
     }
 
     public function show(Order $order)
     {
-        return view('admin.orders.show', compact('order')); // Hiển thị chi tiết đơn hàng
     }
 
     public function edit(Order $order)
     {
-        return view('admin.orders.edit', compact('order')); // Hiển thị form chỉnh sửa
+        $orderStatus = OrderStatus::all();
+        return view('admin.crud.orders-edit', compact('order', 'orderStatus')); // Hiển thị chi tiết đơn hàng
     }
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        $order->update($request->validated()); // Cập nhật đơn hàng
-        return redirect()->route('admin.orders.index')->with('success', 'Đơn hàng đã được cập nhật thành công.');
+        DB::transaction(function ()use ($order, $request) {
+            $dataOrder = [
+                'order_status_id' => $request->order_status_id,
+                'cancel' => $request->cancel
+            ];
+
+            $order->update($dataOrder);
+        });
+        return redirect()->route('admin.orders.index')->with('success', 'Product update successfully!');
     }
 
     public function destroy(Order $order)
     {
-        $order->delete();
-        return redirect()->route('admin.orders.index')->with('success', 'Đơn hàng đã được xóa thành công.');
+
     }
 }

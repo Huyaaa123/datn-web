@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->string('sku')->unique();
             $table->foreignIdFor(Category::class)->constrained();
-            $table->foreignIdFor(Discount::class)->constrained();
             $table->timestamps();
         });
     }
