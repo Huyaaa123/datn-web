@@ -40,23 +40,6 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <!-- Status Filter -->
-            <div class="mb-3">
-                <form action="{{ route('order.client.user') }}" method="GET" class="form-inline">
-                    <label for="status" class="mr-2">Lọc :</label>
-                    <select name="status" id="status" class="form-control mr-2">
-                        <option value="">Tất cả</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Đang chờ</option>
-                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
-                        <option value="shipping" {{ request('status') == 'shipping' ? 'selected' : '' }}>Đang giao</option>
-                        <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Đã giao</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
-                        <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : '' }}>Đã hủy</option>
-                    </select>
-                    <button type="submit" class="btn btn-danger">Lọc</button>
-                </form>
-            </div>
-
             @if($orders->isEmpty())
                 <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
             @else

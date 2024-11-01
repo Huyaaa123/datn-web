@@ -164,10 +164,15 @@
                     <td>{{ Str::limit($order->shipping_address, 15, '...') }}</td>
                     <td>{{ Str::limit($order->telephone, 15, '...') }}</td>
                     <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->notes, 15, '...') }}</td>
-
                     <td>
-                        @if($order->order_status_id !== 1) <!-- Kiểm tra order_status_id -->
+                        @if($order->notes)
+                            {{ Str::limit($order->notes, 15, '...') }}
+                        @else
+                            No Problem
+                        @endif
+                    </td>
+                    <td>
+                        @if($order->order_status_id === 7) <!-- Kiểm tra order_status_id -->
                         <span style="color: #c82333; font-weight:bold;">Undefined</span>
 
                         @else

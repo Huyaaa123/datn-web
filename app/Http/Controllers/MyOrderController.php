@@ -8,6 +8,7 @@ use App\Models\OrderStatus;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MyOrderController extends Controller
 {
@@ -55,19 +56,39 @@ class MyOrderController extends Controller
      */
     public function edit(string $id)
     {
+        $product = Product::all();
         $orderStatus = OrderStatus::all();
         $order = Order::with('orderDetails.product')->findOrFail($id); // Lấy thông tin đơn hàng và sản phẩm
         $categories = Category::all();
-        return view('user-client.orders-show', compact('order',  'categories','orderStatus'));
+        return view('user-client.orders-show', compact('order',  'categories','orderStatus','product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+
+     public function update(Request $request, string $id)
+     {
+         // Tìm đơn hàng theo ID
+         $order = Order::findOrFail($id);
+
+         // Kiểm tra nếu trạng thái là "Đã hủy" (giả sử bạn nhận giá trị từ frontend)
+         if ($request->order_status_id === '7') { // 7 là ID trạng thái "Đã hủy"
+             $order->order_status_id = 7;
+             $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
+             $order->notes = auth()->user()->name;
+         } elseif ($request->order_status_id === '5') { // 5 là ID trạng thái "Đã nhận hàng"
+             $order->order_status_id = 5;
+         }
+
+         // Lưu các thay đổi
+         $order->save();
+
+         // Trả về phản hồi
+         return redirect()->route('order.client.show', $order->id)
+                          ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
+     }
+
 
     /**
      * Remove the specified resource from storage.

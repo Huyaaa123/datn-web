@@ -44,7 +44,8 @@ class OrderController extends Controller
         DB::transaction(function ()use ($order, $request) {
             $dataOrder = [
                 'order_status_id' => $request->order_status_id,
-                'cancel' => $request->cancel
+                'cancel' => $request->cancel,
+                'notes' => auth()->user()->name,
             ];
 
             $order->update($dataOrder);

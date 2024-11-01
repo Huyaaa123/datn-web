@@ -37,9 +37,36 @@
                 box-sizing: border-box;
             }
 
-            .form-group textarea {
-                height: 100px;
-                resize: vertical;
+            .form-inline {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .form-inline .form-group {
+                flex: 1;
+                margin-right: 10px;
+            }
+
+            .form-inline .form-group:last-child {
+                margin-right: 0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            table,
+            th,
+            td {
+                border: 1px solid #ccc;
+            }
+
+            th,
+            td {
+                padding: 10px;
+                text-align: left;
             }
 
             button {
@@ -52,27 +79,6 @@
                 cursor: pointer;
                 transition: background-color 0.3s ease;
             }
-
-            .form-group img {
-                margin-top: 10px;
-                width: 50px;
-                height: auto;
-            }
-
-            a.btn-success {
-                background-color: #ff1616;
-                border: none;
-                color: white;
-                padding: 10px 20px;
-                font-size: 10px;
-                border-radius: 4px;
-                cursor: pointer;
-                margin-top: 10px;
-            }
-
-            a.btn-success:hover {
-                background-color: #d2010c;
-            }
         </style>
     </head>
 
@@ -84,7 +90,7 @@
             @method('PUT')
 
             <div class="form-group">
-                <label for="status">Trạng thái</label>
+                <label for="status">Status</label>
                 <select name="order_status_id" id="order_status_id" required>
                     @foreach ($orderStatus as $status)
                         <option value="{{ $status->id }}" {{ $order->order_status_id === $status->id ? 'selected' : '' }}>
@@ -94,13 +100,57 @@
                 </select>
             </div>
 
-
-            <div class="form-group" id="cancel-reason-group" style="{{ $order->status === 'Đã huỷ' ? '' : 'display: none;' }}">
-                <label for="cancel">Lý do hủy</label>
+            <div class="form-group" id="cancel-reason-group" style="{{ $order->cancel ? '' : 'display: none;' }}">
+                <label for="cancel">Reason</label>
                 <input type="text" name="cancel" id="cancel" value="{{ $order->cancel }}" class="form-control">
             </div>
 
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <div class="form-inline">
+                <div class="form-group">
+                    <label for="user">Username</label>
+                    <input type="text" id="user" value="{{ $order->user->name ?? 'Không xác định' }}"
+                        class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="total">Total</label>
+                    <input type="text" id="total" value="{{ number_format($order->total_amount) }} VND"
+                        class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="product">Product</label>
+                @foreach ($order->orderDetails as $item)
+                    <input type="text" id="product" value="{{ $item->product->name }} (SL x{{ $item->quantity }}) "
+                        class="form-control" readonly>
+                @endforeach
+            </div>
+            <div class="form-group">
+                <label for="order_date">Date Order</label>
+                <input type="text" id="order_date"
+                    value="{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="shipping_address">Address Ship</label>
+                <input type="text" id="shipping_address" value="{{ $order->shipping_address }}" class="form-control"
+                    readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="telephone">Telephone</label>
+                <input type="text" id="telephone" value="{{ $order->telephone }}" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="payment_method">Payment</label>
+                <input type="text" id="payment_method" value="{{ $order->payment_method }}" class="form-control"
+                    readonly>
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary">Update</button>
         </form>
 
         <script>
@@ -110,5 +160,6 @@
             });
         </script>
     </body>
+
     </html>
 @endsection

@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/change-password/user', [UserInformationController::class, 'changePassword'])->name('password.update');
     Route::get('/order', [MyOrderController::class, 'index'])->name('order.client.user');
     Route::get('/order{id}', [MyOrderController::class, 'edit'])->name('order.client.show');
+    Route::put('/order/{id}/update', [MyOrderController::class, 'update'])->name('order.client.update');
 });
 //menu
 

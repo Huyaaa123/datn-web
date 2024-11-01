@@ -48,7 +48,6 @@ class CheckoutController extends Controller
                 $order->payment_method = 'COD';
                 $order->telephone = $request->phone;
                 $order->shipping_address = $request->city . ', ' . $request->district . ', ' . $request->ward . ', ' . $request->address;
-                $order->notes = 'Chưa thanh toán'; // Ghi chú từ request
                 $order->save();
 
                 // Lưu các sản phẩm trong giỏ hàng vào bảng chi tiết đơn hàng
@@ -146,7 +145,6 @@ class CheckoutController extends Controller
             ]);
             $order->telephone = $request->phone;
             $order->payment_method = 'MoMo';
-            $order->notes = 'Đã thanh toán'; // Ghi chú từ request
             $order->save();
 
             // Lưu các chi tiết đơn hàng
