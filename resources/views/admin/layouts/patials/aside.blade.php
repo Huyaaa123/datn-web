@@ -17,7 +17,7 @@
         </span>
         <h3>Dashboard</h3>
     </a>
-    <a href="">
+    <a href="{{ route('admin.users.index') }}">
         <span class="material-icons-sharp">
             person_outline
         </span>
@@ -42,12 +42,13 @@
         <h3>Orders</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
-    {{-- <a href="#">
+    <a href="#">
         <span class="material-icons-sharp">
-            inventory
+            settings
         </span>
-        <h3>Sale List</h3>
+        <h3>Setting</h3>
     </a>
+    {{--
     <a href="#">
         <span class="material-icons-sharp">
             report_gmailerrorred

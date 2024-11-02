@@ -59,28 +59,37 @@
     <div class="new-users">
         <h2>New Users</h2>
         <div class="user-list">
-            <div class="user">
-                <img src="../admindb/images/profile-2.jpg">
-                <h2>Jack</h2>
-                <p>54 Min Ago</p>
-            </div>
-            <div class="user">
-                <img src="../admindb/images/profile-3.jpg">
-                <h2>Amir</h2>
-                <p>3 Hours Ago</p>
-            </div>
-            <div class="user">
-                <img src="../admindb/images/profile-4.jpg">
-                <h2>Ember</h2>
-                <p>6 Hours Ago</p>
-            </div>
-            <div class="user">
-                <img src="../admindb/images/plus.png">
-                <h2>More</h2>
-                <p>New User</p>
-            </div>
+            @if ($newUsers->isEmpty())
+                <div class="user">
+                    <h2>No new members registered recently.</h2>
+                </div>
+            @else
+                @foreach ($newUsers as $user)
+                    <div class="user">
+                        @php
+                            // Array of available profile images
+                            $images = [
+                                'profile-2.jpg',
+                                'profile-3.jpg',
+                                'profile-4.jpg',
+                                'profile-5.jpg',
+                                'profile-6.jpg',
+                                'profile-7.jpg',
+                                'profile-8.jpg'
+                            ];
+                            // Select a random image from the array
+                            $randomImage = $images[array_rand($images)];
+                        @endphp
+                        <img src="{{ asset('admindb/images/' . $randomImage) }}" alt="{{ $user->name }}">
+                        <h2>{{ $user->name }}</h2>
+                        <p>{{ $user->created_at->diffForHumans() }}</p>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
+
+
     <!-- End of New Users Section -->
 
     <!-- Recent Orders Table -->

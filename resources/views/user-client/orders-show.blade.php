@@ -47,24 +47,26 @@
             </table>
 
             <div class="d-flex justify-content-between align-items-center mt-3">
-                <h4>Tổng tiền: <span class="text-danger">{{ number_format($order->total_amount, 0, ',', '.') }} VND</span>
+                <h4 >Tổng tiền: <span class="text-danger">{{ number_format($order->total_amount, 0, ',', '.') }} VND</span>
                 </h4>
 
-                @if ($order->orderStatus->id !== 7)
-                    <form action="{{ route('order.client.update', $order->id) }}" method="POST" class="mr-2">
-                        @csrf
-                        @method('PUT')
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelOrderModal"
+                @if (in_array($order->orderStatus->id, [1, 2])) <!-- 1: Chờ xác nhận, 2: Đã xác nhận -->
+                <form action="{{ route('order.client.update', $order->id) }}" method="POST" class="mr-2">
+                    @csrf
+                    @method('PUT')
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelOrderModal"
                             data-order-id="{{ $order->id }}">
-                            Hủy đơn
-                        </button>
-                    </form>
-                @endif
+                        Hủy đơn
+                    </button>
+                </form>
+            @endif
 
-                @if ($order->orderStatus->id === 6)
+
+                @if ($order->orderStatus->id === 4)
                     <form action="{{ route('order.client.update', $order->id) }}" method="POST">
                         @csrf
                         @method('PUT')
+                        <input type="hidden" name="order_status_id" value="5">
                         <button type="submit" class="btn btn-success">Đã nhận hàng</button>
                     </form>
                 @endif

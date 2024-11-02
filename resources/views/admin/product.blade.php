@@ -1,4 +1,3 @@
-
 @extends('admin.layouts.master')
 @section('content')
     <h1>Product</h1>
@@ -70,6 +69,7 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+
         .btn-success {
             background-color: #08d839;
         }
@@ -149,40 +149,56 @@
         }
 
         .pagination {
-    display: flex;                 /* Sử dụng Flexbox để căn giữa */
-    justify-content: center;      /* Căn giữa các nút */
-    align-items: center;          /* Căn giữa theo chiều dọc */
-    list-style: none;             /* Xóa các dấu chấm */
-    padding: 0;                   /* Xóa padding */
-    margin: 20px 0;               /* Khoảng cách trên và dưới */
-}
+            display: flex;
+            /* Sử dụng Flexbox để căn giữa */
+            justify-content: center;
+            /* Căn giữa các nút */
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
+            list-style: none;
+            /* Xóa các dấu chấm */
+            padding: 0;
+            /* Xóa padding */
+            margin: 20px 0;
+            /* Khoảng cách trên và dưới */
+        }
 
-.pagination li {
-    margin: 0 5px;                /* Khoảng cách giữa các nút */
-}
+        .pagination li {
+            margin: 0 5px;
+            /* Khoảng cách giữa các nút */
+        }
 
-.page-link {
-    padding: 8px 12px;            /* Padding cho các nút */
-    border: 1px solid #007bff;    /* Đường viền cho các nút */
-    border-radius: 4px;           /* Bo góc */
-    color: #007bff;                /* Màu chữ */
-    text-decoration: none;         /* Xóa gạch chân */
-}
+        .page-link {
+            padding: 8px 12px;
+            /* Padding cho các nút */
+            border: 1px solid #007bff;
+            /* Đường viền cho các nút */
+            border-radius: 4px;
+            /* Bo góc */
+            color: #007bff;
+            /* Màu chữ */
+            text-decoration: none;
+            /* Xóa gạch chân */
+        }
 
-.page-link:hover {
-    background-color: #007bff;    /* Màu nền khi hover */
-    color: #fff;                   /* Màu chữ khi hover */
-}
+        .page-link:hover {
+            background-color: #007bff;
+            /* Màu nền khi hover */
+            color: #fff;
+            /* Màu chữ khi hover */
+        }
 
-.pagination .disabled .page-link {
-    color: #ccc;                   /* Màu chữ cho nút bị vô hiệu hóa */
-}
+        .pagination .disabled .page-link {
+            color: #ccc;
+            /* Màu chữ cho nút bị vô hiệu hóa */
+        }
 
-.pagination .active .page-link {
-    background-color: #007bff;    /* Màu nền cho trang đang hoạt động */
-    color: #fff;                   /* Màu chữ cho trang đang hoạt động */
-}
-
+        .pagination .active .page-link {
+            background-color: #007bff;
+            /* Màu nền cho trang đang hoạt động */
+            color: #fff;
+            /* Màu chữ cho trang đang hoạt động */
+        }
     </style>
 
     <a href="{{ route('admin.product.create') }}" class="text-center btn btn-add">Addnew</a>
@@ -219,7 +235,8 @@
                     <td>
                         <a href="{{ route('admin.product.show', $product->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
+                        <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST"
+                            style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Delete</button>

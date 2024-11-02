@@ -90,7 +90,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         // Kiểm tra xem người dùng có đơn hàng nào đang giao không
-        if ($user->orders()->where('status', '!=', 'Completed')->exists()) {
+        if ($user->orders()->where('order_status_id', '!=', 'Completed')->exists()) {
             return redirect()->back()->with('error', 'Không thể xóa tài khoản khi có đơn hàng đang giao.');
         }
 

@@ -86,7 +86,6 @@
                 <p><strong>Description:</strong> {{ $product->description }}</p>
                 <p><strong>Price:</strong> {{ number_format($product->price) }}VND</p>
                 <p><strong>Categories:</strong> {{ $product->category->name }}</p>
-                <p><strong>Discounts:</strong> {{ number_format($product->discount->discount_percent) }}%</p>
             </div>
             <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-danger mt-3">Edit</a>
             <a href="{{ route('admin.product.index') }}" class="btn btn-primary mt-3">Cancel</a>

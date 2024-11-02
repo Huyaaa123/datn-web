@@ -23,7 +23,7 @@ class MyOrderController extends Controller
         // Retrieve the user's orders, sorted by order_date in descending order
         $orders = Order::where('user_id', $user->id)->orderBy('order_date')->latest('id')->get();
 
-        return view('user-client.orders', compact('orders', 'categories','orderStatus'));
+        return view('user-client.orders', compact('orders', 'categories', 'orderStatus'));
     }
 
 
@@ -60,7 +60,7 @@ class MyOrderController extends Controller
         $orderStatus = OrderStatus::all();
         $order = Order::with('orderDetails.product')->findOrFail($id); // Lấy thông tin đơn hàng và sản phẩm
         $categories = Category::all();
-        return view('user-client.orders-show', compact('order',  'categories','orderStatus','product'));
+        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product'));
     }
 
     /**
@@ -72,13 +72,13 @@ class MyOrderController extends Controller
          // Tìm đơn hàng theo ID
          $order = Order::findOrFail($id);
 
-         // Kiểm tra nếu trạng thái là "Đã hủy" (giả sử bạn nhận giá trị từ frontend)
-         if ($request->order_status_id === '7') { // 7 là ID trạng thái "Đã hủy"
-             $order->order_status_id = 7;
+         // Kiểm tra nếu trạng thái là "Đã hủy" và đơn hàng đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
+         if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
+             $order->order_status_id = 7; // Đặt trạng thái thành "Đã hủy"
              $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
-             $order->notes = auth()->user()->name;
-         } elseif ($request->order_status_id === '5') { // 5 là ID trạng thái "Đã nhận hàng"
-             $order->order_status_id = 5;
+             $order->notes = auth()->user()->name; // Lưu tên người hủy
+         } elseif ($request->order_status_id === '5') { // Kiểm tra nếu trạng thái là "Đã nhận hàng"
+             $order->order_status_id = 5    ; // Đặt trạng thái thành "Đã nhận hàng"
          }
 
          // Lưu các thay đổi
@@ -86,8 +86,9 @@ class MyOrderController extends Controller
 
          // Trả về phản hồi
          return redirect()->route('order.client.show', $order->id)
-                          ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
+             ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
      }
+
 
 
     /**

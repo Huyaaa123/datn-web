@@ -7,6 +7,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Models\OrderStatus;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,7 @@ class OrderController extends Controller
     public function index()
     {
         $orderStatus = OrderStatus::all();
-        $orders = Order::with('user')->get(); // Lấy tất cả đơn hàng
+        $orders = Order::with('user')->latest('id')->paginate(4);
         return view('admin.orders', compact('orders','orderStatus'));
     }
 
@@ -31,6 +32,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        return view('admin.show.orders-show', compact('order'));
     }
 
     public function edit(Order $order)
