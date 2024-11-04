@@ -85,80 +85,97 @@
     <body>
         <h1>Edit Orders</h1>
 
-        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
+        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="orderForm">
             @csrf
             @method('PUT')
-
             <div class="form-group">
                 <label for="status">Status</label>
-                <select name="order_status_id" id="order_status_id" required>
+                <select name="order_status_id" id="order_status_id">
                     @foreach ($orderStatus as $status)
-                        <option value="{{ $status->id }}" {{ $order->order_status_id === $status->id ? 'selected' : '' }}>
+                        <option disabled value="{{ $status->id }}" {{ $order->order_status_id === $status->id ? 'selected' : '' }}>
                             {{ $status->name }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="form-group" id="cancel-reason-group" style="{{ $order->cancel ? '' : 'display: none;' }}">
-                <label for="cancel">Reason</label>
-                <input type="text" name="cancel" id="cancel" value="{{ $order->cancel }}" class="form-control">
-            </div>
-
             <div class="form-inline">
                 <div class="form-group">
                     <label for="user">Username</label>
-                    <input type="text" id="user" value="{{ $order->user->name ?? 'Không xác định' }}"
-                        class="form-control" readonly>
+                    <input type="text" id="user" value="{{ $order->user->name ?? 'Không xác định' }}" class="form-control" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="total">Total</label>
-                    <input type="text" id="total" value="{{ number_format($order->total_amount) }} VND"
-                        class="form-control" readonly>
+                    <input type="text" id="total" value="{{ number_format($order->total_amount) }} VND" class="form-control" readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label for="product">Product</label>
                 @foreach ($order->orderDetails as $item)
-                    <input type="text" id="product" value="{{ $item->product->name }} (SL x{{ $item->quantity }}) "
-                        class="form-control" readonly>
+                    <input type="text" id="product" value="{{ $item->product->name }} ( x{{ $item->quantity }} ) ({{ number_format($item->price) }} VND)" class="form-control" readonly>
                 @endforeach
             </div>
             <div class="form-group">
                 <label for="order_date">Date Order</label>
-                <input type="text" id="order_date"
-                    value="{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}" class="form-control" readonly>
+                <input type="text" id="order_date" value="{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y') }}" class="form-control" readonly>
             </div>
 
             <div class="form-group">
                 <label for="shipping_address">Address Ship</label>
-                <input type="text" id="shipping_address" value="{{ $order->shipping_address }}" class="form-control"
-                    readonly>
-            </div>
-
-            <div class="form-group">
-                <label for="telephone">Telephone</label>
-                <input type="text" id="telephone" value="{{ $order->telephone }}" class="form-control" readonly>
+                <input type="text" id="shipping_address" value="{{ $order->telephone }} / {{ $order->shipping_address }}" class="form-control" readonly>
             </div>
 
             <div class="form-group">
                 <label for="payment_method">Payment</label>
-                <input type="text" id="payment_method" value="{{ $order->payment_method }}" class="form-control"
-                    readonly>
+                <input type="text" id="payment_method" value="{{ $order->payment_method }}" class="form-control" readonly>
             </div>
 
+            <div class="form-group">
+                <label for="checkpay">Checkpay</label>
+                <input type="text" id="checkpay" value="{{ $order->checkpay }}" class="form-control" readonly>
+            </div>
 
+            @if ($order->order_status_id == 1)
+                <!-- 1: trạng thái ban đầu (Pending) -->
+                <button type="submit" name="order_status_id" value="2" class="btn btn-secondary">Xác nhận</button>
+                <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
+            @elseif($order->order_status_id == 2)
+                <!-- 2: trạng thái đã xác nhận -->
+                <button type="submit" name="order_status_id" value="3" class="btn btn-info">Giao hàng</button>
+                <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
+            @elseif($order->order_status_id == 3)
+                <!-- 3: đang giao hàng -->
+                <button type="submit" name="order_status_id" value="4" class="btn btn-warning">Đã giao hàng</button>
+            @elseif($order->order_status_id == 5)
+                <!-- 4: đã giao hàng -->
+                <button type="submit" name="order_status_id" value="6" class="btn btn-success">Hoàn thành</button>
+            @elseif($order->order_status_id == 8)
 
-            <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" name="order_status_id" value="9" class="btn btn-success">Đồng ý hủy</button>
+            @elseif($order->order_status_id == 9)
+                <!-- 9: đã hủy -->
+                <p class="text-danger">Đơn hàng đã hủy</p>
+            @elseif($order->order_status_id == 6)
+                <!-- 6: đã hoàn thành -->
+                <p class="text-success">Đơn hàng đã hoàn thành</p>
+            @endif
+
+            <!-- Ô nhập lý do hủy đơn, ẩn theo mặc định -->
+            <div id="cancel-reason-container" style="display:none;">
+                <label for="cancel_reason">Lý do hủy</label>
+                <input type="text" name="cancel" id="cancel_reason" class="form-control">
+                <button type="submit" name="order_status_id" value="9" class="btn btn-danger">Xác nhận hủy</button>
+            </div>
         </form>
 
         <script>
-            document.getElementById('order_status_id').addEventListener('change', function() {
-                const cancelReasonGroup = document.getElementById('cancel-reason-group');
-                cancelReasonGroup.style.display = this.options[this.selectedIndex].text === 'Đã huỷ' ? '' : 'none';
+            document.getElementById('cancel-button').addEventListener('click', function() {
+                // Hiển thị ô nhập lý do hủy đơn
+                document.getElementById('cancel-reason-container').style.display = 'block';
             });
         </script>
+
     </body>
 
     </html>

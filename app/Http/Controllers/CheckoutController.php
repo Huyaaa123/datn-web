@@ -46,6 +46,7 @@ class CheckoutController extends Controller
                 $order->total_amount = $amount;
                 $order->order_date = now();
                 $order->payment_method = 'COD';
+                $order->checkpay = 'Chưa thanh toán';
                 $order->telephone = $request->phone;
                 $order->shipping_address = $request->city . ', ' . $request->district . ', ' . $request->ward . ', ' . $request->address;
                 $order->save();
@@ -136,6 +137,7 @@ class CheckoutController extends Controller
             $order->user_id = auth()->id(); // Nếu người dùng đã đăng nhập
             $order->order_status_id = 1; // Hoặc trạng thái khác
             $order->total_amount = $amount;
+            $order->checkpay = 'Đã thanh toán';
             $order->order_date = now();
             $order->shipping_address = implode(', ', [
                 $request->input('address'),
@@ -163,14 +165,14 @@ class CheckoutController extends Controller
             foreach ($cartItems as $cartItem) {
                 $cartItem->delete(); // Xóa từng bản ghi
             }
-            // Kiểm tra và xử lý phản hồi từ MoMo
             if (isset($jsonResult['payUrl'])) {
                 return redirect()->to($jsonResult['payUrl']); // Chuyển hướng đến URL thanh toán
             } else {
                 // Ghi log phản hồi để dễ dàng gỡ lỗi
-                \Log::error('MoMo response error', $jsonResult);
+                \Log::error('MoMo response error', ['response' => $jsonResult]);
                 return redirect()->back()->with('error', 'Đã xảy ra lỗi khi xử lý giao dịch: ' . ($jsonResult['message'] ?? 'Lỗi không xác định.'));
             }
+
         }
 
         // Kiểm tra nếu phương thức thanh toán là VNPay

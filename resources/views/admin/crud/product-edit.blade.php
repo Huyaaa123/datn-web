@@ -101,18 +101,6 @@
             </div>
 
             <div class="form-group">
-                <label for="discount">Discount</label>
-                               <select class="form-control" id="discount" name="discount_id">
-                    @foreach ($discounts as $id => $discount_percent)
-                        <option @selected($product->discount_id == $id) value="{{ $id }}">{{ number_format($discount_percent) }}%</option>
-                    @endforeach
-                </select>
-                @error('discount')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
                 <label for="category_id">Category</label>
                 <select name="category_id" id="category_id">
                     @foreach ($categories as $id => $name)

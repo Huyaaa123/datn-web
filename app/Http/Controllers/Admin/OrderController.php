@@ -17,7 +17,7 @@ class OrderController extends Controller
     {
         $orderStatus = OrderStatus::all();
         $orders = Order::with('user')->latest('id')->paginate(4);
-        return view('admin.orders', compact('orders','orderStatus'));
+        return view('admin.orders', compact('orders', 'orderStatus'));
     }
 
     public function create()
@@ -43,17 +43,34 @@ class OrderController extends Controller
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        DB::transaction(function ()use ($order, $request) {
-            $dataOrder = [
-                'order_status_id' => $request->order_status_id,
-                'cancel' => $request->cancel,
-                'notes' => auth()->user()->name,
-            ];
+        DB::transaction(function () use ($order, $request) {
+            // Kiểm tra trạng thái đơn hàng
+            if ($order->order_status_id === 8) { // Nếu trạng thái là "Chờ xác nhận hủy"
+                // Cập nhật trạng thái thành "Đã hủy" (ID 9)
+                $dataOrder = [
+                    'order_status_id' => 9, // Chuyển sang trạng thái "Đã hủy"
+                    'notes' => auth()->user()->name, // Lưu tên người yêu cầu hủy
+                ];
+            } else {
+                // Trường hợp khác (cập nhật trạng thái thông thường)
+                $dataOrder = [
+                    'order_status_id' => $request->order_status_id,
+                    'cancel' => $request->cancel,
+                    'checkpay' => $order->checkpay, // Giữ nguyên giá trị checkpay
+                    'notes' => auth()->user()->name,
+                ];
 
+            }
+
+            // Cập nhật trạng thái đơn hàng
             $order->update($dataOrder);
         });
-        return redirect()->route('admin.orders.index')->with('success', 'Product update successfully!');
+
+        return redirect()->route('admin.orders.edit', $order->id)->with('success', 'Cập nhật trạng thái đơn hàng thành công!');
     }
+
+
+
 
     public function destroy(Order $order)
     {

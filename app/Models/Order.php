@@ -17,6 +17,7 @@ class Order extends Model
         'telephone',
         'shipping_address',
         'payment_method',
+        'checkpay',
         'notes',
         'cancel'
     ];

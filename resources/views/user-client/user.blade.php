@@ -105,8 +105,7 @@
                                 <td></td>
                                 <td>
                                     <button type="submit" class="btn btn-success">Lưu</button>
-                                    <button type="button" class="btn btn-danger" onclick="confirmDelete(event)">Xóa Tài
-                                        Khoản</button>
+                                    
                                 </td>
                             </tr>
                         </table>

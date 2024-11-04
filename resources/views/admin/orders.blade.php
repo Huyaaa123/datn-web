@@ -180,7 +180,7 @@
         <thead>
             <tr>
                 <th>Status</th>
-                <th>Cancel</th>
+                <th>Reason</th>
                 <th>User</th>
                 <th>Products</th>
                 <th>Total</th>
@@ -188,7 +188,8 @@
                 <th>Ship</th>
                 <th>Phone</th>
                 <th>Payment</th>
-                <th>Note</th>
+                <th>Checkpay</th>
+                <th>Handler</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -200,22 +201,23 @@
                         @if ($order->cancel)
                             {{ Str::limit($order->cancel, 15, '...') }}
                         @else
-                            No Problem
+                           ...
                         @endif
                     </td>
                     <td>{{ Str::limit($order->user->name, 10, '...') }}</td>
                     <td>
                         @foreach ($order->orderDetails as $item)
                             <div>
-                                {{ Str::limit($item->product->name, 10, '...') }} (SL: x{{ $item->quantity }})
+                                {{ Str::limit($item->product->name, 10, '...') }} (x{{ $item->quantity }}) ({{number_format($item->price)}})
                             </div>
                         @endforeach
                     </td>
                     <td>{{ number_format($order->total_amount) }} VND</td>
-                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y ') }}</td>
                     <td>{{ Str::limit($order->shipping_address, 15, '...') }}</td>
                     <td>{{ Str::limit($order->telephone, 15, '...') }}</td>
                     <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
+                    <td>{{ Str::limit($order->checkpay, 15, '...') }}</td>
                     <td>
                         @if ($order->notes)
                             {{ Str::limit($order->notes, 15, '...') }}
@@ -224,14 +226,8 @@
                         @endif
                     </td>
                     <td>
-                        @if ($order->order_status_id === 6)
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-success">Show</a>
-                        @elseif($order->order_status_id === 7)
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-success">Show</a>
-                        @else
                             <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-success">Show</a>
                             <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-primary">Edit</a>
-                        @endif
                     </td>
 
                 </tr>

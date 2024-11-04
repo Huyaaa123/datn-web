@@ -87,25 +87,6 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::findOrFail($id);
 
-        // Kiểm tra xem người dùng có đơn hàng nào đang giao không
-        if ($user->orders()->where('order_status_id', '!=', 'Completed')->exists()) {
-            return redirect()->back()->with('error', 'Không thể xóa tài khoản khi có đơn hàng đang giao.');
-        }
-
-        // Xóa các đơn hàng, địa chỉ và giỏ hàng liên quan
-        $user->orders()->delete(); // Xóa tất cả các đơn hàng của người dùng
-        $user->addresses()->delete();
-
-        // Kiểm tra xem người dùng có giỏ hàng không và xóa nó
-        if ($user->cart) {
-            $user->cart()->delete();
-        }
-
-        // Cuối cùng, xóa tài khoản người dùng
-        $user->delete();
-
-        return redirect()->route('home')->with('success', 'Tài khoản và địa chỉ đã được xóa thành công.');
     }
 }

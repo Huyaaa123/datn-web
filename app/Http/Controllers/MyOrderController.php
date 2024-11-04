@@ -20,11 +20,16 @@ class MyOrderController extends Controller
         $user = Auth::user();
         $categories = Category::all();
         $orderStatus = OrderStatus::all();
-        // Retrieve the user's orders, sorted by order_date in descending order
-        $orders = Order::where('user_id', $user->id)->orderBy('order_date')->latest('id')->get();
+
+        // Retrieve the user's orders with order details and related products
+        $orders = Order::where('user_id', $user->id)
+                        ->with('orderDetails.product')
+                        ->orderBy('order_date', 'desc')->latest('id')
+                        ->paginate(4);
 
         return view('user-client.orders', compact('orders', 'categories', 'orderStatus'));
     }
+
 
 
     /**
@@ -74,11 +79,15 @@ class MyOrderController extends Controller
 
          // Kiểm tra nếu trạng thái là "Đã hủy" và đơn hàng đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
          if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
-             $order->order_status_id = 7; // Đặt trạng thái thành "Đã hủy"
+             $order->order_status_id = 8; // Đặt trạng thái thành "Đã hủy"
              $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
              $order->notes = auth()->user()->name; // Lưu tên người hủy
          } elseif ($request->order_status_id === '5') { // Kiểm tra nếu trạng thái là "Đã nhận hàng"
-             $order->order_status_id = 5    ; // Đặt trạng thái thành "Đã nhận hàng"
+             $order->order_status_id = 5;
+             $order['checkpay'] = 'Đã thanh toán';
+         } else {
+             return redirect()->route('order.client.show', $order->id)
+                 ->with('error', 'Không thể cập nhật trạng thái đơn hàng.');
          }
 
          // Lưu các thay đổi
@@ -88,6 +97,7 @@ class MyOrderController extends Controller
          return redirect()->route('order.client.show', $order->id)
              ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
      }
+
 
 
 

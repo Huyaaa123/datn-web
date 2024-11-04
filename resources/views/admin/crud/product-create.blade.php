@@ -146,17 +146,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="discount">Discount</label>
-                <select class="form-control" id="discount" name="discount_id">
-                    @foreach ($discounts as $discount)
-                        <option value="{{ $discount->id }}" {{ old('discount_id') == $discount->id ? 'selected' : '' }}>
-                            {{ round($discount->discount_percent, 2) }}%
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
             <button type="submit" class="btn btn-primary">Add Product</button>
             <a href="{{ route('admin.product.index') }}" class="btn btn-success">Cancel</a>
         </form>
