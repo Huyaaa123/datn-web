@@ -12,9 +12,10 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart');
+        $products = Product::inRandomOrder()->take(8)->get();
         $categories = Category::all();
 
-        return view('cart.cart', compact('cart', 'categories'));
+        return view('cart.cart', compact('cart', 'categories','products'));
     }
 
     public function add(Request $request)
@@ -86,7 +87,7 @@ class CartController extends Controller
         // Giảm số lượng sản phẩm trong giỏ hàng
         if (session("cart.$productId.quantity") > 1) {
             session()->decrement("cart.$productId.quantity");
-        } 
+        }
         return redirect()->back();
     }
 

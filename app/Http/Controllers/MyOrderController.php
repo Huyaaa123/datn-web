@@ -15,20 +15,27 @@ class MyOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $categories = Category::all();
         $orderStatus = OrderStatus::all();
 
-        // Retrieve the user's orders with order details and related products
+        // Truy vấn các đơn hàng của người dùng
         $orders = Order::where('user_id', $user->id)
-                        ->with('orderDetails.product')
-                        ->orderBy('order_date', 'desc')->latest('id')
-                        ->paginate(4);
+            ->with('orderDetails.product')
+            ->orderBy('order_date', 'desc');
+
+        // Nếu có giá trị trạng thái trong request, thêm điều kiện vào truy vấn
+        if ($request->has('order_status_id') && $request->input('order_status_id') !== '') {
+            $orders->where('order_status_id', $request->input('order_status_id'));
+        }
+
+        $orders = $orders->paginate(4); // Thực hiện phân trang
 
         return view('user-client.orders', compact('orders', 'categories', 'orderStatus'));
     }
+
 
 
 
@@ -72,31 +79,31 @@ class MyOrderController extends Controller
      * Update the specified resource in storage.
      */
 
-     public function update(Request $request, string $id)
-     {
-         // Tìm đơn hàng theo ID
-         $order = Order::findOrFail($id);
+    public function update(Request $request, string $id)
+    {
+        // Tìm đơn hàng theo ID
+        $order = Order::findOrFail($id);
 
-         // Kiểm tra nếu trạng thái là "Đã hủy" và đơn hàng đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
-         if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
-             $order->order_status_id = 8; // Đặt trạng thái thành "Đã hủy"
-             $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
-             $order->notes = auth()->user()->name; // Lưu tên người hủy
-         } elseif ($request->order_status_id === '5') { // Kiểm tra nếu trạng thái là "Đã nhận hàng"
-             $order->order_status_id = 5;
-             $order['checkpay'] = 'Đã thanh toán';
-         } else {
-             return redirect()->route('order.client.show', $order->id)
-                 ->with('error', 'Không thể cập nhật trạng thái đơn hàng.');
-         }
+        // Kiểm tra nếu trạng thái là "Đã hủy" và đơn hàng đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
+        if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
+            $order->order_status_id = 8; // Đặt trạng thái thành "Đã hủy"
+            $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
+            $order->notes = auth()->user()->name; // Lưu tên người hủy
+        } elseif ($request->order_status_id === '5') { // Kiểm tra nếu trạng thái là "Đã nhận hàng"
+            $order->order_status_id = 5;
+            $order['checkpay'] = 'Đã thanh toán';
+        } else {
+            return redirect()->route('order.client.show', $order->id)
+                ->with('error', 'Không thể cập nhật trạng thái đơn hàng.');
+        }
 
-         // Lưu các thay đổi
-         $order->save();
+        // Lưu các thay đổi
+        $order->save();
 
-         // Trả về phản hồi
-         return redirect()->route('order.client.show', $order->id)
-             ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
-     }
+        // Trả về phản hồi
+        return redirect()->route('order.client.show', $order->id)
+            ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
+    }
 
 
 

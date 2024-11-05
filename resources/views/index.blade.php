@@ -113,8 +113,10 @@
     <div class="site-section site-blocks-2">
         <div class="container">
             <div class="row">
+                @foreach ($categories as $category)
+                @if ($category->slug == 'dong-ho-nu')
                 <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-                    <a class="block-2-item" href="../client/#">
+                    <a class="block-2-item" href="../categories/{{ $category->slug }}">
                         <figure class="image">
                             <img src="../client/images/women.jpg" alt="" class="img-fluid">
                         </figure>
@@ -124,19 +126,25 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
-                    <a class="block-2-item" href="../client/#">
-                        <figure class="image">
-                            <img src="../client/images/luxury.jpg" alt="" class="img-fluid">
-                        </figure>
-                        <div class="text">
-                            <span class="text-uppercase">Watches</span>
-                            <h3>Luxury</h3>
-                        </div>
-                    </a>
-                </div>
+                @endif
+
+                @if ($category->slug == 'luxury')
+                    <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
+                        <a class="block-2-item" href="../categories/{{ $category->slug }}">
+                            <figure class="image">
+                                <img src="../client/images/luxury.jpg" alt="" class="img-fluid">
+                            </figure>
+                            <div class="text">
+                                <span class="text-uppercase">{{ $category->name }}</span> <!-- Tên danh mục -->
+                                <h3>Luxury</h3> <!-- Tiêu đề có thể giữ nguyên hoặc điều chỉnh -->
+                            </div>
+                        </a>
+                    </div>
+                @endif
+
+                @if ($category->slug == 'dong-ho-nam')
                 <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
-                    <a class="block-2-item" href="../client/#">
+                    <a class="block-2-item" href="../categories/{{ $category->slug }}">
                         <figure class="image">
                             <img src="../client/images/men.jpg" alt="" class="img-fluid">
                         </figure>
@@ -146,6 +154,9 @@
                         </div>
                     </a>
                 </div>
+                @endif
+            @endforeach
+
             </div>
         </div>
     </div>

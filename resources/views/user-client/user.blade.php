@@ -11,13 +11,14 @@
             color: #007bff; /* Màu chữ khi hover (di chuột) */
         }
     </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <div class="container my-5 utB99K">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <!-- Sidebar -->
-                <div class="sidebar bg-light p-4 rounded">
-                    <h2 class="h4" style="color:rgb(37, 36, 36); font-weight: bold">Tài khoản </h2>
+                <div class="sidebar bg-light p-2 rounded">
+                    <h2 class="h5" style="color:rgb(37, 36, 36);"> <i class="fa-regular fa-user"></i> Quản lý tài khoản </h2>
                     <ul class="list-group">
                         <li class="list-group-item"><a href="{{ route('user.index') }}" class="text-decoration-none">Thông tin
                                 tài khoản</a></li>
@@ -31,7 +32,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="SFztPl mb-4">
                     <h1 class="h4" style="color:rgb(37, 36, 36); font-weight: bold">Thông tin tài khoản</h1>
                     <p class="text-muted">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
@@ -105,7 +106,7 @@
                                 <td></td>
                                 <td>
                                     <button type="submit" class="btn btn-success">Lưu</button>
-                                    
+
                                 </td>
                             </tr>
                         </table>

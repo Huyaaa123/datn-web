@@ -1,4 +1,3 @@
-
 <div class="site-navbar-top">
     <div class="container">
         <div class="row align-items-center justify-content-between">
@@ -12,11 +11,11 @@
 
             <div class="col">
                 <nav class="site-navigation text-right text-md-center" role="navigation">
-                    <ul class="site-menu js-clone-nav d-none d-md-flex justify-content-center">
+                    <ul class="site-menu js-clone-nav d-none d-md-flex justify-content-center" style="font-weight: 500;">
                         <li><a href="/">Trang chủ</a></li>
                         <li class="has-children">
                             <a href="">Menu</a>
-                            <ul class="dropdown">
+                            <ul class="dropdown" style="font-weight: 500;">
                                 @foreach ($categories as $category)
                                     <li>
                                         <a href="../categories/{{ $category->slug }}">{{ $category->name }}</a>
@@ -33,7 +32,7 @@
 
             <div class="col-auto">
                 <div class="site-top-icons d-flex align-items-center">
-                    <ul class="d-flex align-items-center">
+                    <ul class="d-flex align-items-center" style="font-weight: 500;">
                         <li class="nav-link dropdown">
                             @if (auth()->check())
                                 <a href="#" data-toggle="dropdown">
@@ -64,15 +63,13 @@
                                 <span class="count">{{ session('cart') ? count(session('cart')) : 0 }}</span>
                             </a>
                         </li>
-                        <li><a href="../client/#"><span class="icon icon-heart-o"></span></a></li>
+                        <li><a href=""><span class="icon icon-search"></span></a></li>
                         <li class="d-inline-block d-md-none ml-md-0">
                             <a href="../client/#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a>
                         </li>
                     </ul>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

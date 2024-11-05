@@ -19,7 +19,59 @@
     top: 13px;
 }
 
+.block-4-image {
+            position: relative;
+            /* Để overlay nằm chồng lên ảnh */
+            overflow: hidden;
+            /* Để ẩn phần overlay khi nó nằm ngoài khối */
+        }
 
+        .product-image {
+            width: 50%;
+            transition: transform 0.3s ease;
+            /* Hiệu ứng mờ dần khi hover */
+        }
+
+        /* Định nghĩa vị trí ban đầu của overlay */
+        .overlay {
+            position: absolute;
+            bottom: -100%;
+            /* Ẩn overlay hoàn toàn bên dưới khối */
+            left: 0;
+            right: 0;
+            background-color: rgba(49, 47, 47, 0.7);
+            /* Nền tối với độ trong suốt */
+            color: white;
+            text-align: center;
+            padding: 20px;
+            transition: all 0.5s ease;
+            /* Hiệu ứng di chuyển */
+        }
+
+        /* Hiển thị overlay khi hover */
+        .block-4-image:hover .overlay {
+            bottom: 0;
+            /* Khi hover, overlay sẽ từ từ di chuyển từ dưới lên */
+        }
+
+        .block-4-image:hover .product-image {
+            transform: scale(1.1);
+            /* Tăng kích thước ảnh một chút khi hover */
+        }
+
+        .overlay a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: white;
+            /* Giữ nguyên màu trắng khi hover */
+            text-decoration: none;
+            /* Không underline hoặc bất kỳ hiệu ứng hover nào khác */
+        }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -119,7 +171,117 @@
         </div>
     </section>
 @else
-    <p class="text-center">Giỏ hàng của bạn đang trống!</p>
+    <div class="site-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <img src="https://salanest.com/img/empty-cart.webp" width="25%" height="auto">
+            </div>
+          </div> <br>
+          <div class="site-section-heading pt-4">
+            <h4>Có thể bạn cũng thích</h4>
+        </div> <br>
+          <div class="row">
+            @foreach ($products as $product)
+                <div class="col-md-3 mb-4">
+                    <div class="card" style="width: 100%;">
+                        <figure class="block-4-image">
+                            <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
+                                class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <div class="overlay">
+                                <a href="" data-product-id="{{ $product->id }}"><i
+                                        class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng</a>
+                            </div>
+                        </figure>
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="font-weight: bold; color:black;">
+                                <a style="font-size:16px; font-weight: bold; color:rgb(0, 0, 0);"
+                                    href="{{ route('product.show', $product->slug) }}">{{ $product->name }}
+                                    ({{ $product->sku }})</a>
+                            </h5>
+                            <p class="card-text" style=" font-weight: bold; color:rgb(144, 29, 29);">
+                                {{ number_format($product->price) }} VND</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        </div>
+      </div>
+      {{-- modal --}}
+      <div class="modal" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document"> <!-- Thêm lớp này -->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="quantityModalLabel">Chọn số lượng</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form id="add-to-cart-form" method="POST" action="{{ route('cart.add') }}">
+                      @csrf
+                      <input type="hidden" name="product_id" id="modal_product_id">
+                      <div class="form-group">
+                          <div class="form-group d-flex align-items-center">
+                              <label for="quantity" class="mr-2">Số lượng:</label>
+                              <button type="button" class="btn btn-secondary" id="decrement">-</button>
+                              <input type="number" name="quantity" id="quantity" value="1" min="1"
+                                  max="10" class="form-control mx-2" required style="width: 50px;">
+                              <button type="button" class="btn btn-secondary" id="increment">+</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                  <button type="button" class="btn btn-success" id="confirm-add-to-cart">Xác nhận</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.overlay a').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Kiểm tra đăng nhập
+                @if (auth()->check())
+                    var productId = this.getAttribute('data-product-id');
+                    document.getElementById('modal_product_id').value = productId;
+                    $('#quantityModal').modal('show');
+                @else
+                    // Chưa đăng nhập: chuyển hướng đến trang login
+                    window.location.href = "{{ route('login') }}";
+                @endif
+            });
+        });
+
+        document.getElementById('confirm-add-to-cart').addEventListener('click', function() {
+            document.getElementById('add-to-cart-form').submit();
+        });
+    });
+
+    // Xử lý tăng giảm số lượng
+    document.getElementById('increment').addEventListener('click', function() {
+        let quantityInput = document.getElementById('quantity');
+        let currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity < parseInt(quantityInput.max)) {
+            quantityInput.value = currentQuantity + 1;
+        }
+    });
+
+    document.getElementById('decrement').addEventListener('click', function() {
+        let quantityInput = document.getElementById('quantity');
+        let currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity > parseInt(quantityInput.min)) {
+            quantityInput.value = currentQuantity - 1;
+        }
+    });
+</script>
 @endif
 
 
