@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Đơn hàng</h1>
+    <h1>Mã giảm giá</h1>
     <style>
         h1 {
             font-size: 24px;
@@ -76,7 +76,8 @@
 
         .btn-danger {
             background-color: #dc3545;
-            font-size: 14px;
+            font-family: 'Playfair Display', serif;
+
         }
 
         .btn-danger:hover {
@@ -104,6 +105,7 @@
         .text-danger {
             color: #dc3545;
             font-size: 14px;
+
         }
 
         button {
@@ -120,6 +122,20 @@
             background-color: #28a745;
         }
 
+        .active-voucher {
+            color: green;
+            font-weight: bold;
+        }
+
+        .inactive-voucher {
+            color: red;
+            font-weight: bold;
+        }
+
+        .not-started-voucher {
+            color: rgb(56, 56, 56);
+            font-weight: bold;
+        }
         .pagination {
             display: flex;
             /* Sử dụng Flexbox để căn giữa */
@@ -169,8 +185,11 @@
             background-color: #007bff;
             /* Màu nền cho trang đang hoạt động */
             color: #fff;
+            /* Màu chữ cho trang đang hoạt động */
         }
     </style>
+
+    <a href="{{ route('admin.vouchers.create') }}" class="text-center btn btn-add">Thêm</a>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
@@ -179,87 +198,96 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Mã</th>
+                <th>Giảm giá</th>
+                <th>Giá trị tối thiểu</th>
+                <th>Đã dùng</th>
+                <th>Tối đa</th>
+                <th>Bắt đầu</th>
+                <th>Kết thúc</th>
                 <th>Trạng thái</th>
-                <th>Lý do</th>
-                <th>Người mua</th>
-                <th>Sản phẩm</th>
-                <th>Tổng </th>
-                <th>Ngày đặt</th>
-                <th>Địa chỉ</th>
-                <th>Thanh toán</th>
-                <th>Kiểm tra</th>
-                <th>Người thao tác</th>
                 <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($orders as $order)
-                <tr>
-                    <td>{{ Str::limit($order->orderStatus->name, 15, '...') }}</td>
+            @foreach ($vouchers as $voucher)
+                <tr data-voucher-id="{{ $voucher->id }}">
+                    <td>{{ $voucher->code }}</td>
                     <td>
-                        @if ($order->cancel)
-                            {{ Str::limit($order->cancel, 15, '...') }}
-                        @else
-                           ...
+                        @if ($voucher->discount_amount)
+                            {{ number_format($voucher->discount_amount) }} VND
+                        @elseif ($voucher->discount_percent)
+                            {{ number_format($voucher->discount_percent) }}%
                         @endif
-                    </td>
-                    <td>{{ Str::limit($order->user->name, 10, '...') }}</td>
-                    <td>
-                        @foreach ($order->orderDetails as $item)
-                            <div>
-                                {{ Str::limit($item->product->name, 10, '...') }} (x{{ $item->quantity }}) ({{number_format($item->price)}})
-                            </div>
-                        @endforeach
-                    </td>
-                    <td>{{ number_format($order->total_amount) }} VND</td>
-                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y ') }}</td>
-                    <td>{{$order->telephone }}, {{ Str::limit($order->shipping_address, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->checkpay, 15, '...') }}</td>
-                    <td>
-                        @if ($order->notes)
-                            {{ Str::limit($order->notes, 15, '...') }}
-                        @else
-                            ...
-                        @endif
-                    </td>
-                    <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-success">Show</a>
-                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-primary">Sửa</a>
                     </td>
 
+                    <td>{{ number_format($voucher->min_order_value) }} VND</td>
+                    <td>{{ $voucher->used }}</td>
+                    <td>{{ $voucher->usage_limit }}</td>
+                    <td>{{ \Carbon\Carbon::parse($voucher->start_date)->format('H:i:s d/m/Y ') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y ') }}</td>
+                    <td class="voucher-status">
+                        <span
+                            class="
+                            {{ \Carbon\Carbon::parse($voucher->start_date)->isFuture() ? 'not-started-voucher' : ($voucher->status == 1 ? 'active-voucher' : 'inactive-voucher') }}">
+                            @if (\Carbon\Carbon::parse($voucher->start_date)->isFuture())
+                                Chưa bắt đầu
+                            @elseif ($voucher->status == 1)
+                                Còn hạn
+                            @else
+                                Hết hạn
+                            @endif
+                        </span>
+                    </td>
+
+
+                    <td>
+                        <a href="{{ route('admin.vouchers.edit', $voucher->id) }}" class="btn btn-primary">Sửa</a>
+                        <form action="{{ route('admin.vouchers.destroy', $voucher->id) }}" method="POST"
+                            style="display:inline;" onsubmit="confirmDelete(event)">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
-
     </table>
     <div class="d-flex justify-content-center">
         <ul class="pagination">
             {{-- Nếu trang hiện tại không phải là trang đầu tiên --}}
-            @if ($orders->currentPage() > 1)
+            @if ($vouchers->currentPage() > 1)
                 <li class="page-item">
-                    <a class="page-link" href="{{ $orders->url(1) }}">1</a>
+                    <a class="page-link" href="{{ $vouchers->url(1) }}">1</a>
                 </li>
             @endif
 
             {{-- Hiển thị các trang trước trang hiện tại --}}
-            @for ($i = 2; $i < $orders->currentPage(); $i++)
+            @for ($i = 2; $i < $vouchers->currentPage(); $i++)
                 <li class="page-item">
-                    <a class="page-link" href="{{ $orders->url($i) }}">{{ $i }}</a>
+                    <a class="page-link" href="{{ $vouchers->url($i) }}">{{ $i }}</a>
                 </li>
             @endfor
 
             {{-- Trang hiện tại --}}
             <li class="page-item active">
-                <a class="page-link" href="#">{{ $orders->currentPage() }}</a>
+                <a class="page-link" href="#">{{ $vouchers->currentPage() }}</a>
             </li>
 
             {{-- Hiển thị các trang sau trang hiện tại --}}
-            @for ($i = $orders->currentPage() + 1; $i <= $orders->lastPage(); $i++)
+            @for ($i = $vouchers->currentPage() + 1; $i <= $vouchers->lastPage(); $i++)
                 <li class="page-item">
-                    <a class="page-link" href="{{ $orders->url($i) }}">{{ $i }}</a>
+                    <a class="page-link" href="{{ $vouchers->url($i) }}">{{ $i }}</a>
                 </li>
             @endfor
         </ul>
     </div>
+    <script>
+        function confirmDelete(event) {
+            if (!confirm('Are you sure?')) {
+                event.preventDefault();
+            }
+        }
+    </script>
 @endsection

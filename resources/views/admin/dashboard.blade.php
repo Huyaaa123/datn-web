@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 @section('content')
 
-<h1>Dashboard</h1>
+<h1>Bảng điều khiển</h1>
     <!-- Analyses -->
     <div class="analyse">
         <div class="sales">
@@ -57,7 +57,7 @@
 
     <!-- New Users Section -->
     <div class="new-users">
-        <h2>New Users</h2>
+        <h2>Người dùng mới</h2>
         <div class="user-list">
             @if ($newUsers->isEmpty())
                 <div class="user">
@@ -94,20 +94,34 @@
 
     <!-- Recent Orders Table -->
     <div class="recent-orders">
-        <h2>Recent Orders</h2>
+        <h2>Mã giảm giá </h2>
         <table>
             <thead>
                 <tr>
-                    <th>Course Name</th>
-                    <th>Course Number</th>
-                    <th>Payment</th>
+                    <th>Voucher Code</th>
+                    <th>Discount Amount</th>
+                    <th>Discount Percent</th>
+                    <th>End Date</th>
                     <th>Status</th>
-                    <th></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                @forelse ($activeVouchers as $voucher)
+                    <tr>
+                        <td>{{ $voucher->code }}</td>
+                        <td>{{ $voucher->discount_amount ? number_format($voucher->discount_amount) . ' VND' : '-' }}</td>
+                        <td>{{ $voucher->discount_percent ? $voucher->discount_percent . '%' : '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('d-m-Y H:i') }}</td>
+                        <td><span style="color: green; font-weight:bold;">Còn hạn</span></td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5">No active vouchers available.</td>
+                    </tr>
+                @endforelse
+            </tbody>
         </table>
-        <a href="#">Show All</a>
+        <a href="{{ route('admin.vouchers.index') }}">Show All</a>
     </div>
     <!-- End of Recent Orders -->
 @endsection

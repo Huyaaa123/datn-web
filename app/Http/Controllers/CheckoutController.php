@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,6 @@ class CheckoutController extends Controller
 
         return view('cart.checkout', compact('cart', 'categories', 'address', 'user'));
     }
-
     public function online_checkout(Request $request)
     {
         // Kiểm tra nếu phương thức thanh toán là COD
@@ -73,11 +73,6 @@ class CheckoutController extends Controller
                 // Chuyển hướng đến trang cảm ơn
                 return redirect()->route('order.success')->with('success', 'Đơn hàng đã được tạo thành công!');
             }
-
-            // Xử lý thanh toán MoMo và VNPay (phần này giữ nguyên như ban đầu)
-
-
-            // Nếu không có phương thức thanh toán hợp lệ
             return redirect()->back()->with('error', 'Phương thức thanh toán không hợp lệ.');
         }
 

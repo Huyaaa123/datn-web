@@ -8,111 +8,129 @@
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<div class="container">
-    <h1 class="text-center my-4">Thanh Toán</h1>
+<main role="main">
+    <div class="container mt-4">
+        <h1 class="text-center my-4" style="color: #000000; font-size:32px;">Thanh Toán</h1>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    <div class="border border-3 border-primary rounded p-4 shadow-lg" style="background-color: #f9f9f9;">
-        <!-- Thông báo về địa chỉ -->
-        @if (!$address)
-            <div class="alert alert-warning">
-                Bạn chưa có địa chỉ nào. Vui lòng thêm <a href="{{route('addresses.index')}}">địa chỉ</a> để dễ dàng thanh toán hơn.
-            </div>
-        @else
-            <div class="alert alert-info">
-                Đã nhập nhanh thông tin đã lưu.
-            </div>
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form id="paymentForm" method="POST" action="{{ route('checkout.online_checkout') }}">
-            @csrf
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
-            <div class="mb-3 row">
-                <div class="col-md-6">
-                    <label for="name" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Họ và tên</label>
-                    <input type="text" class="form-control form-control-sm" id="name" name="name" required value="{{ $user->name ?? '' }}">
+        <div class="border border-3 border-primary rounded p-4 shadow-lg" style="background-color: #f9f9f9;">
+            <!-- Thông báo về địa chỉ -->
+            @if (!$address)
+                <div class="alert alert-warning">
+                    Bạn chưa có địa chỉ nào. Vui lòng thêm <a href="{{route('addresses.index')}}">địa chỉ</a> để dễ dàng thanh toán hơn.
                 </div>
-                <div class="col-md-6">
-                    <label for="phone" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control form-control-sm" id="phone" name="phone" required value="{{ $user->phone ?? '' }}">
+            @else
+                <div class="alert alert-info">
+                    Đã nhập nhanh thông tin đã lưu.
                 </div>
-            </div>
+            @endif
 
-            <div class="mb-3 row">
-                <div class="col-md-4">
-                    <label for="city" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Thành phố</label>
-                    <select id="province" name="city" class="form-control" required onchange="loadDistricts()">
-                        <option value="{{ $address->city ?? 'Chọn thành phố' }}">{{ $address->city ?? 'Chọn thành phố' }}</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="district" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Quận huyện</label>
-                    <select id="district" name="district" class="form-control" required onchange="loadWards()">
-                        <option value="{{ $address->district ?? 'Chọn quận/huyện' }}">{{ $address->district ?? 'Chọn quận/huyện' }}</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="ward" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Phường xã</label>
-                    <select id="ward" name="ward" required class="form-control">
-                        <option value="{{ $address->ward ?? 'Chọn phường/xã' }}">{{ $address->ward ?? 'Chọn phường/xã' }}</option>
-                    </select>
-                </div>
-            </div>
+            <form id="paymentForm" method="POST" action="{{ route('checkout.online_checkout') }}">
+                @csrf
+                <div class="row">
+                    {{-- co --}}
+                    <div class="col-md-8 order-md-2 mb-4">
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="name" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control form-control-sm" id="name" name="name" required value="{{ $user->name ?? '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control form-control-sm" id="phone" name="phone" required value="{{ $user->phone ?? '' }}">
+                            </div>
+                        </div>
 
-            <div class="mb-3">
-                <label for="address" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số nhà, tên đường</label>
-                <input type="text" class="form-control form-control-sm" id="address" name="address" required value="{{ $address->address ?? '' }}">
-            </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-4">
+                                <label for="city" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Thành phố</label>
+                                <select id="province" name="city" class="form-control" required onchange="loadDistricts()">
+                                    <option value="{{ $address->city ?? 'Chọn thành phố' }}">{{ $address->city ?? 'Chọn thành phố' }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="district" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Quận huyện</label>
+                                <select id="district" name="district" class="form-control" required onchange="loadWards()">
+                                    <option value="{{ $address->district ?? 'Chọn quận/huyện' }}">{{ $address->district ?? 'Chọn quận/huyện' }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ward" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Phường xã</label>
+                                <select id="ward" name="ward" required class="form-control">
+                                    <option value="{{ $address->ward ?? 'Chọn phường/xã' }}">{{ $address->ward ?? 'Chọn phường/xã' }}</option>
+                                </select>
+                            </div>
+                        </div>
 
-            <h4 style="color: rgb(37, 36, 36); font-weight: bold" class="my-4">Sản phẩm cần phải thanh toán</h4>
-            @foreach ($cart as $product)
-                <div class="row border-bottom py-3 align-items-center">
-                    <div class="col-md-2">
-                        <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" style="width: 75px; height: auto;">
+                        <div class="mb-3">
+                            <label for="address" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số nhà, tên đường</label>
+                            <input type="text" class="form-control form-control-sm" id="address" name="address" required value="{{ $address->address ?? '' }}">
+                        </div>
+
+                        <div class="text-center my-3">
+                            <button type="submit" name="cod" value="cod" class="btn border">
+                                <i class="fas fa-money-bill-wave"></i> Thanh toán COD
+                            </button>
+                            <button type="submit" name="payUrl" value="momo" class="btn border">
+                                <i class="fab fa-cc-mastercard"></i> Thanh toán Momo
+                            </button>
+                            <button type="submit" name="vnpay" value="vnpay" class="btn border">
+                                <i class="fab fa-cc-visa"></i> Thanh toán VNPay
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p class="product-name">{{ $product['name'] }}</p> <!-- Sử dụng lớp CSS cho tên sản phẩm -->
-                        <p>Số lượng: {{ $product['quantity'] }}</p>
+                    {{-- ord --}}
+                    <div class="col-md-4 order-md-2 mb-4">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span style="color: #000000; font-size:24px;">Đơn hàng</span>
+                            <span style="color: #5e5e5e; font-size:14px;">{{ count($cart) }} sản phẩm</span>
+                        </h4>
+                        @foreach ($cart as $product)
+                            <div class="row border-bottom py-3 align-items-center">
+                                <div class="col-md-2">
+                                    <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" style="width: 55px; height: auto;">
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="product-name" style="font-size:14px; font-weight: bold;">{{ $product['name'] }}</p> <!-- Sử dụng lớp CSS cho tên sản phẩm -->
+                                    <span style=" color:black;">
+                                        {{ number_format($product['price'] ) }}đ
+                                    </span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span style=" color:black; position: relative; bottom:-20px; ">
+                                        x{{ $product['quantity'] }}
+                                    </span>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <div class="total my-4 d-flex justify-content-between">
+                            <span class="total-label" style="color:rgb(37, 36, 36); font-weight: bold">Tổng cộng:</span>
+                            <h4 style="color:#990000; font-weight: bold font-size:16px;" class="text-right">
+                                {{ number_format(array_sum(array_map(function ($product) {
+                                    return $product['quantity'] * $product['price'];
+                                }, $cart))) }} đ
+                            </h4>
+                        </div>
+
                     </div>
                 </div>
-            @endforeach
+            </form>
+        </div>
+        <br>
 
-
-            <div class="total my-4">
-                <h4 style="color:rgb(37, 36, 36); font-weight: bold" class="text-right">Tổng giá trị:
-                    {{ number_format(array_sum(array_map(function ($product) {
-                        return $product['quantity'] * $product['price'];
-                    }, $cart))) }} VND
-                </h4>
-            </div>
-
-            <div class="text-center my-3">
-                <button type="submit" name="cod" value="cod" class="btn border">
-                    <i class="fas fa-money-bill-wave"></i> Thanh toán COD
-                </button>
-                <button type="submit" name="payUrl" value="momo" class="btn border">
-                    <i class="fab fa-cc-mastercard"></i> Thanh toán Momo
-                </button>
-                <button type="submit" name="vnpay" value="vnpay" class="btn border">
-                    <i class="fab fa-cc-visa"></i> Thanh toán VNPay
-                </button>
-            </div>
-
-        </form>
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
     </div>
-    <br>
-
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-</div>
+</main>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Lấy danh sách tỉnh/thành phố

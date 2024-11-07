@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             OrderStatusSeeder::class,
             UserSeeder::class,
+            VoucherSeeder::class,
             // VariantSeeder::class,
         ]);
     }

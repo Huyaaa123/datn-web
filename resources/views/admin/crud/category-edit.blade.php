@@ -13,7 +13,6 @@
                 font-size: 24px;
                 margin-bottom: 20px;
                 color: #333;
-                text-align: center;
             }
 
             .form-group {
@@ -62,16 +61,16 @@
         </style>
     </head>
 
-    <body>
+    <body style=" font-family: 'Playfair Display', serif;">
 
-        <h1>Edit Category</h1>
+        <h1>Sửa danh mục</h1>
 
         <form action="{{ route('admin.category.update', $category->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Tên</label>
                 <input type="text" id="name" name="name" class="form-control"
                     value="{{ old('name', $category->name) }}" required>
                 @error('name')
@@ -79,7 +78,7 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Category</button>
+            <button type="submit" class="btn btn-primary">Cập nhật </button>
             <a href="{{ route('admin.category.index') }}" class="btn btn-success">Cancel</a>
         </form>
         @if (session('success'))

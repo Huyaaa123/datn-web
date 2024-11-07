@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryDetailController;
 use App\Http\Controllers\CheckoutController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserInformationController;
+use App\Http\Controllers\VoucherClientController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsMember;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +47,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('orders', OrderController::class);
 
     Route::resource('users', AdminUserController::class);
+
+    Route::resource('vouchers', VoucherController::class);
 });
 
 
@@ -62,8 +66,8 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/increase', [CartController::class, 'increase'])->name('cart.increase');
-Route::post('/cart/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
+Route::post('/cart/cong', [CartController::class, 'cong'])->name('cart.cong');
+Route::post('/cart/tru', [CartController::class, 'tru'])->name('cart.tru');
 
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -91,4 +95,11 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/categories/{slug}', [CategoryDetailController::class, 'show'])->name('index.show');
 Route::get('/categories/{slug}', [CategoryDetailController::class, 'view'])->name('index.view');
 
+Route::get('/vouchers', [VoucherClientController::class, 'index'])->name('index.vouchers');
+Route::post('/cart/apply-voucher', [VoucherClientController::class, 'applyVoucher'])->name('cart.applyVoucher');
+
+
+
+
 Route::get('/thanks', [PaymentController::class, 'thankYou'])->name('order.success');
+

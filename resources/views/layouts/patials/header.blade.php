@@ -25,7 +25,7 @@
                         </li>
                         <li><a href="../client/blog.html">Tin Tức</a></li>
                         <li><a href="../client/blog.html">Liên Hệ</a></li>
-                        <li><a href="../client/blog.html">Hướng dẫn thanh toán</a></li>
+                        <li><a href="{{route('index.vouchers')}}">Kho Voucher</a></li>
                     </ul>
                 </nav>
             </div>

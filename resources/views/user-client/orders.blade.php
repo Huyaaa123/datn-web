@@ -108,7 +108,7 @@
                                     <div style="display: flex; align-items: center; margin-bottom: 10px;">
                                         <img src="{{ asset('storage/' . $detail->product->image_path) }}" alt="{{ $detail->product->name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
                                         <div>
-                                            <strong>{{ Str::limit($detail->product->name, 15, '...') }}</strong> (x{{ $detail->quantity }}) ({{ number_format($detail->price) }})
+                                            <strong>{{ Str::limit($detail->product->name, 15, '...') }}</strong> (x{{ $detail->quantity }}) ({{ number_format($detail->price) }}đ)
                                         </div>
                                     </div>
                                     @endforeach

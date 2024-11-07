@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -12,10 +13,11 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart');
+        // dd($cart);
         $products = Product::inRandomOrder()->take(8)->get();
         $categories = Category::all();
 
-        return view('cart.cart', compact('cart', 'categories','products'));
+        return view('cart.cart', compact('cart', 'categories', 'products'));
     }
 
     public function add(Request $request)
@@ -75,14 +77,16 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     }
 
-    public function increase(Request $request) {
+    public function cong(Request $request)
+    {
         $productId = $request->input('product_id');
         // Tăng số lượng sản phẩm trong giỏ hàng
         session()->increment("cart.$productId.quantity");
         return redirect()->back();
     }
 
-    public function decrease(Request $request) {
+    public function tru(Request $request)
+    {
         $productId = $request->input('product_id');
         // Giảm số lượng sản phẩm trong giỏ hàng
         if (session("cart.$productId.quantity") > 1) {

@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,6 +39,7 @@ class HomeController extends Controller
         // Lấy sản phẩm và danh mục
         $products = Product::paginate(4);
         $categories = Category::all();
+        $vouchers = Voucher::all();
 
         // Cập nhật giỏ hàng trong session từ cơ sở dữ liệu
         $cart = session()->get('cart', []);
@@ -55,7 +57,7 @@ class HomeController extends Controller
             session()->put('cart', $cart);
         }
 
-        return view('index', compact('products', 'categories'));
+        return view('index', compact('products', 'categories','vouchers'));
     }
 
 

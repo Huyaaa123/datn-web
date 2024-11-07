@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Users</h1>
+    <h1>Người dùng  </h1>
     <style>
         h1 {
             font-size: 24px;
@@ -34,7 +34,7 @@
         td {
             padding: 12px;
             border: 1px solid #ddd;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -130,12 +130,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Tên</th>
                 <th>Email</th>
-                <th>Type</th>
-                <th>Phone</th>
-                <th>Gender</th>
-                <th>Birth date</th>
+                <th>Số điện thoại</th>
+                <th>Giới tính</th>
+                <th>Ngày sinh</th>
+                <th>Địa chỉ</th>
             </tr>
         </thead>
         <tbody>
@@ -144,7 +144,6 @@
                     <tr>
                         <td>{{ Str::limit($user->name, 15, '...') }}</td>
                         <td>{{ Str::limit($user->email, 15, '...') }}</td>
-                        <td>{{ Str::limit($user->type, 15, '...') }}</td>
                         <td>
                             @if ($user->phone)
                                 {{ Str::limit($user->phone, 15, '...') }}
@@ -166,6 +165,19 @@
                                 ...
                             @endif
                         </td>
+                        <td>
+                            @if ($user->addresses->isNotEmpty())
+                                @foreach ($user->addresses as $address)
+                                {{ Str::limit($user->addresses->first()->address, 15) }},
+                                {{ Str::limit($user->addresses->first()->ward, 10) }},
+                                {{ Str::limit($user->addresses->first()->district, 10) }},
+                                {{ Str::limit($user->addresses->first()->city, 10) }}
+                                @endforeach
+                            @else
+                                ...
+                            @endif
+                        </td>
+
                     </tr>
                 @endif
             @endforeach

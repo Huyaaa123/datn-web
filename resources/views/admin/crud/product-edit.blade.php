@@ -9,7 +9,16 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <link rel="stylesheet" href="../../../admindb/style.css">
         <style>
+            .form-group-container {
+                display: flex;
+                gap: 20px;
+                /* Tạo khoảng cách giữa các cột */
+            }
 
+            .form-group {
+                flex: 1;
+                /* Mỗi form-group chiếm 50% chiều rộng */
+            }
 
             h1 {
                 font-size: 24px;
@@ -75,6 +84,16 @@
                 cursor: pointer;
                 margin-top: 10px;
             }
+            .btn-danger {
+                background-color: #004cff;
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                font-size: 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
 
             a.btn-success:hover {
                 background-color: #d2010c;
@@ -84,24 +103,33 @@
 
     </head>
 
-    <body>
+    <body style=" font-family: 'Playfair Display', serif;">
 
-        <h1>Edit Product</h1>
+        <h1>Sửa sản phẩm</h1> <br>
 
-        <form action="{{ route('admin.product.update', $product) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
+            <div class="form-group-container">
             <div class="form-group">
-                <label for="sku">SKU</label>
+                <label for="sku">Mã</label>
                 <input type="text" name="sku" id="sku" value="{{ $product->sku }}">
                 @error('sku')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-
             <div class="form-group">
-                <label for="category_id">Category</label>
+                <label for="name">Tên</label>
+                <input type="text" name="name" id="name" value="{{ $product->name }}">
+                @error('name')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            </div>
+            <div class="form-group-container">
+            <div class="form-group">
+                <label for="category_id">Danh mục</label>
                 <select name="category_id" id="category_id">
                     @foreach ($categories as $id => $name)
                         <option @selected($product->category_id == $id) value="{{ $id }}">{{ $name }}</option>
@@ -111,18 +139,21 @@
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" value="{{ $product->name }}">
-                @error('name')
+                <label for="price">Giá</label>
+                <input type="text" name="price" id="price"
+                    value="{{ old('price', Str::replaceLast('.00', '', $product->price)) }} "
+                    class="form-control">
+                @error('price')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
+            </div>
+
 
             <div class="form-group d-flex">
                 <div class="col-md-6">
-                    <label for="image_path">Image</label>
+                    <label for="image_path">Ảnh</label>
                     <input type="file" name="image_path" id="image_path" class="form-control">
                     @if ($product->image_path && \Storage::exists($product->image_path))
                         <img src="{{ Storage::url($product->image_path) }}" width="100px" alt="Product Image" onclick="openModal(this)">
@@ -133,7 +164,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="galleries">Galleries</label>
+                    <label for="galleries">Ảnh 2</label>
                     <input type="file" name="galleries[]" id="galleries" class="form-control" multiple>
                     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
                         @foreach ($product->galleries as $gallery)
@@ -146,20 +177,8 @@
                 </div>
             </div>
 
-
             <div class="form-group">
-                <label for="price">Price</label>
-                <input type="text" name="price" id="price"
-                    value="{{ old('price', Str::replaceLast('.00', '', $product->price)) }} "
-                    class="form-control">
-                @error('price')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-
-            <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Mô tả</label>
                 <textarea name="description" id="description">{{ $product->description }}</textarea>
                 @error('description')
                     <div class="text-danger">{{ $message }}</div>
@@ -167,7 +186,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-danger">Submit</button>
+                <button type="submit" class="btn btn-danger">Cập nhật</button>
                 <a href="{{ route('admin.product.index') }}" class="btn btn-success">Cancel</a>
             </div>
         </form>

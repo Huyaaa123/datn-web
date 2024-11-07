@@ -61,7 +61,7 @@ class ProductController extends Controller
                 ]);
             }
         });
-        return redirect()->route('admin.product.index')->with('success', 'Product add successfully!');
+        return redirect()->route('admin.product.index')->with('success', 'Thêm mới sản phẩm thành công!');
     }
 
     /**
@@ -127,7 +127,7 @@ class ProductController extends Controller
     }
         });
 
-        return redirect()->route('admin.product.index')->with('success', 'Product update successfully!');
+        return redirect()->route('admin.product.index')->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
     /**
@@ -150,6 +150,6 @@ class ProductController extends Controller
             Storage::delete($product->image_path);
         }
 
-        return redirect()->route('admin.product.index')->with('success', 'Product delete successfully!');
+        return redirect()->route('admin.product.index')->with('success', 'Xóa thành công sản phẩm!');
     }
 }

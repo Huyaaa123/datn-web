@@ -96,7 +96,7 @@
                             <h5 class="card-title" style="font-weight: bold;">
                                 <a style="font-size:16px; font-weight: bold; color:rgb(0, 0, 0);" href="{{ route('product.show', $product->slug) }}">{{ $product->name }} ({{ $product->sku }})</a>
                             </h5>
-                            <p class="card-text" style="font-weight: bold; color:rgb(144, 29, 29);"> {{ number_format($product->price) }} VND</p>
+                            <p class="card-text" style="font-weight: bold; color:rgb(144, 29, 29);"> {{ number_format($product->price) }} đ</p>
                         </div>
                     </div>
                 </div>

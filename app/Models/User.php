@@ -48,10 +48,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function isAdmin() {
+    public function isAdmin()
+    {
         return $this->type == self::TYPE_ADMIN;
     }
-    public function isMember() {
+    public function isMember()
+    {
         return $this->type == self::TYPE_MEMBER;
     }
     public function addresses()
@@ -65,6 +67,10 @@ class User extends Authenticatable
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+    public function vouchers()
+    {
+        return $this->belongsToMany(Voucher::class, 'voucher_details');
     }
 
 }

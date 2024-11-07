@@ -1,8 +1,9 @@
 
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Category</h1>
+    <h1>Danh mục</h1>
     <style>
+
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
@@ -35,7 +36,7 @@
         td {
             padding: 12px;
             border: 1px solid #ddd;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -77,7 +78,8 @@
 
         .btn-danger {
             background-color: #dc3545;
-            font-size: 14px;
+            font-family: 'Playfair Display', serif;
+
         }
 
         .btn-danger:hover {
@@ -124,7 +126,8 @@
 
     </style>
 
-    <a href="{{ route('admin.category.create') }}" class="text-center btn btn-add">Addnew</a>
+ <body>
+    <a href="{{ route('admin.category.create') }}" class="text-center btn btn-add">Thêm</a>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
@@ -133,9 +136,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Tên danh mục</th>
                 <th>Slug</th>
-                <th>Action</th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
@@ -145,11 +148,11 @@
                     <td>{{ Str::limit($category->slug, 15, '...') }}</td>
                     <td>
                         <a href="{{ route('admin.category.show', $category->id) }}" class="btn btn-success">Show</a>
-                        <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Sửa</a>
                         <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </td>
                 </tr>
@@ -163,4 +166,5 @@
             }
         }
     </script>
+ </body>
 @endsection

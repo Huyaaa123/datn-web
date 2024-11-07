@@ -32,7 +32,7 @@
                             </td>
                             <td>{{ $item->product->name }} (x{{ $item->quantity }})</td>
                             <td>{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y ') }}</td>
-                            <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
+                            <td>{{ number_format($item->price, 0, ',', '.') }} đ</td>
                             <td>{{ $order->telephone }} / {{ $order->shipping_address }} </td>
                             <td>{{ $order->payment_method }}</td>
                             <td>{{ $order->checkpay }}</td>
@@ -84,7 +84,7 @@
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div style="color:rgb(37, 36, 36); font-weight: bold">
                     Tổng thanh toán ({{ $item->quantity }} Sản phẩm):
-                    <span style="color: #AA0000;">{{ number_format($order->total_amount, 0, ',', '.') }} VND</span>
+                    <span style="color: #AA0000;">{{ number_format($order->total_amount, 0, ',', '.') }} đ</span>
                 </div>
 
 

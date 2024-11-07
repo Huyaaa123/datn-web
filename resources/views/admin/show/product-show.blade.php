@@ -57,15 +57,15 @@
     }
 
 </style>
-        <h1>Product Details</h1>
+        <h1>Chi tiết sản phẩm</h1>
 
         <div class="card">
             <div class="card-body">
-                <p><strong>SKU:</strong> {{ $product->sku }}</p>
-                <p><strong>Name:</strong> {{ $product->name }}</p>
+                <p><strong>Mã:</strong> {{ $product->sku }}</p>
+                <p><strong>Tên:</strong> {{ $product->name }}</p>
                 <p><strong>Slug:</strong> {{ $product->slug }}</p>
                 <p style="text-align: center;">
-                    <strong>Image:</strong>
+                    <strong>Ảnh:</strong>
                     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
                         <img src="{{ Storage::url($product->image_path) }}" style="width: 100px; height: auto;" onclick="openModal(this)">
                     </div>
@@ -73,7 +73,7 @@
 
                 <!-- Galleries Section -->
                 <p style="text-align: center;">
-                    <strong>Galleries:</strong>
+                    <strong>Ảnh 2:</strong>
                     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
                         @foreach ($product->galleries as $gallery)
                             <div>
@@ -83,11 +83,11 @@
                     </div>
                 </p>
 
-                <p><strong>Description:</strong> {{ $product->description }}</p>
-                <p><strong>Price:</strong> {{ number_format($product->price) }}VND</p>
-                <p><strong>Categories:</strong> {{ $product->category->name }}</p>
+                <p><strong>Mô tả:</strong> {{ $product->description }}</p>
+                <p><strong>Giá:</strong> {{ number_format($product->price) }}VND</p>
+                <p><strong>Danh mục:</strong> {{ $product->category->name }}</p>
             </div>
-            <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-danger mt-3">Edit</a>
+            <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-danger mt-3">Sửa</a>
             <a href="{{ route('admin.product.index') }}" class="btn btn-primary mt-3">Cancel</a>
         </div>
 

@@ -52,7 +52,7 @@
                 border: none;
                 color: white;
                 padding: 10px 20px;
-                font-size: 12px;
+                font-size: 10px;
                 border-radius: 4px;
                 cursor: pointer;
                 margin-top: 10px;
@@ -95,48 +95,42 @@
         </style>
     </head>
 
-    <body>
-        <h1>Create Product</h1>
+    <body style=" font-family: 'Playfair Display', serif;">
+        <h1>Thêm sản phẩm</h1>
 
         <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group">
-                <label for="sku">SKU</label>
+                <label for="sku">Mã</label>
                 <input type="text" class="form-control" id="sku" name="sku" value="{{ old('sku') }}"
                     required>
             </div>
 
             <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Tên</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
             </div>
 
             <div class="form-group-container">
                 <div class="form-group">
-                    <label for="image_path">Image</label>
+                    <label for="image_path">Ảnh</label>
                     <input type="file" class="form-control" id="image_path" name="image_path">
                 </div>
 
                 <div class="form-group">
-                    <label for="galleries">Galleries</label>
+                    <label for="galleries">Ảnh 2</label>
                     <input type="file" class="form-control" id="galleries" name="galleries[]" multiple>
                 </div>
             </div>
 
-
+            <div class="form-group-container">
             <div class="form-group">
-                <label for="price">Price</label>
+                <label for="price">Giá</label>
                 <input type="number" class="form-control" id="price" name="price" value="{{ old('price') }}">
             </div>
-
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4">{{ old('description') }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="category">Category</label>
+                <label for="category">Danh mục</label>
                 <select class="form-control" id="category" name="category_id">
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -145,8 +139,16 @@
                     @endforeach
                 </select>
             </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Mô tả</label>
+                <textarea class="form-control" id="description" name="description" rows="4">{{ old('description') }}</textarea>
+            </div>
 
-            <button type="submit" class="btn btn-primary">Add Product</button>
+
+
+            <button type="submit" class="btn btn-primary">Thêm</button>
             <a href="{{ route('admin.product.index') }}" class="btn btn-success">Cancel</a>
         </form>
         @if (session('success'))

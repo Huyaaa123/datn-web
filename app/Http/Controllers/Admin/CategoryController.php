@@ -31,7 +31,7 @@ class CategoryController extends Controller
             'slug' => $slug,
         ]);
 
-        return redirect()->route('admin.category.index')->with('success', 'Category added successfully!');
+        return redirect()->route('admin.category.index')->with('success', 'Thêm danh mục thành công!');
     }
 
     public function show(Category $category)
@@ -56,7 +56,7 @@ class CategoryController extends Controller
         ]+$request->except('name', 'slug')
         );
 
-        return redirect()->route('admin.category.index')->with('success', 'Category update successfully!');
+        return redirect()->route('admin.category.index')->with('success', 'Cập nhật danh mục thành công!');
     }
 
     /**
@@ -67,6 +67,6 @@ class CategoryController extends Controller
         // Xóa danh mục
         $category->delete();
 
-        return redirect()->route('admin.category.index')->with('success', 'Category delete successfully!');
+        return redirect()->route('admin.category.index')->with('success', 'Xóa danh mục thành công!');
     }
 }

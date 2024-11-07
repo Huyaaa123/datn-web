@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Product</h1>
+    <h1>Sản phẩm</h1>
     <style>
         h1 {
             font-size: 24px;
@@ -33,7 +33,7 @@
         td {
             padding: 10px;
             border: 1px solid #ddd;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -76,7 +76,8 @@
 
         .btn-danger {
             background-color: #dc3545;
-            font-size: 14px;
+            font-family: 'Playfair Display', serif;
+
         }
 
         .btn-danger:hover {
@@ -201,7 +202,7 @@
         }
     </style>
 
-    <a href="{{ route('admin.product.create') }}" class="text-center btn btn-add">Addnew</a>
+    <a href="{{ route('admin.product.create') }}" class="text-center btn btn-add">Thêm</a>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
@@ -210,14 +211,14 @@
     <table class="table">
         <thead>
             <tr>
-                <th>SKU</th>
-                <th>Name</th>
+                <th>Mã </th>
+                <th>Tên </th>
                 <th>Slug</th>
-                <th>Image</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Action</th>
+                <th>Ảnh</th>
+                <th>Giá</th>
+                <th>Mô tả</th>
+                <th>Danh mục</th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
@@ -234,12 +235,12 @@
                     <td>{{ Str::limit($product->category->name, 10, '...') }}</td>
                     <td>
                         <a href="{{ route('admin.product.show', $product->id) }}" class="btn btn-success">Show</a>
-                        <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Sửa</a>
                         <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST"
                             style="display:inline;" onsubmit="confirmDelete(event)">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </td>
                 </tr>

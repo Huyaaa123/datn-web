@@ -5,6 +5,7 @@
         font-size: 24px;
         margin-bottom: 20px;
         color: #333;
+        text-align: center;
     }
 
     .btn {
@@ -57,17 +58,17 @@
     }
 
 </style>
-        <h1>Category Details</h1>
+        <h1>Chi tiết danh mục</h1>
 
         <div class="card">
             <div class="card-body">
                 <p><strong>ID:</strong> {{ $category->id }}</p>
-                <p><strong>Name:</strong> {{ $category->name }}</p>
+                <p><strong>Tên:</strong> {{ $category->name }}</p>
                 <p><strong>Slug:</strong> {{ $category->slug }}</p>
                 <p><strong>Created At:</strong> {{ $category->created_at->format('d/m/Y H:i:s') }}</p>
                 <p><strong>Updated At:</strong> {{ $category->updated_at->format('d/m/Y H:i:s') }}</p>
             </div>
-            <a href="{{ route('admin.category.edit',$category->id) }}" class="btn btn-danger mt-3">Edit</a>
+            <a href="{{ route('admin.category.edit',$category->id) }}" class="btn btn-danger mt-3">Sửa</a>
             <a href="{{ route('admin.category.index') }}" class="btn btn-primary mt-3">Cancel</a>
         </div>
 

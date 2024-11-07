@@ -29,7 +29,7 @@
             input.form-control {
                 width: 100%;
                 padding: 10px;
-                font-size: 16px;
+                font-size: 10px;
                 border: 1px solid #ced4da;
                 border-radius: 4px;
                 box-sizing: border-box;
@@ -37,7 +37,6 @@
 
             .text-danger {
                 color: #dc3545;
-                font-size: 14px;
                 margin-top: 5px;
             }
 
@@ -66,21 +65,21 @@
         </style>
     </head>
 
-    <body>
-        <h1>Create Category</h1>
+    <body style=" font-family: 'Playfair Display', serif;">
+        <h1>Thêm danh mục</h1>
 
         <form action="{{ route('admin.category.store') }}" method="POST">
             @csrf
 
             <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Tên</label>
                 <input type="text" id="name" name="name" class="form-control" >
                 @error('name')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Add new</button>
+            <button type="submit" class="btn btn-primary">Thêm</button>
             <a href="{{ route('admin.category.index') }}" class="btn btn-success">Cancel</a>
         </form>
         @if (session('success'))

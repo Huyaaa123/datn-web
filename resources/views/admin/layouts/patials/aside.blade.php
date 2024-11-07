@@ -15,38 +15,45 @@
         <span class="material-icons-sharp">
             dashboard
         </span>
-        <h3>Dashboard</h3>
+        <h3>Bảng điều khiển</h3>
     </a>
     <a href="{{ route('admin.users.index') }}">
         <span class="material-icons-sharp">
-            person_outline
+            account_circle
         </span>
-        <h3>Users</h3>
+        <h3>Người dùng</h3>
     </a>
     <a href="{{ route('admin.category.index') }}">
         <span class="material-icons-sharp">
             category
         </span>
-        <h3>Category</h3>
+        <h3>Danh mục</h3>
     </a>
     <a href="{{ route('admin.product.index') }}">
         <span class="material-icons-sharp">
             inventory_2
         </span>
-        <h3>Products</h3>
+        <h3>Sản phẩm</h3>
     </a>
     <a href="{{ route('admin.orders.index') }}">
         <span class="material-icons-sharp">
             shopping_bag
         </span>
-        <h3>Orders</h3>
+        <h3>Đơn hàng</h3>
+        {{-- <span class="message-count">27</span> --}}
+    </a>
+    <a href="{{ route('admin.vouchers.index') }}">
+        <span class="material-icons-sharp">
+            sell
+        </span>
+        <h3>Mã giảm giá</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
     <a href="#">
         <span class="material-icons-sharp">
             settings
         </span>
-        <h3>Setting</h3>
+        <h3>Cài đặt</h3>
     </a>
     {{--
     <a href="#">

@@ -92,24 +92,24 @@
     }
 </style>
 
-<h1>Orders Details #{{ $order->id }}</h1>
+<h1>Chi tiết đơn hàng #{{ $order->id }}</h1>
 
 <div class="card">
     <div class="card-body">
-        <p><strong>Username: </strong> {{ $order->user->name }}</p>
-        <p><strong>Product: </strong>
+        <p><strong>Người mua: </strong> {{ $order->user->name }}</p>
+        <p><strong>Sản phẩm: </strong>
             <div class="image-container">
                 @foreach ($order->orderDetails as $item)
                     <div class="product-item">
                         <img src="{{ Storage::url($item->product->image_path) }}" alt="{{ $item->product->name }}">
-                        {{ $item->product->name }} (SL: x{{ $item->quantity }})
+                        {{ $item->product->name }} (SL: x{{ $item->quantity }}) ({{number_format($item->price)}})
                     </div>
                 @endforeach
             </div>
         </p>
         <div class="order-info">
-            <p><strong>Order Date: </strong> {{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y') }}</p>
-            <p><strong>Status: </strong>
+            <p><strong>Ngày đặt: </strong> {{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y') }}</p>
+            <p><strong>Trạng thái: </strong>
                 @if ($order->order_status_id === 6)
                     <span style="color: #28a745; font-weight:bold;">Đã hoàn thành</span>
                 @elseif ($order->order_status_id === 7)
@@ -121,15 +121,14 @@
         </div>
 
         <div class="order-info">
-            <p><strong>Payment: </strong> {{ $order->payment_method }}</p>
-            <p><strong>Payment: </strong> {{ $order->checkpay }}</p>
-            <p><strong>Total: </strong> {{ number_format($order->total_amount, 0, ',', '.') }} VND</p>
+            <p><strong>Phương thức: </strong> {{ $order->payment_method }}</p>
+            <p><strong>Kiểm tra: </strong> {{ $order->checkpay }}</p>
+            <p><strong>Tổng: </strong> {{ number_format($order->total_amount, 0, ',', '.') }} VND</p>
         </div>
 
         <div class="order-info">
-            <p><strong>Handler: </strong> {{ $order->notes ?? '...' }}</p>
-            <p><strong>Checkpay: </strong> {{ $order->checkpay }}</p>
-            <p><strong>Reason: </strong>
+            <p><strong>Người thao tác: </strong> {{ $order->notes ?? '...' }}</p>
+            <p><strong>Lý do: </strong>
                 @if ($order->cancel)
                     {{ $order->cancel }}
                 @else
@@ -146,7 +145,7 @@
         @if ($order->order_status_id === 6 || $order->order_status_id === 7)
             <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">Cancel</a>
         @else
-            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-success">Edit</a>
+            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-success">Sửa</a>
         @endif
     </div>
 </div>
