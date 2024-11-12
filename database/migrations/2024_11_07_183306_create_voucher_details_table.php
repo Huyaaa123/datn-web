@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('voucher_id')->constrained()->onDelete('cascade'); // Liên kết đến bảng vouchers
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Liên kết đến bảng users
+            $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Liên kết đến bảng users
             $table->timestamps();
         });
     }

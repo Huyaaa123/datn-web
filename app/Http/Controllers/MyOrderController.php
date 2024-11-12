@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Product;
+use App\Models\Voucher;
+use App\Models\VoucherDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -70,10 +72,30 @@ class MyOrderController extends Controller
     {
         $product = Product::all();
         $orderStatus = OrderStatus::all();
-        $order = Order::with('orderDetails.product')->findOrFail($id); // Lấy thông tin đơn hàng và sản phẩm
+
+        // Lấy thông tin đơn hàng, bao gồm thông tin chi tiết về sản phẩm
+        $order = Order::with('orderDetails.product') // Lấy thông tin chi tiết sản phẩm
+            ->findOrFail($id); // Lấy thông tin đơn hàng và sản phẩm
+
         $categories = Category::all();
-        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product'));
+        $vouchers = Voucher::all();
+
+        // Lấy voucher đã áp dụng cho đơn hàng từ bảng voucher_details
+        $voucherDetail = VoucherDetail::where('order_id', $id)->first();
+        $appliedVoucher = $voucherDetail ? $voucherDetail->voucher : null; // Nếu có voucher, lấy thông tin voucher
+
+        // Nếu không có voucher, giữ nguyên giá gốc cho sản phẩm
+        foreach ($order->orderDetails as $item) {
+            $item->original_price = $item->product->price;
+            $item->discounted_price = $item->product->price;
+        }
+
+        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher'));
     }
+
+
+
+
 
     /**
      * Update the specified resource in storage.

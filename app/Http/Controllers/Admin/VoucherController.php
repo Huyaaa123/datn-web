@@ -37,7 +37,8 @@ class VoucherController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'code' => 'required|unique:vouchers,code',
+            'code' => 'required|unique:vouchers,code|regex:/^[a-zA-Z0-9]+$/',
+            'discount_type' => 'required|in:amount,percent',
             'discount_amount' => 'nullable|numeric',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'min_order_value' => 'required|numeric',
@@ -60,20 +61,32 @@ class VoucherController extends Controller
             $status = 0; // Hết hạn
         }
 
-        // Lưu voucher vào cơ sở dữ liệu
-        Voucher::create([
+        // Tạo mảng dữ liệu để lưu voucher
+        $voucherData = [
             'status' => $status,
             'code' => $validated['code'],
-            'discount_amount' => $validated['discount_amount'],
-            'discount_percent' => $validated['discount_percent'],
+            'discount_type' => $validated['discount_type'],
             'min_order_value' => $validated['min_order_value'],
             'usage_limit' => $validated['usage_limit'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
-        ]);
+        ];
+
+        // Lưu giá trị giảm giá tùy theo loại discount_type
+        if ($validated['discount_type'] === 'amount') {
+            $voucherData['discount_amount'] = $validated['discount_amount'];
+            $voucherData['discount_percent'] = null; // Không lưu phần trăm giảm giá
+        } elseif ($validated['discount_type'] === 'percent') {
+            $voucherData['discount_percent'] = $validated['discount_percent'];
+            $voucherData['discount_amount'] = null; // Không lưu giá giảm cố định
+        }
+
+        // Lưu voucher vào cơ sở dữ liệu
+        Voucher::create($voucherData);
 
         return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
     }
+
 
 
     /**

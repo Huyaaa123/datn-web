@@ -47,4 +47,6 @@ class Order extends Model
     {
         return $this->belongsTo(Voucher::class, 'voucher_code', 'code'); // Liên kết đơn hàng với voucher qua mã voucher
     }
+
+
 }

@@ -111,6 +111,8 @@ class CartController extends Controller
 
             // Cập nhật lại giỏ hàng trong session
             session()->put('cart', $cart);
+            session()->forget('voucher_code');
+            session()->forget('discount_amount');
 
             // Xóa sản phẩm khỏi cơ sở dữ liệu (giả sử bạn đã lưu thông tin giỏ hàng trong database)
             Cart::where('product_id', $productId)->where('user_id', auth()->id())->delete();

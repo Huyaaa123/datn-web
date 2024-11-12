@@ -223,10 +223,26 @@
                                                 <h5 class="">Nhập mã giảm giá</h5>
                                                 <div class="mb-5">
                                                     <div class="form-outline">
-                                                        <input type="text" id="voucher_code" name="voucher_code" class="form-control form-control-lg" />
+                                                        <input
+                                                            type="text"
+                                                            id="voucher_code"
+                                                            name="voucher_code"
+                                                            class="form-control form-control-lg"
+                                                            value="{{ session()->has('voucher_code') ? session('voucher_code') : old('voucher_code') }}"
+                                                        />
                                                     </div>
                                                 </div>
                                             </form>
+
+                                            @if(session()->has('discount_amount') && session('discount_amount') > 0)
+                                                <div class="d-flex justify-content-between mb-4">
+                                                    <h5 style="font-size: 16px;">Đã giảm</h5>
+                                                    <h5 style="color: green; font-size: 16px;">
+                                                        -{{ number_format(session('discount_amount')) }} đ
+                                                    </h5>
+                                                </div>
+                                            @endif
+
                                             <div class="d-flex justify-content-between mb-5">
                                                 <h5 style="font-size: 16px;">Tổng thanh toán</h5>
                                                 <h5 class="text-danger" style="font-size: 20px; color:#990000;">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Voucher;
+use App\Models\VoucherDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,28 @@ class CheckoutController extends Controller
                         'total' => $product['quantity'] * $product['price'] // Calculate total if missing
                     ]);
                 }
+
+                //check luot dung voucher
+                if (session()->has('voucher_code')) {
+                    $voucherCode = session('voucher_code');
+                    $voucher = Voucher::where('code', $voucherCode)->first();
+
+                    // Cập nhật số lần sử dụng voucher
+                    if ($voucher) {
+                        $voucher->increment('used'); // Tăng số lần sử dụng
+                        $voucher->save();
+                    }
+
+                VoucherDetail::create([
+                    'voucher_id' => $voucher->id,
+                    'user_id' => Auth::id(),
+                    'order_id' => $order->id,
+                ]);
+                    // Xóa voucher khỏi session sau khi thanh toán thành công
+                    session()->forget('voucher_code');
+                    session()->forget('discount_amount');
+                }
+
 
 
                 // Xóa giỏ hàng khỏi session
@@ -152,6 +175,26 @@ class CheckoutController extends Controller
                     'price' => $product['price'],
                     'total' => $product['quantity'] * $product['price']
                 ]);
+            }
+
+            //check luot dung voucher
+            if (session()->has('voucher_code')) {
+                $voucherCode = session('voucher_code');
+                $voucher = Voucher::where('code', $voucherCode)->first();
+
+                // Cập nhật số lần sử dụng voucher
+                if ($voucher) {
+                    $voucher->increment('used'); // Tăng số lần sử dụng
+                    $voucher->save();
+                }
+                VoucherDetail::create([
+                    'voucher_id' => $voucher->id,
+                    'user_id' => Auth::id(),
+                    'order_id' => $order->id,
+                    ]);
+                // Xóa voucher khỏi session sau khi thanh toán thành công
+                session()->forget('voucher_code');
+                session()->forget('discount_amount');
             }
 
             session()->forget('cart');

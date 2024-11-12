@@ -103,7 +103,7 @@
 
             <div class="form-group">
                 <label for="code">Mã</label>
-                <input type="text" id="code" name="code" class="form-control" required value="{{ old('code') }}">
+                <input type="text" id="code" name="code" class="form-control"  value="{{ old('code') }}">
             </div>
 
             <div class="form-group">
@@ -129,18 +129,18 @@
 
             <div class="form-group">
                 <label for="min_order_value">Giá trị đơn hàng tối thiểu</label>
-                <input type="number" id="min_order_value" name="min_order_value" class="form-control" required value="{{ old('min_order_value') }}">
+                <input type="number" id="min_order_value" name="min_order_value" class="form-control"  value="{{ old('min_order_value') }}">
             </div>
 
             <div class="form-group">
                 <label for="usage_limit">Lượt sử dụng</label>
-                <input type="number" id="usage_limit" name="usage_limit" class="form-control" required value="{{ old('usage_limit') }}">
+                <input type="number" id="usage_limit" name="usage_limit" class="form-control"  value="{{ old('usage_limit') }}">
             </div>
 
             <div class="form-group-container">
                 <div class="form-group">
                     <label for="start_date">Thời gian bắt đầu:</label>
-                    <input type="datetime-local" id="start_date" name="start_date" class="form-control" value="{{ old('start_date') }}" required>
+                    <input type="datetime-local" id="start_date" name="start_date" class="form-control" value="{{ old('start_date') }}" >
                     @error('start_date')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -148,7 +148,7 @@
 
                 <div class="form-group">
                     <label for="end_date">Thời gian kết thúc:</label>
-                    <input type="datetime-local" id="end_date" name="end_date" class="form-control" value="{{ old('end_date') }}" required>
+                    <input type="datetime-local" id="end_date" name="end_date" class="form-control" value="{{ old('end_date') }}" >
                     @error('end_date')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -158,8 +158,6 @@
             <button type="submit" class="btn btn-primary">Thêm</button>
             <a href="{{ route('admin.vouchers.index') }}" class="btn btn-success">Cancel</a>
         </form>
-
-
         @if (session('success'))
             <p>{{ session('success') }}</p>
         @endif
