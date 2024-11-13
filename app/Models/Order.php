@@ -19,7 +19,14 @@ class Order extends Model
         'payment_method',
         'checkpay',
         'notes',
-        'cancel'
+        'cancel',
+        'confirmed',
+        'on_delivery',
+        'delivered',
+        'received',
+        'complete',
+        'cancelorder',
+        'canceled'
     ];
 
     public function user()

@@ -25,6 +25,7 @@ class VoucherClientController extends Controller
         $orderValue = $this->calculateCartTotal($cart);
         $voucherCode = $request->input('voucher_code');
 
+        // Reset the cart prices if no voucher is applied
         if (empty($voucherCode)) {
             session()->forget('voucher_code');
             session()->forget('discount_amount');
@@ -37,6 +38,7 @@ class VoucherClientController extends Controller
             return back()->with('success', 'Không áp dụng voucher cho đơn hàng này.');
         }
 
+        // Set or reset original price for each item
         foreach ($cart as $index => $item) {
             if (isset($item['original_price'])) {
                 $cart[$index]['price'] = $item['original_price'];
@@ -59,31 +61,36 @@ class VoucherClientController extends Controller
         $totalDiscountAmount = 0;
         $discountPercent = 0;
 
+        // Apply discount based on voucher type
         if ($voucher->discount_type == 'percent') {
-            $discountAmount = $orderValue * $voucher->discount_percent / 100;
             $discountPercent = $voucher->discount_percent;
+            $totalDiscountAmount = $orderValue * $discountPercent / 100;
+
             foreach ($cart as $index => $item) {
                 $itemDiscount = $item['price'] * $discountPercent / 100;
                 $cart[$index]['price'] -= $itemDiscount;
             }
-            $totalDiscountAmount = $discountAmount;
         } elseif ($voucher->discount_type == 'amount') {
             $totalDiscountAmount = min($voucher->discount_amount, $orderValue);
-            $remainingDiscount = $totalDiscountAmount;
+
+            // Calculate the total cart value for proportional distribution
+            $cartTotal = array_sum(array_column($cart, 'price'));
+
             foreach ($cart as $index => $item) {
-                $itemDiscount = min($remainingDiscount, $item['price']);
+                // Calculate the proportional discount for each item
+                $itemDiscount = ($item['price'] / $cartTotal) * $totalDiscountAmount;
                 $cart[$index]['price'] -= $itemDiscount;
-                $remainingDiscount -= $itemDiscount;
             }
         }
 
+        // Store discount in session if applied
         if ($totalDiscountAmount > 0) {
             session()->put('discount_amount', $totalDiscountAmount);
         }
         session()->put('cart', $cart);
         session()->put('voucher_code', $voucher->code);
 
-
+        // Prepare success message
         $discountMessage = '';
         if ($voucher->discount_type == 'percent') {
             $discountMessage = 'Voucher "' . $voucher->code . '" đã được áp dụng. Giảm ' . number_format($discountPercent) . '% tổng giá trị đơn hàng.';
@@ -93,6 +100,7 @@ class VoucherClientController extends Controller
 
         return back()->with('success', $discountMessage);
     }
+
 
     private function calculateCartTotal($cart)
     {

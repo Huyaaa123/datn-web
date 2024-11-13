@@ -50,6 +50,12 @@ class CheckoutController extends Controller
                 $order->checkpay = 'Chưa thanh toán';
                 $order->telephone = $request->phone;
                 $order->shipping_address = $request->city . ', ' . $request->district . ', ' . $request->ward . ', ' . $request->address;
+                $order->confirmed = null;
+                $order->on_delivery = null;
+                $order->received = null;
+                $order->complete = null;
+                $order->cancelorder = null;
+                $order->canceled = null;
                 $order->save();
 
                 // Lưu các sản phẩm trong giỏ hàng vào bảng chi tiết đơn hàng
@@ -165,6 +171,12 @@ class CheckoutController extends Controller
             ]);
             $order->telephone = $request->phone;
             $order->payment_method = 'MoMo';
+            $order->confirmed = null;
+            $order->on_delivery = null;
+            $order->received = null;
+            $order->complete = null;
+            $order->cancelorder = null;
+            $order->canceled = null;
             $order->save();
 
             // Lưu các chi tiết đơn hàng

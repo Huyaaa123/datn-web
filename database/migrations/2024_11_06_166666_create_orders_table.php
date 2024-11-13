@@ -27,6 +27,13 @@ return new class extends Migration
             $table->text('checkpay')->nullable(); // Check xem da tt hay chua
             $table->text('cancel')->nullable(); // Huy đơn hang neu co
             $table->timestamps();
+            $table->datetime('confirmed')->nullable();
+            $table->datetime('on_delivery')->nullable();
+            $table->datetime('delivered')->nullable();
+            $table->datetime('received')->nullable();
+            $table->datetime('complete')->nullable();
+            $table->datetime('cancelorder')->nullable();
+            $table->datetime('canceled')->nullable();
         });
     }
 

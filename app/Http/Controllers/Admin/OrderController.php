@@ -44,11 +44,12 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, Order $order)
     {
         DB::transaction(function () use ($order, $request) {
+
             // Kiểm tra trạng thái đơn hàng
             if ($order->order_status_id === 8) { // Nếu trạng thái là "Chờ xác nhận hủy"
-                // Cập nhật trạng thái thành "Đã hủy" (ID 9)
                 $dataOrder = [
                     'order_status_id' => 9, // Chuyển sang trạng thái "Đã hủy"
+                    'canceled' => now(),
                     'notes' => auth()->user()->name, // Lưu tên người yêu cầu hủy
                 ];
             } else {
@@ -59,6 +60,24 @@ class OrderController extends Controller
                     'checkpay' => $order->checkpay, // Giữ nguyên giá trị checkpay
                     'notes' => auth()->user()->name,
                 ];
+                if ($request->order_status_id == 2 && !$order->confirmed) {
+                    $dataOrder['confirmed'] = now();
+                }
+
+                if ($request->order_status_id == 3 && !$order->on_delivery) {
+                    $dataOrder['on_delivery'] = now();
+                }
+                if ($request->order_status_id == 4 && !$order->delivered) {
+                    $dataOrder['delivered'] = now();
+                }
+
+                if ($request->order_status_id == 5 && !$order->received) {
+                    $dataOrder['received'] = now();
+                }
+
+                if ($request->order_status_id == 6 && !$order->complete) {
+                    $dataOrder['complete'] = now();
+                }
 
             }
 
@@ -68,9 +87,6 @@ class OrderController extends Controller
 
         return redirect()->route('admin.orders.edit', $order->id)->with('success', 'Cập nhật trạng thái đơn hàng thành công!');
     }
-
-
-
 
     public function destroy(Order $order)
     {
