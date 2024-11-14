@@ -67,13 +67,6 @@
             font-weight: bold;
         }
 
-        a:hover {
-            color: white;
-            /* Giữ nguyên màu trắng khi hover */
-            text-decoration: none;
-            /* Không underline hoặc bất kỳ hiệu ứng hover nào khác */
-        }
-
         .d-flex {
             display: flex;
             justify-content: center;
@@ -131,13 +124,14 @@
                             <div class="card-body p-0">
                                 <div class="row g-0">
                                     <div class="col-lg-8">
-                                        <div class="p-5">                                            @if(session('error'))
-                                            <div class="alert alert-danger">{{ session('error') }}</div>
-                                        @endif
+                                        <div class="p-5">
+                                            @if (session('error'))
+                                                <div class="alert alert-danger">{{ session('error') }}</div>
+                                            @endif
 
-                                        @if(session('success'))
-                                            <div class="alert alert-success">{{ session('success') }}</div>
-                                        @endif
+                                            @if (session('success'))
+                                                <div class="alert alert-success">{{ session('success') }}</div>
+                                            @endif
                                             <div class="d-flex justify-content-between align-items-center mb-5">
                                                 <h1 class="fw-bold mb-0" style="font-size: 24px;">Giỏ Hàng</h1>
                                                 <h6 class="mb-0 text-muted">{{ count($cart) }} sản phẩm</h6>
@@ -186,7 +180,9 @@
                                                     </div>
 
                                                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                        <h6 style="font-size: 15px;" class="mb-0">{{ number_format($product['quantity'] * $product['price'], 0, ',', '.') }} đ</h6>
+                                                        <h6 style="font-size: 15px;" class="mb-0">
+                                                            {{ number_format($product['quantity'] * $product['price'], 0, ',', '.') }}
+                                                            đ</h6>
                                                     </div>
                                                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                         <form action="{{ route('cart.remove') }}" method="POST"
@@ -216,25 +212,96 @@
 
                                             <div class="d-flex justify-content-between mb-4">
                                                 <h5 style="font-size: 16px;">Phí vận chuyển</h5>
-                                                <p >Miễn phí</p>
+                                                <p>Miễn phí</p>
                                             </div>
-                                            <form action="{{ route('cart.applyVoucher') }}" method="POST">
-                                                @csrf
-                                                <h5 class="">Nhập mã giảm giá</h5>
-                                                <div class="mb-5">
-                                                    <div class="form-outline">
-                                                        <input
-                                                            type="text"
-                                                            id="voucher_code"
-                                                            name="voucher_code"
-                                                            class="form-control form-control-lg"
-                                                            value="{{ session()->has('voucher_code') ? session('voucher_code') : old('voucher_code') }}"
-                                                        />
+                                            @if (session()->has('voucher_code'))
+                                                <div
+                                                    style="display: flex; justify-content: space-between; align-items: baseline;">
+                                                    <h5 style="font-size: 16px;">Voucher</h5>
+                                                    <a href="#" data-toggle="modal" data-target="#exampleModal">
+                                                        <span style="color:black;">{{ session('voucher_code') }} >></span>
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div style="display: flex; align-items: baseline;">
+                                                    <h5 style="font-size: 16px; margin-right: 150px;">Voucher</h5>
+                                                    <a href="#" data-toggle="modal" data-target="#exampleModal">
+
+                                                        <span style="color:black;">Chọn</span>
+                                                    </a>
+                                                </div>
+                                            @endif
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header" >
+                                                            <h5 class="modal-title" id="exampleModalLabel">Chọn Voucher</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Form để áp dụng voucher -->
+                                                            <form id="applyVoucherForm"
+                                                                action="{{ route('cart.applyVoucher') }}" method="POST">
+                                                                @csrf
+                                                                <!-- Danh sách voucher radio -->
+                                                                <div class="voucher-list"
+                                                                    style="max-height: 300px; overflow-y: auto;">
+                                                                    @foreach ($vouchers as $voucher)
+                                                                        <div
+                                                                            style="display: flex; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+                                                                            <img src="https://down-vn.img.susercontent.com/file/aa73f8aa302834aa9fc6adbf6e704cf2"
+                                                                                alt="Voucher Logo"
+                                                                                style="width: 80px; height: auto;">
+                                                                            <div style="flex-grow: 1; padding-left: 10px;">
+                                                                                <div style="font-weight: bold;">
+                                                                                    {{ $voucher->code }} -
+                                                                                    @if ($voucher->discount_percent)
+                                                                                        Giảm
+                                                                                        {{ $voucher->discount_percent }}%
+                                                                                        @elseif($voucher->discount_amount)
+
+                                                                                        Giảm
+                                                                                        {{ number_format($voucher->discount_amount) }}
+                                                                                        VND
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div style="color: #555; font-size: 14px;">
+                                                                                    <p style="margin: 0;">Đơn Tối Thiểu:
+                                                                                        {{ number_format($voucher->min_order_value) }}
+                                                                                        VND</p>
+                                                                                    <p style="margin: 0;">Hạn sử dụng:
+                                                                                        {{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y') }}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="radio" name="voucher_id"
+                                                                                {{ session('voucher_id') == $voucher->id ? 'checked' : '' }}
+                                                                                value="{{ $voucher->id }}"
+                                                                                style="margin-left: auto;">
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form action="{{ route('cart.removeVoucher') }}" method="POST" style="display: inline;">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-secondary">Không dùng </button>
+                                                            </form>
+                                                            <!-- Nút OK để submit form -->
+                                                            <button type="button" class="btn btn-danger"
+                                                                onclick="document.getElementById('applyVoucherForm').submit();">OK</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div> <br>
 
-                                            @if(session()->has('discount_amount') && session('discount_amount') > 0)
+                                            @if (session()->has('discount_amount') && session('discount_amount') > 0)
                                                 <div class="d-flex justify-content-between mb-4">
                                                     <h5 style="font-size: 16px;">Đã giảm</h5>
                                                     <h5 style="color: green; font-size: 16px;">

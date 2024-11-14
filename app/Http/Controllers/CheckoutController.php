@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckoutRequest;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Voucher;
@@ -28,7 +29,7 @@ class CheckoutController extends Controller
 
         return view('cart.checkout', compact('cart', 'categories', 'address', 'user'));
     }
-    public function online_checkout(Request $request)
+    public function online_checkout(CheckoutRequest $request)
     {
         // Kiểm tra nếu phương thức thanh toán là COD
         if ($request->has('cod')) {
@@ -301,7 +302,6 @@ class CheckoutController extends Controller
         // Nếu không có phương thức thanh toán hợp lệ
         return redirect()->back()->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
-
 
     function execPostRequest($url, $data)
     {

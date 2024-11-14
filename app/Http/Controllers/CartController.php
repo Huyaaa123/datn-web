@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -13,11 +14,15 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart');
+        $vouchers =Voucher::all();
         // dd($cart);
         $products = Product::inRandomOrder()->take(8)->get();
         $categories = Category::all();
 
-        return view('cart.cart', compact('cart', 'categories', 'products'));
+        $vouchers = $vouchers->filter(function ($voucher) {
+            return Carbon::parse($voucher->end_date)->isAfter(Carbon::now());
+        });
+        return view('cart.cart', compact('cart', 'categories', 'products', 'vouchers'));
     }
 
     public function add(Request $request)
@@ -112,6 +117,7 @@ class CartController extends Controller
             // Cập nhật lại giỏ hàng trong session
             session()->put('cart', $cart);
             session()->forget('voucher_code');
+            session()->forget('voucher_id');
             session()->forget('discount_amount');
 
             // Xóa sản phẩm khỏi cơ sở dữ liệu (giả sử bạn đã lưu thông tin giỏ hàng trong database)

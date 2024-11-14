@@ -23,12 +23,17 @@ class VoucherClientController extends Controller
     {
         $cart = session()->get('cart', []);
         $orderValue = $this->calculateCartTotal($cart);
-        $voucherCode = $request->input('voucher_code');
 
-        // Reset the cart prices if no voucher is applied
-        if (empty($voucherCode)) {
+        // Lấy voucher_id từ radio button
+        $voucherId = $request->input('voucher_id');
+
+        // Nếu không có voucher_id, xóa áp dụng voucher
+        if (empty($voucherId)) {
             session()->forget('voucher_code');
+            session()->forget('voucher_id');
             session()->forget('discount_amount');
+
+            // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
             foreach ($cart as $index => $item) {
                 if (isset($item['original_price'])) {
                     $cart[$index]['price'] = $item['original_price'];
@@ -38,7 +43,7 @@ class VoucherClientController extends Controller
             return back()->with('success', 'Không áp dụng voucher cho đơn hàng này.');
         }
 
-        // Set or reset original price for each item
+        // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng trước khi áp dụng voucher mới
         foreach ($cart as $index => $item) {
             if (isset($item['original_price'])) {
                 $cart[$index]['price'] = $item['original_price'];
@@ -46,22 +51,56 @@ class VoucherClientController extends Controller
                 $cart[$index]['original_price'] = $item['price'];
             }
         }
+
         session()->put('cart', $cart);
+        if ($voucherId) {
+            session()->put('voucher_id', $voucherId); // Lưu ID voucher vào session
+        }
 
-        $voucher = Voucher::where('code', $voucherCode)->first();
+        // Tìm voucher dựa trên voucher_id
+        $voucher = Voucher::find($voucherId);
 
+        // Kiểm tra voucher hợp lệ
         if (!$voucher || !$voucher->isValid()) {
+            // Xóa voucher và thông tin giảm giá nếu voucher không hợp lệ
+            session()->forget('voucher_code');
+            session()->forget('voucher_id');
+            session()->forget('discount_amount');
+
+            // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
+            foreach ($cart as $index => $item) {
+                if (isset($item['original_price'])) {
+                    $cart[$index]['price'] = $item['original_price'];
+                }
+            }
+            session()->put('cart', $cart);
+
             return back()->with('error', 'Mã voucher không hợp lệ hoặc đã hết hạn.');
         }
 
+        // Kiểm tra xem giá trị đơn hàng có đủ điều kiện để áp dụng voucher không
         if (!$voucher->isApplicable($orderValue)) {
+            // Xóa voucher và thông tin giảm giá nếu không đủ điều kiện
+            session()->forget('voucher_code');
+            session()->forget('voucher_id');
+            session()->forget('discount_amount');
+
+            // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
+            foreach ($cart as $index => $item) {
+                if (isset($item['original_price'])) {
+                    $cart[$index]['price'] = $item['original_price'];
+                }
+            }
+            session()->put('cart', $cart);
+
             return back()->with('error', 'Giá trị đơn hàng không đủ điều kiện để áp dụng voucher.');
         }
 
+        // Áp dụng chiết khấu và lưu vào session như trước
         $totalDiscountAmount = 0;
         $discountPercent = 0;
 
-        // Apply discount based on voucher type
+        // Áp dụng chiết khấu dựa trên loại voucher
         if ($voucher->discount_type == 'percent') {
             $discountPercent = $voucher->discount_percent;
             $totalDiscountAmount = $orderValue * $discountPercent / 100;
@@ -73,34 +112,24 @@ class VoucherClientController extends Controller
         } elseif ($voucher->discount_type == 'amount') {
             $totalDiscountAmount = min($voucher->discount_amount, $orderValue);
 
-            // Calculate the total cart value for proportional distribution
+            // Tính tỷ lệ chiết khấu cho mỗi sản phẩm
             $cartTotal = array_sum(array_column($cart, 'price'));
-
             foreach ($cart as $index => $item) {
-                // Calculate the proportional discount for each item
                 $itemDiscount = ($item['price'] / $cartTotal) * $totalDiscountAmount;
                 $cart[$index]['price'] -= $itemDiscount;
             }
         }
 
-        // Store discount in session if applied
+        // Lưu chiết khấu trong session
         if ($totalDiscountAmount > 0) {
             session()->put('discount_amount', $totalDiscountAmount);
         }
         session()->put('cart', $cart);
         session()->put('voucher_code', $voucher->code);
 
-        // Prepare success message
-        $discountMessage = '';
-        if ($voucher->discount_type == 'percent') {
-            $discountMessage = 'Voucher "' . $voucher->code . '" đã được áp dụng. Giảm ' . number_format($discountPercent) . '% tổng giá trị đơn hàng.';
-        } elseif ($voucher->discount_type == 'amount') {
-            $discountMessage = 'Voucher "' . $voucher->code . '" đã được áp dụng. Giảm ' . number_format($totalDiscountAmount) . ' đ tổng giá trị đơn hàng.';
-        }
-
-        return back()->with('success', $discountMessage);
+        // Thông báo thành công
+        return back()->with('success', 'Voucher đã được áp dụng thành công.');
     }
-
 
     private function calculateCartTotal($cart)
     {
@@ -139,5 +168,31 @@ class VoucherClientController extends Controller
         // Xử lý thanh toán và chuyển hướng đến trang thành công
         return redirect()->route('order.success', ['order' => $order->id]);
     }
+
+    public function removeVoucher()
+    {
+        // Lấy giỏ hàng từ session
+        $cart = session()->get('cart', []);
+
+        // Xóa voucher khỏi session
+        session()->forget('voucher_code');
+        session()->forget('voucher_id');
+        session()->forget('discount_amount');
+
+        // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
+        foreach ($cart as $index => $item) {
+            if (isset($item['original_price'])) {
+                $cart[$index]['price'] = $item['original_price']; // Đặt lại giá gốc cho sản phẩm
+            }
+        }
+
+        // Lưu lại giỏ hàng với giá gốc
+        session()->put('cart', $cart);
+
+        // Trả về trang trước đó với thông báo thành công
+        return back()->with('success', 'Không áp dụng voucher.');
+    }
+
+
 
 }

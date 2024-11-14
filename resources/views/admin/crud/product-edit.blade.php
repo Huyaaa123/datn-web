@@ -105,7 +105,7 @@
 
     <body style=" font-family: 'Playfair Display', serif;">
 
-        <h1>Sửa sản phẩm</h1> <br>
+        <h1>Cập nhật sản phẩm</h1> <br>
 
         <form action="{{ route('admin.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
             @csrf

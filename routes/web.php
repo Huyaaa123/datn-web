@@ -97,6 +97,7 @@ Route::get('/categories/{slug}', [CategoryDetailController::class, 'view'])->nam
 
 Route::get('/vouchers', [VoucherClientController::class, 'index'])->name('index.vouchers');
 Route::post('/cart/apply-voucher', [VoucherClientController::class, 'applyVoucher'])->name('cart.applyVoucher');
+Route::post('/cart/remove-voucher', [VoucherClientController::class, 'removeVoucher'])->name('cart.removeVoucher');
 
 
 

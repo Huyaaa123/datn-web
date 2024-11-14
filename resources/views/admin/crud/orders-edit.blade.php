@@ -8,174 +8,262 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <link rel="stylesheet" href="../../../admindb/style.css">
-        <style>
-            h1 {
-                font-size: 24px;
-                color: #333;
-                margin-top: 20px;
-            }
 
-            .form-group {
-                margin-bottom: 20px;
-            }
-
-            .form-group label {
-                display: block;
-                font-size: 16px;
-                margin-bottom: 5px;
-                color: #555;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                width: 100%;
-                padding: 5px;
-                font-size: 14px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
-            }
-
-            .form-inline {
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .form-inline .form-group {
-                flex: 1;
-                margin-right: 10px;
-            }
-
-            .form-inline .form-group:last-child {
-                margin-right: 0;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-
-            table,
-            th,
-            td {
-                border: 1px solid #ccc;
-            }
-
-            th,
-            td {
-                padding: 10px;
-                text-align: left;
-            }
-
-            button {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                font-size: 12px;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-        </style>
     </head>
 
-    <body>
-        <h1>Edit Orders</h1>
+    <body style=" font-family: 'Playfair Display', serif;">
+        <h1>Cập nhật đơn hàng</h1>
 
         <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="orderForm">
             @csrf
             @method('PUT')
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select name="order_status_id" id="order_status_id">
-                    @foreach ($orderStatus as $status)
-                        <option disabled value="{{ $status->id }}" {{ $order->order_status_id === $status->id ? 'selected' : '' }}>
-                            {{ $status->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
 
-            <div class="form-inline">
-                <div class="form-group">
-                    <label for="user">Username</label>
-                    <input type="text" id="user" value="{{ $order->user->name ?? 'Không xác định' }}" class="form-control" readonly>
-                </div>
+            @if (in_array($order->orderStatus->id, [1, 2, 3, 4, 5, 6]))
+                <svg width="100%" height="160" viewBox="0 0 1500 200" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="195" y1="100" x2="450" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <line x1="450" y1="100" x2="650" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 2 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <line x1="650" y1="100" x2="950" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 3 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <line x1="950" y1="100" x2="1200" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 4 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <line x1="1200" y1="100" x2="1450" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 5 ? 'green' : 'gray' }}" stroke-width="5" />
 
-                <div class="form-group">
-                    <label for="total">Total</label>
-                    <input type="text" id="total" value="{{ number_format($order->total_amount) }} VND" class="form-control" readonly>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="product">Product</label>
-                @foreach ($order->orderDetails as $item)
-                    <input type="text" id="product" value="{{ $item->product->name }} ( x{{ $item->quantity }} ) ({{ number_format($item->price) }} VND)" class="form-control" readonly>
-                @endforeach
-            </div>
-            <div class="form-group">
-                <label for="order_date">Date Order</label>
-                <input type="text" id="order_date" value="{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y') }}" class="form-control" readonly>
-            </div>
 
-            <div class="form-group">
-                <label for="shipping_address">Address Ship</label>
-                <input type="text" id="shipping_address" value="{{ $order->telephone }} / {{ $order->shipping_address }}" class="form-control" readonly>
-            </div>
+                    <!-- Bước 1: Đơn hàng đã đặt -->
+                    <circle cx="150" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="150" y="170" font-size="18" text-anchor="middle" fill="black">Đơn hàng đã đặt</text>
 
-            <div class="form-group">
-                <label for="payment_method">Payment</label>
-                <input type="text" id="payment_method" value="{{ $order->payment_method }}" class="form-control" readonly>
-            </div>
+                    <!-- Existing SVG Icon -->
+                    <svg x="126" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 1 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M222-80q-43.75 0-74.37-30.63Q117-141.25 117-185v-125h127v-570l59.8 60 59.8-60 59.8 60 59.8-60 59.8 60 60-60 60 60 60-60 60 60 60-60v695q0 43.75-30.62 74.37Q781.75-80 738-80H222Zm516-60q20 0 32.5-12.5T783-185v-595H304v470h389v125q0 20 12.5 32.5T738-140ZM357-622v-60h240v60H357Zm0 134v-60h240v60H357Zm333-134q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9Zm0 129q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9ZM221-140h412v-110H177v65q0 20 12.65 32.5T221-140Zm-44 0v-110 110Z" />
+                    </svg>
 
-            <div class="form-group">
-                <label for="checkpay">Checkpay</label>
-                <input type="text" id="checkpay" value="{{ $order->checkpay }}" class="form-control" readonly>
-            </div>
+                    <!-- New Text Below "Đơn hàng đã đặt" -->
+                    <text x="150" y="200" font-size="18" text-anchor="middle" fill="black">
+                        {{ $order->created_at->format(' H:i:s d/m/Y') }}
+                    </text>
 
-            @if ($order->order_status_id == 1)
-                <!-- 1: trạng thái ban đầu (Pending) -->
-                <button type="submit" name="order_status_id" value="2" class="btn btn-secondary">Xác nhận</button>
-                <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
-            @elseif($order->order_status_id == 2)
-                <!-- 2: trạng thái đã xác nhận -->
-                <button type="submit" name="order_status_id" value="3" class="btn btn-info">Giao hàng</button>
-                <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
-            @elseif($order->order_status_id == 3)
-                <!-- 3: đang giao hàng -->
-                <button type="submit" name="order_status_id" value="4" class="btn btn-warning">Đã giao hàng</button>
-            @elseif($order->order_status_id == 5)
-                <!-- 4: đã giao hàng -->
-                <button type="submit" name="order_status_id" value="6" class="btn btn-success">Hoàn thành</button>
-            @elseif($order->order_status_id == 8)
+                    <!-- Hiển thị trạng thái và thời gian xác nhận đơn hàng -->
+                    <circle cx="400" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 2 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="400" y="170" font-size="18" text-anchor="middle" fill="black">Xác nhận đơn hàng</text>
 
-                <button type="submit" name="order_status_id" value="9" class="btn btn-success">Đồng ý hủy</button>
-            @elseif($order->order_status_id == 9)
-                <!-- 9: đã hủy -->
-                <p class="text-danger">Đơn hàng đã hủy</p>
-            @elseif($order->order_status_id == 6)
-                <!-- 6: đã hoàn thành -->
-                <p class="text-success">Đơn hàng đã hoàn thành</p>
+                    <!-- Hiển thị thời gian xác nhận nếu có -->
+                    <text x="400" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->confirmed)
+                            {{ \Carbon\Carbon::parse($order->confirmed)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="376" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 2 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M540-420q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM220-280q-24.75 0-42.37-17.63Q160-315.25 160-340v-400q0-24.75 17.63-42.38Q195.25-800 220-800h640q24.75 0 42.38 17.62Q920-764.75 920-740v400q0 24.75-17.62 42.37Q884.75-280 860-280H220Zm100-60h440q0-42 29-71t71-29v-200q-42 0-71-29t-29-71H320q0 42-29 71t-71 29v200q42 0 71 29t29 71Zm480 180H100q-24.75 0-42.37-17.63Q40-195.25 40-220v-460h60v460h700v60ZM220-340v-400 400Z" />
+                    </svg>
+
+
+                    <!-- Bước 3: Đang giao hàng -->
+                    <circle cx="650" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 3 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="650" y="170" font-size="18" text-anchor="middle" fill="black">Đang giao hàng</text>
+
+                    <text x="650" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->on_delivery)
+                            {{ \Carbon\Carbon::parse($order->on_delivery)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="626" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 3 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M224.12-161q-49.12 0-83.62-34.42Q106-229.83 106-279H40v-461q0-24 18-42t42-18h579v167h105l136 181v173h-71q0 49.17-34.38 83.58Q780.24-161 731.12-161t-83.62-34.42Q613-229.83 613-279H342q0 49-34.38 83.5t-83.5 34.5Zm-.12-60q24 0 41-17t17-41q0-24-17-41t-41-17q-24 0-41 17t-17 41q0 24 17 41t41 17ZM100-339h22q17-27 43.04-43t58-16q31.96 0 58.46 16.5T325-339h294v-401H100v401Zm631 118q24 0 41-17t17-41q0-24-17-41t-41-17q-24 0-41 17t-17 41q0 24 17 41t41 17Zm-52-204h186L754-573h-75v148ZM360-529Z" />
+                    </svg>
+
+                    <!-- Bước 4: Đã giao hàng -->
+                    <circle cx="900" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 4 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="900" y="170" font-size="18" text-anchor="middle" fill="black">Đã giao hàng</text>
+
+                    <text x="900" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->delivered)
+                            {{ \Carbon\Carbon::parse($order->delivered)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="876" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 4 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-136H634q-26 40-67.5 61.5T480-233q-45 0-86.5-21.5T326-316H180v136Zm300.25-113Q521-293 554-316.5t56-59.5h170v-404H180v404h170q23 36 56.25 59.5 33.24 23.5 74 23.5ZM480-422 327-575l43-43 80 80v-189h60v189l80-80 43 43-153 153ZM180-180h600-600Z" />
+                    </svg>
+
+                    <!-- Bước 5: Đã nhận hàng -->
+                    <circle cx="1150" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 5 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="1150" y="170" font-size="18" text-anchor="middle" fill="black">Đã nhận hàng</text>
+
+                    <text x="1150" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->received)
+                            {{ \Carbon\Carbon::parse($order->received)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="1126" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 5 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M180-80q-24.75 0-42.37-17.63Q120-115.25 120-140v-530q0-24.75 17.63-42.38Q155.25-730 180-730h110q0-78 53.5-134T475-920q80.92 0 137.96 55Q670-810 670-730h110q24.75 0 42.38 17.62Q840-694.75 840-670v530q0 24.75-17.62 42.37Q804.75-80 780-80H180Zm0-60h600v-530H180v530Zm300-290q79 0 137-58t58-137h-60q0 55-40 95t-95 40q-55 0-95-40t-40-95h-60q0 79 58 137t137 58ZM350-730h260q0-55-37.5-92.5T480-860q-55 0-92.5 37.5T350-730ZM180-140v-530 530Z" />
+                    </svg>
+                    <!-- Bước 6: Hoàn thành -->
+                    <circle cx="1400" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 6 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="1400" y="170" font-size="18" text-anchor="middle" fill="black">Hoàn thành</text>
+
+                    <text x="1400" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->complete)
+                            {{ \Carbon\Carbon::parse($order->complete)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="1376" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 6 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z" />
+                    </svg>
+                </svg>
+            @else
+                <svg width="100%" height="160" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Đường kết nối giữa các bước -->
+                    <line x1="195" y1="100" x2="400" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <!-- Đoạn đường kẻ từ Chờ xác nhận hủy đến Đã hủy đơn -->
+                    <line x1="400" y1="100" x2="605" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 8 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <line x1="605" y1="100" x2="910" y2="100"
+                        stroke="{{ $order->orderStatus->id >= 9 ? 'green' : 'gray' }}" stroke-width="5" />
+
+                    <!-- Bước 1: Đơn hàng đã đặt -->
+                    <circle cx="150" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="150" y="170" font-size="18" text-anchor="middle" fill="black">Đơn hàng đã đặt</text>
+
+                    <text x="150" y="200" font-size="18" text-anchor="middle" fill="black">
+                        {{ $order->created_at->format(' H:i:s d/m/Y') }}
+                    </text>
+
+                    <svg x="126" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 1 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M222-80q-43.75 0-74.37-30.63Q117-141.25 117-185v-125h127v-570l59.8 60 59.8-60 59.8 60 59.8-60 59.8 60 60-60 60 60 60-60 60 60 60-60v695q0 43.75-30.62 74.37Q781.75-80 738-80H222Zm516-60q20 0 32.5-12.5T783-185v-595H304v470h389v125q0 20 12.5 32.5T738-140ZM357-622v-60h240v60H357Zm0 134v-60h240v60H357Zm333-134q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9Zm0 129q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9ZM221-140h412v-110H177v65q0 20 12.65 32.5T221-140Zm-44 0v-110 110Z" />
+                    </svg>
+
+                    <circle cx="400" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 7 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="400" y="170" font-size="18" text-anchor="middle" fill="black">Yêu cầu hủy </text>
+
+                    <text x="400" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->cancelorder)
+                            {{ \Carbon\Carbon::parse($order->cancelorder)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="376" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 7 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z" />
+                    </svg>
+
+
+                    <!-- Bước 2: Chờ xác nhận hủy -->
+                    <circle cx="650" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 8 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="650" y="170" font-size="18" text-anchor="middle" fill="black">Chờ xác nhận hủy</text>
+
+                    <text x="650" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->cancelorder)
+                            {{ \Carbon\Carbon::parse($order->cancelorder)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="626" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 8 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-60q68 0 130.62-25.81Q673.24-191.61 721-240L480-480v-340q-142 0-241 98.81T140-480q0 142.37 98.81 241.19Q337.63-140 480-140Z" />
+                    </svg>
+
+                    <!-- Bước 3: Đã hủy đơn -->
+                    <circle cx="900" cy="100" r="45" fill="white"
+                        stroke="{{ $order->orderStatus->id >= 9 ? 'green' : 'gray' }}" stroke-width="5" />
+                    <text x="900" y="170" font-size="18" text-anchor="middle" fill="black">Đã hủy đơn</text>
+
+                    <text x="900" y="200" font-size="18" text-anchor="middle" fill="black">
+                        @if ($order->canceled)
+                            {{ \Carbon\Carbon::parse($order->canceled)->format('H:i:s d/m/Y ') }}
+                        @else
+                            ___
+                        @endif
+
+                    </text>
+
+                    <svg x="876" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                        fill="{{ $order->orderStatus->id >= 9 ? '#00CD00' : '#808080' }}">
+                        <path
+                            d="m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z" />
+                    </svg>
+                </svg>
             @endif
+            <svg width="930" height="2" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="50" fill="#0088ff" />
+                <rect x="50" width="45" height="50" fill="#ee4d2d" />
+                <rect x="100" width="45" height="50" fill="#0088ff" />
+                <rect x="150" width="45" height="50" fill="#ee4d2d" />
+                <rect x="200" width="45" height="50" fill="#0088ff" />
+                <rect x="250" width="45" height="50" fill="#ee4d2d" />
+                <rect x="300" width="45" height="50" fill="#0088ff" />
+                <rect x="350" width="45" height="50" fill="#ee4d2d" />
+                <rect x="400" width="45" height="50" fill="#0088ff" />
+                <rect x="450" width="45" height="50" fill="#ee4d2d" />
+                <rect x="500" width="45" height="50" fill="#0088ff" />
+                <rect x="550" width="45" height="50" fill="#ee4d2d" />
+                <rect x="600" width="45" height="50" fill="#0088ff" />
+                <rect x="650" width="45" height="50" fill="#ee4d2d" />
+                <rect x="700" width="45" height="50" fill="#0088ff" />
+                <rect x="750" width="45" height="50" fill="#ee4d2d" />
+                <rect x="800" width="45" height="50" fill="#0088ff" />
+                <rect x="850" width="45" height="50" fill="#ee4d2d" />
+                <rect x="900" width="45" height="50" fill="#0088ff" />
+            </svg>
 
-            <!-- Ô nhập lý do hủy đơn, ẩn theo mặc định -->
-            <div id="cancel-reason-container" style="display:none;">
-                <label for="cancel_reason">Lý do hủy</label>
-                <input type="text" name="cancel" id="cancel_reason" class="form-control">
-                <button type="submit" name="order_status_id" value="9" class="btn btn-danger">Xác nhận hủy</button>
+            <div class="row">
+                <div class="col-4">w</div>
+                <div class="col-8">w</div>
             </div>
         </form>
-
-        <script>
-            document.getElementById('cancel-button').addEventListener('click', function() {
-                // Hiển thị ô nhập lý do hủy đơn
-                document.getElementById('cancel-reason-container').style.display = 'block';
-            });
-        </script>
-
     </body>
 
     </html>

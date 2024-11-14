@@ -40,38 +40,56 @@
                         <div class="mb-3 row">
                             <div class="col-md-6">
                                 <label for="name" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control form-control-sm" id="name" name="name" required value="{{ $user->name ?? '' }}">
+                                <input type="text" class="form-control form-control-sm" id="name" name="name" value="{{ $user->name ?? '' }}">
+                                @error('name')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control form-control-sm" id="phone" name="phone" required value="{{ $user->phone ?? '' }}">
+                                <input type="text" class="form-control form-control-sm" id="phone" name="phone" value="{{ $user->phone ?? '' }}">
+                                @error('phone')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="mb-3 row">
                             <div class="col-md-4">
                                 <label for="city" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Thành phố</label>
-                                <select id="province" name="city" class="form-control" required onchange="loadDistricts()">
-                                    <option value="{{ $address->city ?? 'Chọn thành phố' }}">{{ $address->city ?? 'Chọn thành phố' }}</option>
+                                <select id="province" name="city" class="form-control" onchange="loadDistricts()">
+                                    <option value="{{ $address->city ?? '' }}">{{ $address->city ?? 'Chọn thành phố' }}</option>
                                 </select>
+                                @error('city')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-4">
                                 <label for="district" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Quận huyện</label>
-                                <select id="district" name="district" class="form-control" required onchange="loadWards()">
-                                    <option value="{{ $address->district ?? 'Chọn quận/huyện' }}">{{ $address->district ?? 'Chọn quận/huyện' }}</option>
+                                <select id="district" name="district" class="form-control" onchange="loadWards()">
+                                    <option value="{{ $address->district ?? '' }}">{{ $address->district ?? 'Chọn quận/huyện' }}</option>
                                 </select>
+                                @error('district')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-4">
                                 <label for="ward" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Phường xã</label>
-                                <select id="ward" name="ward" required class="form-control">
-                                    <option value="{{ $address->ward ?? 'Chọn phường/xã' }}">{{ $address->ward ?? 'Chọn phường/xã' }}</option>
+                                <select id="ward" name="ward" class="form-control">
+                                    <option value="{{ $address->ward ?? '' }}">{{ $address->ward ?? 'Chọn phường/xã' }}</option>
                                 </select>
+                                @error('ward')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="address" style="color:rgb(37, 36, 36); font-weight: bold" class="form-label">Số nhà, tên đường</label>
-                            <input type="text" class="form-control form-control-sm" id="address" name="address" required value="{{ $address->address ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" id="address" name="address" value="{{ $address->address ?? '' }}">
+                            @error('address')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div style="color:rgb(37, 36, 36); font-weight: bold">Phương Thức Thanh Toán</div>

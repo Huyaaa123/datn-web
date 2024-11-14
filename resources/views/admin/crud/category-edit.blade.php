@@ -63,7 +63,7 @@
 
     <body style=" font-family: 'Playfair Display', serif;">
 
-        <h1>Sửa danh mục</h1>
+        <h1>Cập nhật danh mục</h1>
 
         <form action="{{ route('admin.category.update', $category->id) }}" method="POST">
             @csrf
