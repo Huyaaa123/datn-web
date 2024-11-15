@@ -43,4 +43,8 @@ class Voucher extends Model
     {
         return $this->hasMany(Order::class, 'voucher_code', 'code'); // Voucher liên kết với Order qua mã voucher
     }
+    public function voucherDetail()
+    {
+        return $this->hasMany(VoucherDetail::class);
+    }
 }

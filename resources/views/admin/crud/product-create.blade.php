@@ -9,6 +9,11 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <link rel="stylesheet" href="../../admindb/style.css">
         <style>
+            .text-danger {
+                color: #dc3545;
+                font-size: 14px;
+                margin-top: 5px;
+            }
             .form-group-container {
                 display: flex;
                 gap: 20px;
@@ -103,54 +108,74 @@
 
             <div class="form-group">
                 <label for="sku">Mã</label>
-                <input type="text" class="form-control" id="sku" name="sku" value="{{ old('sku') }}"
-                    required>
+                <input type="text" class="form-control" id="sku" name="sku" value="{{ old('sku') }}">
+                @error('sku')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label for="name">Tên</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
+                @error('name')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group-container">
                 <div class="form-group">
                     <label for="image_path">Ảnh</label>
                     <input type="file" class="form-control" id="image_path" name="image_path">
+                    @error('image_path')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="galleries">Ảnh 2</label>
                     <input type="file" class="form-control" id="galleries" name="galleries[]" multiple>
+                    @error('galleries')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="form-group-container">
-            <div class="form-group">
-                <label for="price">Giá</label>
-                <input type="number" class="form-control" id="price" name="price" value="{{ old('price') }}">
+                <div class="form-group">
+                    <label for="price">Giá</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{ old('price') }}">
+                    @error('price')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Danh mục</label>
+                    <select class="form-control" id="category" name="category_id">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
-            <div class="form-group">
-                <label for="category">Danh mục</label>
-                <select class="form-control" id="category" name="category_id">
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            </div>
-            
+
             <div class="form-group">
                 <label for="description">Mô tả</label>
                 <textarea class="form-control" id="description" name="description" rows="4">{{ old('description') }}</textarea>
+                @error('description')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
-
-
 
             <button type="submit" class="btn btn-primary">Thêm</button>
             <a href="{{ route('admin.product.index') }}" class="btn btn-success">Cancel</a>
         </form>
+
         @if (session('success'))
             <p>{{ session('success') }}</p>
         @endif

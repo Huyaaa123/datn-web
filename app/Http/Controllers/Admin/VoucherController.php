@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreVoucherRequest;
 use App\Models\Voucher;
+use App\Models\VoucherDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -34,7 +36,7 @@ class VoucherController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreVoucherRequest $request)
     {
         $validated = $request->validate([
             'code' => 'required|unique:vouchers,code|regex:/^[a-zA-Z0-9]+$/',
@@ -87,8 +89,6 @@ class VoucherController extends Controller
         return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
     }
 
-
-
     /**
      * Display the specified resource.
      */
@@ -110,17 +110,17 @@ class VoucherController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreVoucherRequest $request, string $id)
     {
         // Validate dữ liệu
         $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:vouchers,code,' . $id,
-            'discount_type' => 'required|in:amount,percent', // Kiểm tra loại giảm giá
-            'discount_amount' => 'nullable|numeric', // Kiểm tra nếu chọn giảm giá theo số tiền
-            'discount_percent' => 'nullable|numeric|min:0|max:100', // Kiểm tra nếu chọn giảm giá theo phần trăm
-            'min_order_value' => 'nullable|numeric',
-            'usage_limit' => 'nullable|numeric',
-            'start_date' => 'required|date',
+            'code' => 'required|unique:vouchers,code|regex:/^[a-zA-Z0-9]+$/',
+            'discount_type' => 'required|in:amount,percent',
+            'discount_amount' => 'nullable|numeric',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'min_order_value' => 'required|numeric',
+            'usage_limit' => 'required|numeric',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
         ]);
 
@@ -156,6 +156,23 @@ class VoucherController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Tìm voucher theo ID
+        $voucher = Voucher::find($id);
+
+        // Kiểm tra xem voucher có tồn tại không
+        if (!$voucher) {
+            return redirect()->route('admin.vouchers.index')->with('error', 'Mã giảm giá không tồn tại.');
+        }
+
+        $hasUsed = $voucher->voucherDetail()->exists();
+
+        if ($hasUsed) {
+            return redirect()->route('admin.vouchers.index')->with('error', 'Không thể xóa mã giảm giá vì đã có người sư dụng.');
+        }
+
+        $voucher->delete();
+
+        return redirect()->route('admin.vouchers.index')->with('success', 'Xóa mã giảm giá thành công!');
     }
+
 }

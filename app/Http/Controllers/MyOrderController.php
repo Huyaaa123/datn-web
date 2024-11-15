@@ -93,26 +93,20 @@ class MyOrderController extends Controller
         return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher'));
     }
 
-
-
-
-
     /**
      * Update the specified resource in storage.
      */
 
     public function update(Request $request, string $id)
     {
-        // Tìm đơn hàng theo ID
         $order = Order::findOrFail($id);
 
-        // Kiểm tra nếu trạng thái là "Đã hủy" và đơn hàng đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
         if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
-            $order->order_status_id = 8; // Đặt trạng thái thành "Đã hủy"
+            $order->order_status_id = 8;
             $order->cancelorder = now();
-            $order->cancel = $request->cancel; // Lưu lý do hủy nếu có
-            $order->notes = auth()->user()->name; // Lưu tên người hủy
-        } elseif ($request->order_status_id === '5') { // Kiểm tra nếu trạng thái là "Đã nhận hàng"
+            $order->cancel = $request->cancel;
+            $order->notes = auth()->user()->name; 
+        } elseif ($request->order_status_id === '5') {
             $order->order_status_id = 5;
             $order->received = now();
             $order['checkpay'] = 'Đã thanh toán';
@@ -120,11 +114,8 @@ class MyOrderController extends Controller
             return redirect()->route('order.client.show', $order->id)
                 ->with('error', 'Không thể cập nhật trạng thái đơn hàng.');
         }
-
-        // Lưu các thay đổi
         $order->save();
 
-        // Trả về phản hồi
         return redirect()->route('order.client.show', $order->id)
             ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
     }

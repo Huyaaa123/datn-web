@@ -94,34 +94,41 @@
 
     <!-- Recent Orders Table -->
     <div class="recent-orders">
-        <h2>Mã giảm giá </h2>
+        <h2>Mã giảm giá</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Voucher Code</th>
-                    <th>Discount Amount</th>
-                    <th>Discount Percent</th>
-                    <th>End Date</th>
-                    <th>Status</th>
+                    <th>Mã</th>
+                    <th>Mức giảm</th>
+                    <th>Ngày hết hạn</th>
+                    <th>Trạng thái</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($activeVouchers as $voucher)
-                    <tr>
-                        <td>{{ $voucher->code }}</td>
-                        <td>{{ $voucher->discount_amount ? number_format($voucher->discount_amount) . ' VND' : '-' }}</td>
-                        <td>{{ $voucher->discount_percent ? $voucher->discount_percent . '%' : '-' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('d-m-Y H:i') }}</td>
-                        <td><span style="color: green; font-weight:bold;">Còn hạn</span></td>
-                    </tr>
+                    @if ($voucher->discount_amount || $voucher->discount_percent)
+                        <tr>
+                            <td>{{ $voucher->code }}</td>
+                            <td>
+                                @if ($voucher->discount_amount)
+                                    {{ number_format($voucher->discount_amount) }} VND
+                                @elseif ($voucher->discount_percent)
+                                    {{ $voucher->discount_percent }}%
+                                @endif
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d-m-Y ') }}</td>
+                            <td><span style="color: green; font-weight:bold;">Còn hạn</span></td>
+                        </tr>
+                    @endif
                 @empty
                     <tr>
-                        <td colspan="5">No active vouchers available.</td>
+                        <td colspan="4">No active vouchers available.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
         <a href="{{ route('admin.vouchers.index') }}">Show All</a>
     </div>
+
     <!-- End of Recent Orders -->
 @endsection

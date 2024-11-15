@@ -75,7 +75,7 @@ class VoucherClientController extends Controller
             }
             session()->put('cart', $cart);
 
-            return back()->with('error', 'Mã voucher không hợp lệ hoặc đã hết hạn.');
+            return back()->with('error', 'Mã voucher đã hết hạn hoặc chưa đến thời điểm sử dụng.');
         }
 
         // Kiểm tra xem giá trị đơn hàng có đủ điều kiện để áp dụng voucher không

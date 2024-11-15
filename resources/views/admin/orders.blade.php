@@ -180,7 +180,6 @@
         <thead>
             <tr>
                 <th>Trạng thái</th>
-                <th>Lý do</th>
                 <th>Người mua</th>
                 <th>Sản phẩm</th>
                 <th>Tổng </th>
@@ -188,7 +187,6 @@
                 <th>Địa chỉ</th>
                 <th>Thanh toán</th>
                 <th>Kiểm tra</th>
-                <th>Người thao tác</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -196,13 +194,6 @@
             @foreach ($orders as $order)
                 <tr>
                     <td>{{ Str::limit($order->orderStatus->name, 15, '...') }}</td>
-                    <td>
-                        @if ($order->cancel)
-                            {{ Str::limit($order->cancel, 15, '...') }}
-                        @else
-                           ...
-                        @endif
-                    </td>
                     <td>{{ Str::limit($order->user->name, 10, '...') }}</td>
                     <td>
                         @foreach ($order->orderDetails as $item)
@@ -217,15 +208,7 @@
                     <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
                     <td>{{ Str::limit($order->checkpay, 15, '...') }}</td>
                     <td>
-                        @if ($order->notes)
-                            {{ Str::limit($order->notes, 15, '...') }}
-                        @else
-                            ...
-                        @endif
-                    </td>
-                    <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-success">Show</a>
-                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-primary">Sửa</a>
+                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-primary">Xem</a>
                     </td>
 
                 </tr>

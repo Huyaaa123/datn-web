@@ -132,6 +132,9 @@
     @if (session('success'))
         <p>{{ session('success') }}</p>
     @endif
+    @if (session('error'))
+        <p>{{ session('error') }}</p>
+    @endif
 
     <table class="table">
         <thead>
@@ -161,7 +164,7 @@
     </table>
     <script>
         function confirmDelete(event) {
-            if (!confirm('Are you sure?')) {
+            if (!confirm('Bạn chắc chứ?')) {
                 event.preventDefault();
             }
         }

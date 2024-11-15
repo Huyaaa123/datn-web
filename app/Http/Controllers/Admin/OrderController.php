@@ -57,7 +57,7 @@ class OrderController extends Controller
                 $dataOrder = [
                     'order_status_id' => $request->order_status_id,
                     'cancel' => $request->cancel,
-                    'checkpay' => $order->checkpay, // Giữ nguyên giá trị checkpay
+                    'checkpay' => $order->checkpay,
                     'notes' => auth()->user()->name,
                 ];
                 if ($request->order_status_id == 2 && !$order->confirmed) {
@@ -77,6 +77,9 @@ class OrderController extends Controller
 
                 if ($request->order_status_id == 6 && !$order->complete) {
                     $dataOrder['complete'] = now();
+                }
+                if ($request->order_status_id == 9 && !$order->canceled) {
+                    $dataOrder['canceled'] = now();
                 }
 
             }

@@ -135,6 +135,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        if ($product->orders()->exists()) {
+            return redirect()->route('admin.product.index')->with('error', 'Sản phẩm này đang trong quá trình đặt hàng, không thể xóa!');
+        }
         DB::transaction(function () use ($product) {
             foreach ($product->galleries as $gallery) {
                 if ($gallery->image_path && Storage::exists($gallery->image_path)) {

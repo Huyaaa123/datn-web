@@ -91,19 +91,12 @@
         <form action="{{ route('admin.vouchers.store') }}" method="POST">
             @csrf
 
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <div class="form-group">
                 <label for="code">Mã</label>
                 <input type="text" id="code" name="code" class="form-control"  value="{{ old('code') }}">
+                @error('code')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
             </div>
 
             <div class="form-group">
@@ -113,28 +106,44 @@
                     <option value="amount" {{ old('discount_type') == 'amount' ? 'selected' : '' }}>Giảm theo giá tiền</option>
                     <option value="percent" {{ old('discount_type') == 'percent' ? 'selected' : '' }}>Giảm theo phần trăm</option>
                 </select>
+                @error('discount_type')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group-container">
                 <div class="form-group" id="discount_amount_group" style="display: none;">
                     <label for="discount_amount">Giảm theo giá</label>
-                    <input type="number" id="discount_amount" name="discount_amount" class="form-control" value="{{ old('discount_amount') }}">
+                    <input type="text" id="discount_amount" name="discount_amount" class="form-control" value="{{ old('discount_amount') }}">
+                    @error('discount_amount')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group" id="discount_percent_group" style="display: none;">
                     <label for="discount_percent">Giảm theo phần trăm</label>
-                    <input type="number" id="discount_percent" name="discount_percent" class="form-control" value="{{ old('discount_percent') }}" min="0" max="100">
+                    <input type="text" id="discount_percent" name="discount_percent" class="form-control" value="{{ old('discount_percent') }}" min="0" max="100">
+                    @error('discount_percent')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
             </div>
 
             <div class="form-group">
                 <label for="min_order_value">Giá trị đơn hàng tối thiểu</label>
-                <input type="number" id="min_order_value" name="min_order_value" class="form-control"  value="{{ old('min_order_value') }}">
+                <input type="text" id="min_order_value" name="min_order_value" class="form-control"  value="{{ old('min_order_value') }}">
+                @error('min_order_value')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label for="usage_limit">Lượt sử dụng</label>
-                <input type="number" id="usage_limit" name="usage_limit" class="form-control"  value="{{ old('usage_limit') }}">
+                <input type="text" id="usage_limit" name="usage_limit" class="form-control"  value="{{ old('usage_limit') }}">
+                @error('usage_limit')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group-container">
