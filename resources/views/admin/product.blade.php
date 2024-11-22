@@ -200,15 +200,81 @@
             color: #fff;
             /* Màu chữ cho trang đang hoạt động */
         }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            /* Khoảng cách giữa các phần tử */
+        }
+
+        .search-form input {
+            width: 200px;
+            /* Độ rộng cụ thể */
+        }
+
+        .form-select {
+            appearance: none;
+            /* Ẩn mũi tên mặc định */
+            padding: 8px 12px;
+            /* Thêm khoảng cách bên trong */
+            font-size: 14px;
+            /* Kích thước chữ */
+            color: #333;
+            /* Màu chữ */
+            background-color: #f8f9fa;
+            /* Màu nền */
+            border: 1px solid #ccc;
+            /* Đường viền */
+            border-radius: 4px;
+            /* Bo góc */
+            transition: all 0.3s ease;
+            /* Hiệu ứng chuyển đổi */
+            cursor: pointer;
+            /* Con trỏ chuột */
+        }
+
+        .form-select:hover {
+            border-color: #007bff;
+            /* Đổi màu viền khi hover */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Hiệu ứng bóng */
+        }
+
+        .form-select:focus {
+            outline: none;
+            /* Xóa viền mặc định khi focus */
+            border-color: #007bff;
+            /* Màu viền khi focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            /* Hiệu ứng sáng */
+        }
+
+        .form-select option {
+            color: #333;
+            /* Màu chữ cho các lựa chọn */
+            background-color: #fff;
+            /* Màu nền */
+        }
     </style>
 
     <a href="{{ route('admin.product.create') }}" class="text-center btn btn-add">Thêm</a>
+
+    <form action="{{ route('admin.product.index') }}" method="GET" class="form-group search-form">
+        <input type="text" name="search" class="form-control" placeholder="Nhập từ khóa tìm kiếm..."
+            value="{{ $search ?? '' }}">
+        <select name="sort" class="form-select me-2 w-25" onchange="this.form.submit()">
+            <option value="">Bộ lọc giá</option>
+            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Thấp đến Cao</option>
+            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Cao đến Thấp</option>
+        </select>
+    </form>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
     @endif
     @if (session('error'))
-        <p >{{ session('error') }}</p>
+        <p>{{ session('error') }}</p>
     @endif
 
     <table class="table">

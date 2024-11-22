@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
@@ -49,6 +50,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('users', AdminUserController::class);
 
     Route::resource('vouchers', VoucherController::class);
+
+    Route::resource('statistic', StatisticsController::class);
 });
 
 

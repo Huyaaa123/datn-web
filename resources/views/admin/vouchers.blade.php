@@ -2,6 +2,64 @@
 @section('content')
     <h1>Mã giảm giá</h1>
     <style>
+        /* Modal Container */
+        .modal {
+            display: none;
+            /* Mặc định ẩn */
+            position: fixed;
+            z-index: 1;
+            /* Đảm bảo modal hiển thị trên tất cả các phần tử khác */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Màu nền mờ phía sau */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 60%;
+            /* Điều chỉnh kích thước modal nhỏ hơn */
+            max-width: 500px;
+            /* Điều chỉnh kích thước tối đa nhỏ hơn */
+        }
+
+        /* Modal Header */
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .modal-body p {
+            margin-bottom: 10px;
+            /* Tăng khoảng cách giữa các người dùng */
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
+        }
+
+
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
@@ -136,6 +194,7 @@
             color: rgb(56, 56, 56);
             font-weight: bold;
         }
+
         .pagination {
             display: flex;
             /* Sử dụng Flexbox để căn giữa */
@@ -187,9 +246,78 @@
             color: #fff;
             /* Màu chữ cho trang đang hoạt động */
         }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            /* Khoảng cách giữa các phần tử */
+        }
+
+        .search-form input {
+            width: 200px;
+            /* Độ rộng cụ thể */
+        }
+
+        .form-select {
+            appearance: none;
+            /* Ẩn mũi tên mặc định */
+            padding: 8px 12px;
+            /* Thêm khoảng cách bên trong */
+            font-size: 14px;
+            /* Kích thước chữ */
+            color: #333;
+            /* Màu chữ */
+            background-color: #f8f9fa;
+            /* Màu nền */
+            border: 1px solid #ccc;
+            /* Đường viền */
+            border-radius: 4px;
+            /* Bo góc */
+            transition: all 0.3s ease;
+            /* Hiệu ứng chuyển đổi */
+            cursor: pointer;
+            /* Con trỏ chuột */
+        }
+
+        .form-select:hover {
+            border-color: #007bff;
+            /* Đổi màu viền khi hover */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Hiệu ứng bóng */
+        }
+
+        .form-select:focus {
+            outline: none;
+            /* Xóa viền mặc định khi focus */
+            border-color: #007bff;
+            /* Màu viền khi focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            /* Hiệu ứng sáng */
+        }
+
+        .form-select option {
+            color: #333;
+            /* Màu chữ cho các lựa chọn */
+            background-color: #fff;
+            /* Màu nền */
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <a href="{{ route('admin.vouchers.create') }}" class="text-center btn btn-add">Thêm</a>
+    <form action="{{ route('admin.vouchers.index') }}" method="GET" class="form-group search-form">
+        <input type="text" name="search" class="form-control mr-2" placeholder="Nhập từ khóa tìm kiếm..."
+            value="{{ request('search') }}">
+
+        <select name="status" class="form-select mr-2 w-25" onchange="this.form.submit()">
+            <option value="">Trạng thái</option>
+            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Còn hạn</option>
+            <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Hết hạn</option>
+        </select>
+
+    </form>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
@@ -225,7 +353,43 @@
                     </td>
 
                     <td>{{ number_format($voucher->min_order_value) }} VND</td>
-                    <td>{{ $voucher->used }}</td>
+                    <td>{{ $voucher->used }}
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#usedUsersModal{{ $voucher->id }}">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        <div class="modal fade" id="usedUsersModal{{ $voucher->id }}" tabindex="-1"
+                            aria-labelledby="usedUsersModalLabel{{ $voucher->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="usedUsersModalLabel{{ $voucher->id }}">Người đã sử
+                                            dụng Voucher: {{ $voucher->name }}</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Liệt kê người dùng đã sử dụng voucher -->
+                                        @foreach ($voucher->voucherDetail as $voucherDetails)
+                                            @if ($voucherDetails->user)
+                                                <p style="color: black;">
+                                                    (#{{ $voucherDetails->user->id }}) {{ $voucherDetails->user->name }} - Đã sử dụng lúc:
+                                                    {{ $voucherDetails->created_at ? $voucherDetails->created_at->format('H:i:s d/m/Y ') : 'Chưa có thời gian' }}
+                                                </p>
+                                            @endif
+                                        @endforeach
+
+                                        @if ($voucher->voucherDetail->isEmpty())
+                                            <p>Chưa có người dùng nào sử dụng voucher này.</p>
+                                        @endif
+                                    </div>
+
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
                     <td>{{ $voucher->usage_limit }}</td>
                     <td>{{ \Carbon\Carbon::parse($voucher->start_date)->format('H:i:s d/m/Y ') }}</td>
                     <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y ') }}</td>
@@ -290,6 +454,32 @@
         function confirmDelete(event) {
             if (!confirm('Are you sure?')) {
                 event.preventDefault();
+            }
+        }
+    </script>
+
+    <script>
+        // Mở modal
+        document.querySelectorAll('.open-modal').forEach(item => {
+            item.addEventListener('click', function(event) {
+                event.preventDefault();
+                const modalId = this.getAttribute('data-modal-id');
+                document.getElementById(modalId).style.display = 'block';
+            });
+        });
+
+        // Đóng modal khi nhấn vào dấu x hoặc nút đóng
+        document.querySelectorAll('.close-btn').forEach(item => {
+            item.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal-id');
+                document.getElementById(modalId).style.display = 'none';
+            });
+        });
+
+        // Đóng modal khi click ra ngoài modal
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
         }
     </script>

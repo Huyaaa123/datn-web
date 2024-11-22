@@ -19,11 +19,30 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Product::with(['category', 'galleries'])->latest('id')->paginate(4);
-        return view('admin.product', compact('data'));
+        $search = $request->input('search');
+        $sort = $request->input('sort');
+
+        $data = Product::with(['category', 'galleries'])
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('sku', 'like', "%{$search}%");
+            })
+            ->when($sort, function ($query, $sort) {
+                if ($sort == 'price_asc') {
+                    $query->orderBy('price', 'asc'); 
+                } elseif ($sort == 'price_desc') {
+                    $query->orderBy('price', 'desc');
+                }
+            })
+            ->latest('id')
+            ->paginate(4);
+
+        return view('admin.product', compact('data', 'search', 'sort'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.

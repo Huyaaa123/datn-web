@@ -22,7 +22,7 @@ class OrderStatusSeeder extends Seeder
             'Hoàn thành',
             'Hủy đơn',
             'Chờ xác nhận hủy',
-            'Đã hủy'
+            'Đã hủy',
         ];
 
         foreach ($statuses as $status) {

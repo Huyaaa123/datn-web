@@ -170,7 +170,86 @@
             /* Màu nền cho trang đang hoạt động */
             color: #fff;
         }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            /* Khoảng cách giữa các phần tử */
+        }
+
+        .search-form input {
+            width: 200px;
+            /* Độ rộng cụ thể */
+        }
+
+        .form-select {
+            appearance: none;
+            /* Ẩn mũi tên mặc định */
+            padding: 8px 12px;
+            /* Thêm khoảng cách bên trong */
+            font-size: 14px;
+            /* Kích thước chữ */
+            color: #333;
+            /* Màu chữ */
+            background-color: #f8f9fa;
+            /* Màu nền */
+            border: 1px solid #ccc;
+            /* Đường viền */
+            border-radius: 4px;
+            /* Bo góc */
+            transition: all 0.3s ease;
+            /* Hiệu ứng chuyển đổi */
+            cursor: pointer;
+            /* Con trỏ chuột */
+        }
+
+        .form-select:hover {
+            border-color: #007bff;
+            /* Đổi màu viền khi hover */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Hiệu ứng bóng */
+        }
+
+        .form-select:focus {
+            outline: none;
+            /* Xóa viền mặc định khi focus */
+            border-color: #007bff;
+            /* Màu viền khi focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            /* Hiệu ứng sáng */
+        }
+
+        .form-select option {
+            color: #333;
+            /* Màu chữ cho các lựa chọn */
+            background-color: #fff;
+            /* Màu nền */
+        }
     </style>
+
+<form action="{{ route('admin.orders.index') }}" method="GET" class="form-group search-form">
+    <!-- Tìm kiếm -->
+    <input type="text" name="search" class="form-control "
+           placeholder="Nhập từ khóa tìm kiếm..."
+           value="{{ request('search') }}">
+    <!-- Bộ lọc trạng thái -->
+    <select name="status" class="form-select me-2 w-25" onchange="this.form.submit()">
+        <option value="">Tất cả trạng thái</option>
+        @foreach ($orderStatus as $status)
+            <option value="{{ $status->id }}" {{ request('status') == $status->id ? 'selected' : '' }}>
+                {{ $status->name }}
+            </option>
+        @endforeach
+    </select>
+
+    <select name="sort" class="form-select me-2 w-25" onchange="this.form.submit()">
+        <option value="">Sắp xếp theo</option>
+        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Đơn hàng mới nhất</option>
+        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Đơn hàng cũ nhất</option>
+    </select>
+</form>
+
 
     @if (session('success'))
         <p>{{ session('success') }}</p>

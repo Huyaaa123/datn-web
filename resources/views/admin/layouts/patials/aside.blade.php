@@ -49,6 +49,13 @@
         <h3>Mã giảm giá</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
+    <a href="{{ route('admin.statistic.index') }}">
+        <span class="material-icons-sharp">
+            trending_up
+            </span>
+        <h3>Thống kê</h3>
+        {{-- <span class="message-count">27</span> --}}
+    </a>
     <a href="#">
         <span class="material-icons-sharp">
             settings

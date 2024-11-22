@@ -11,7 +11,6 @@
 <style>
     body {
         font-family: 'Playfair Display', serif;
-
     }
 </style>
 

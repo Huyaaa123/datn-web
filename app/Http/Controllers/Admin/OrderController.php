@@ -13,11 +13,38 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        $filterStatus = $request->input('status');
+        $sort = $request->input('sort'); // Lấy giá trị từ select 'sort'
+
         $orderStatus = OrderStatus::all();
-        $orders = Order::with('user')->latest('id')->paginate(4);
-        return view('admin.orders', compact('orders', 'orderStatus'));
+
+        $orders = Order::with('user')
+            ->when($search, function ($query, $search) {
+                // Tìm kiếm theo tên người dùng, id đơn hàng và địa chỉ giao hàng
+                $query->where('payment_method', 'like', "%{$search}%")
+                      ->orWhere('shipping_address', 'like', "%{$search}%")
+                      ->orWhereHas('user', function ($subQuery) use ($search) {
+                          $subQuery->where('name', 'like', "%{$search}%");
+                      });
+            })
+            ->when($filterStatus, function ($query, $filterStatus) {
+                // Lọc theo trạng thái đơn hàng
+                $query->where('order_status_id', $filterStatus);
+            })
+            // Thêm điều kiện sắp xếp dựa trên lựa chọn 'sort'
+            ->when($sort, function ($query, $sort) {
+                if ($sort == 'latest') {
+                    $query->latest(); // Sắp xếp theo đơn hàng mới nhất
+                } elseif ($sort == 'oldest') {
+                    $query->oldest(); // Sắp xếp theo đơn hàng cũ nhất
+                }
+            })
+            ->paginate(4); // Phân trang kết quả
+
+        return view('admin.orders', compact('orders', 'orderStatus', 'search', 'filterStatus', 'sort'));
     }
 
     public function create()
