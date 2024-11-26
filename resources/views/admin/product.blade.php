@@ -129,26 +129,6 @@
             background-color: #218838;
         }
 
-        /* Bảng trong chế độ tối */
-        .dark-mode-variables table {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        .dark-mode-variables th {
-            background-color: #444;
-            color: #fff;
-        }
-
-        .dark-mode-variables tbody tr:nth-child(even) {
-            background-color: #3a3a3a;
-        }
-
-        .dark-mode-variables tbody tr:hover {
-            background-color: #555;
-        }
-
         .pagination {
             display: flex;
             /* Sử dụng Flexbox để căn giữa */
@@ -282,8 +262,8 @@
             <tr>
                 <th>Mã </th>
                 <th>Tên </th>
-                <th>Slug</th>
                 <th>Ảnh</th>
+                <th>Màu sắc</th>
                 <th>Giá</th>
                 <th>Mô tả</th>
                 <th>Danh mục</th>
@@ -295,11 +275,19 @@
                 <tr>
                     <td>{{ $product->sku }}</td>
                     <td>{{ Str::limit($product->name, 5, '...') }}</td>
-                    <td>{{ Str::limit($product->name, 5, '...') }}</td>
                     <td>
                         <img src="{{ Storage::url($product->image_path) }}" style="width: 100px; height: auto;">
                     </td>
-                    <td>{{ number_format($product->price) }}VND</td>
+                    <td>
+                        @foreach ($product->colors as $color)
+                            <span
+                                style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->code }}; border-radius: 50%; margin-right: 5px;"
+                                title="{{ $color->name }}">
+                            </span>
+                        @endforeach
+                    </td>
+
+                    <td>{{ number_format($product->price) }}đ</td>
                     <td>{{ Str::limit($product->description, 10, '...') }}</td>
                     <td>{{ Str::limit($product->category->name, 10, '...') }}</td>
                     <td>

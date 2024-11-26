@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Discount;
+use App\Models\Size;
 use App\Models\Variant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

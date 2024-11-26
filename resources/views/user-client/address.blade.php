@@ -47,6 +47,11 @@
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+
+
                 <div class="RCnc9v bg-white p-4 rounded shadow">
                     <form action="{{ route('addresses.store') }}" method="POST">
                         @csrf
@@ -80,7 +85,7 @@
 
                         <div class="mb-3">
                             <label for="address" class="form-label">Số nhà/Đường</label>
-                            <input type="text" class="form-control" name="address" id="address" required>
+                            <input type="text" class="form-control" name="address" id="address" >
                             @error('address')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -92,8 +97,8 @@
                 <ul class="list-group">
                     @foreach ($addresses as $address)
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Số nhà {{ $address->address }}, Xã {{ $address->ward }}, Huyện {{ $address->district }},
-                            Thành phố {{ $address->city }}
+                            Số nhà {{ $address->address }}, {{ $address->ward }}, {{ $address->district }},
+                             {{ $address->city }}
                             <form action="{{ route('addresses.destroy', $address->id) }}" method="POST"
                                 onsubmit="return confirm('Bạn có chắc chắn muốn xóa địa chỉ này không?');">
                                 @csrf

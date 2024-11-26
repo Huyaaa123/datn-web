@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserClientRequest;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,16 +55,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserClientRequest $request, string $id)
     {
-        // Xác thực dữ liệu đầu vào
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:15', // Nếu có số điện thoại
-            'gender' => 'nullable|string|in:male,female,other', // Giới tính
-            'birth_date' => 'nullable|date', // Ngày sinh
-        ]);
-
         // Tìm người dùng bằng ID
         $user = User::findOrFail($id);
 

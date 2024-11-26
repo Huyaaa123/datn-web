@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAddressRequest;
 use App\Models\Address;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -47,15 +48,15 @@ class UserInformationController extends Controller
     }
 
     // Lưu địa chỉ mới
-    public function addstore(Request $request)
+    public function addstore(StoreAddressRequest $request)
     {
-        $request->validate([
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'district' => 'required|string|max:100',
-            'ward' => 'required|string|max:100',
-        ]);
+        // Kiểm tra nếu người dùng đã có địa chỉ
+        $existingAddress = Address::where('user_id', Auth::id())->first();
+        if ($existingAddress) {
+            return redirect()->route('addresses.index')->with('error', 'Bạn chỉ có thể thêm một địa chỉ duy nhất.');
+        }
 
+        // Tạo địa chỉ mới
         Address::create([
             'user_id' => Auth::id(), // Lưu ID người dùng
             'address' => $request->address,
@@ -66,6 +67,7 @@ class UserInformationController extends Controller
 
         return redirect()->route('addresses.index')->with('success', 'Địa chỉ đã được lưu thành công!');
     }
+
 
     public function destroy($id)
 {

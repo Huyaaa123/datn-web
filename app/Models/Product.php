@@ -17,7 +17,6 @@ class Product extends Model
         'price',
         'category_id',
         'sku',
-        'discount_id'
     ];
     public function category()
     {
@@ -37,5 +36,13 @@ class Product extends Model
     {
         return $this->hasMany(OrderDetail::class, 'product_id');
     }
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, 'product_size');
+    }
 
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'product_color');
+    }
 }

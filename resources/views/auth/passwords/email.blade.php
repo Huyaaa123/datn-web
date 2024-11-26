@@ -44,7 +44,7 @@
                 <div class='line3'></div>
             </div>
         </div>
-        <section class="fxt-template-animation fxt-template-layout9" data-bg-image="../loginnn/img/figure/bg9-l.jpg">
+        <section class="fxt-template-animation fxt-template-layout9" data-bg-image="../loginnn/img/figure/banner3.jpg">
             <div class="container">
                 <div class="row align-items-center justify-content-center">
                     <div class="col-lg-3">
@@ -52,7 +52,7 @@
                             <a href="/" class="fxt-logo"><img
                                     src="../loginnn/img/logo-8.png" width="1000px"
                                     alt="Logo"></a>
-                            <h3>DANG CAP XUNG TAM</h3>
+
                         </div>
                     </div>
                     <div class="col-lg-6">

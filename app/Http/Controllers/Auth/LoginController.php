@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 
 class LoginController extends Controller
 {
@@ -36,5 +39,20 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
+    }
+    public function login(LoginRequest $request)
+    {
+        // Xử lý đăng nhập
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            // Đăng nhập thành công, chuyển hướng người dùng
+            return redirect()->intended($this->redirectTo);
+        }
+
+        // Đăng nhập thất bại, quay lại với thông báo lỗi
+        return back()->withErrors([
+            'password' => 'Mật khẩu không đúng.',
+        ]);
     }
 }

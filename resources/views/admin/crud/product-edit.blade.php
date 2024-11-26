@@ -176,6 +176,33 @@
                     @enderror
                 </div>
             </div>
+            <div class="form-group-container">
+                <div class="form-group">
+                    <label for="colors">Màu sắc</label>
+                    <select class="form-control" name="colors[]" id="colors" multiple>
+                        @foreach ($colors as $id => $name )
+                        <option
+                        @selected(in_array($id, $productColors)) value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    @error('price')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="sizes">Kích thước</label>
+                    <select class="form-control" id="category" name="sizes[]" multiple>
+                        @foreach ($sizes as $id => $name )
+                        <option
+                        @selected(in_array($id, $productSizes)) value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
 
             <div class="form-group">
                 <label for="description">Mô tả</label>
@@ -190,6 +217,7 @@
                 <a href="{{ route('admin.product.index') }}" class="btn btn-success">Cancel</a>
             </div>
         </form>
+
         @if (session('success'))
             <p class="text-success">{{ session('success') }}</p>
         @endif

@@ -31,6 +31,9 @@ class StoreProductRequest extends FormRequest
             'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'galleries' => 'required|array',
             'galleries.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'colors' => 'required|array',  // Yêu cầu mảng màu sắc
+            'sizes' => 'required|array',   // Yêu cầu mảng kích thước
+
         ];
     }
     public function messages()
@@ -44,9 +47,15 @@ class StoreProductRequest extends FormRequest
             'description.required' => 'Mô sản phẩm là bắt buộc.',
             'price.min' => 'Giá sản phẩm không được nhỏ hơn 0.',
             'sku.unique' => 'Mã sản phẩm đã tồn tại.',
+            'sku.required' => 'Mã sản phẩm là bắt buộc.',
             'image_path.image' => 'Ảnh sản phẩm phải là một ảnh hợp lệ.',
             'galleries.array' => 'Galleries phải là một mảng ảnh.',
             'galleries.*.image' => 'Ảnh trong gallery phải là một ảnh hợp lệ.',
+            'colors.required' => 'Màu sắc là bắt buộc.',
+            'colors.array' => 'Màu sắc phải là một mảng.',
+            'sizes.required' => 'Kích thước là bắt buộc.',
+            'sizes.array' => 'Kích thước phải là một mảng.',
+
         ];
     }
 }

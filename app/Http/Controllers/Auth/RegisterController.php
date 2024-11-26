@@ -52,6 +52,21 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'name.required' => 'Tên không được để trống.',
+            'name.string' => 'Tên phải là chuỗi ký tự.',
+            'name.max' => 'Tên không được vượt quá 255 ký tự.',
+
+            'email.required' => 'Email không được để trống.',
+            'email.string' => 'Email phải là chuỗi ký tự.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'email.unique' => 'Email đã được sử dụng.',
+
+            'password.required' => 'Mật khẩu không được để trống.',
+            'password.string' => 'Mật khẩu phải là chuỗi ký tự.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
         ]);
     }
 
@@ -67,7 +82,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            
+
         ]);
     }
 }

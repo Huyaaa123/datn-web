@@ -93,6 +93,9 @@
                                             value="other" {{ $user->gender == 'other' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="other">Khác</label>
                                     </div>
+                                    @error('gender')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </td>
                             </tr>
                             <tr>
@@ -100,6 +103,9 @@
                                 <td>
                                     <input type="date" name="birth_date" class="form-control"
                                         value="{{ old('birth_date', $user->birth_date) }}">
+                                        @error('birth_date')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </td>
                             </tr>
                             <tr>

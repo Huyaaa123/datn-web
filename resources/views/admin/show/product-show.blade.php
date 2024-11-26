@@ -64,6 +64,7 @@
                 <p><strong>Mã:</strong> {{ $product->sku }}</p>
                 <p><strong>Tên:</strong> {{ $product->name }}</p>
                 <p><strong>Slug:</strong> {{ $product->slug }}</p>
+
                 <p style="text-align: center;">
                     <strong>Ảnh:</strong>
                     <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
@@ -84,12 +85,36 @@
                 </p>
 
                 <p><strong>Mô tả:</strong> {{ $product->description }}</p>
-                <p><strong>Giá:</strong> {{ number_format($product->price) }}VND</p>
+                <p><strong>Giá:</strong> {{ number_format($product->price) }}đ</p>
                 <p><strong>Danh mục:</strong> {{ $product->category->name }}</p>
+
+                <!-- Colors Section (Căn giữa) -->
+                <p><strong>Màu sắc:</strong></p>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    @foreach ($product->colors as $color)
+                        <span
+                            style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->code }}; border-radius: 50%; margin-right: 5px; cursor: pointer;"
+                            title="{{ $color->name }}">
+                        </span>
+                    @endforeach
+                </div>
+
+                <!-- Sizes Section (Căn chỉnh đều) -->
+                <p><strong>Kích thước:</strong></p>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    @foreach ($product->sizes as $size)
+                        <span style="padding: 5px 10px; border: 1px solid #ccc; margin-right: 5px; text-align: center; cursor: pointer;">
+                            {{ $size->name }}
+                        </span>
+                    @endforeach
+                </div>
+
             </div>
+
             <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-danger mt-3">Sửa</a>
-            <a href="{{ route('admin.product.index') }}" class="btn btn-primary mt-3">Cancel</a>
+            <a href="{{ route('admin.product.index') }}" class="btn btn-primary mt-3">Hủy</a>
         </div>
+
 
         <div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); flex-direction: column; justify-content: center; align-items: center;">
             <img id="modal-img" src="" style="max-width: 80%; max-height: 80%; border-radius: 10px;">

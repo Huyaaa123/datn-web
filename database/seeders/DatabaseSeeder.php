@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             OrderStatusSeeder::class,
             UserSeeder::class,
             VoucherSeeder::class,
-            // VariantSeeder::class,
+            ColorSeeder::class,
+            SizeSeeder::class,
         ]);
     }
 }
