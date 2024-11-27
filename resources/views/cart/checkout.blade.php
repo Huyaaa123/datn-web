@@ -112,23 +112,41 @@
                             <span style="color: #5e5e5e; font-size:14px;">{{ count($cart) }} sản phẩm</span>
                         </h4>
                         @foreach ($cart as $product)
-                            <div class="row border-bottom py-3 align-items-center">
-                                <div class="col-md-2">
-                                    <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" style="width: 55px; height: auto;">
-                                </div>
-                                <div class="col-md-8">
-                                    <p class="product-name" style="font-size:14px; font-weight: bold;">{{ $product['name'] }}</p> <!-- Sử dụng lớp CSS cho tên sản phẩm -->
-                                    <span style=" color:black;">
-                                        {{ number_format($product['price'] ) }}đ
-                                    </span>
-                                </div>
-                                <div class="col-md-2">
-                                    <span style=" color:black; position: relative; bottom:-20px; ">
-                                        x{{ $product['quantity'] }}
-                                    </span>
-                                </div>
+                        <div class="row border-bottom py-3 align-items-center">
+                            <div class="col-md-2">
+                                <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" style="width: 75px; height: auto;">
                             </div>
-                        @endforeach
+                            <div class="col-md-8" style="padding-left: 35px;"> <!-- Lùi thêm một chút nữa -->
+                                <!-- Tên sản phẩm -->
+                                <p class="product-name" style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">
+                                    {{ $product['name'] }}
+                                </p>
+
+                                @php
+                                    $color = \DB::table('colors')->where('id', $product['color_id'])->first();
+                                    $size = \DB::table('sizes')->where('id', $product['size_id'])->first();
+                                @endphp
+
+                                <!-- Kích thước và màu sắc -->
+                                <p class="mb-0" style="font-size: 14px; color: #555; margin-bottom: 5px;">
+                                    {{ $size->name ?? 'Kích thước không xác định' }},
+                                    {{ $color->name ?? 'Màu không xác định' }}
+                                </p>
+
+                                <!-- Giá sản phẩm -->
+                                <span style="font-size: 14px; color: black; font-weight: bold;">
+                                    {{ number_format($product['price']) }} đ
+                                </span>
+                            </div>
+
+                            <div class="col-md-2">
+                                <span style="color:black; position: relative; bottom:-27px;">
+                                    x{{ $product['quantity'] }}
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+
 
                         <div class="total my-4 d-flex justify-content-between">
                             <span class="total-label" style="color:rgb(37, 36, 36); font-weight: bold">Tổng cộng:</span>

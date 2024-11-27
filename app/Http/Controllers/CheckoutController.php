@@ -41,6 +41,10 @@ class CheckoutController extends Controller
                     return $product['quantity'] * $product['price'];
                 }, $cart));
 
+                $variants = [];
+                foreach ($cart as $productId => $product) {
+                    $variants[] = $product['color_id'] . ',' . $product['size_id'];
+                }
                 // Lưu thông tin đơn hàng vào cơ sở dữ liệu
                 $order = new Order();
                 $order->user_id = auth()->check() ? auth()->id() : null; // Lưu ID người dùng nếu đã đăng nhập
@@ -50,7 +54,8 @@ class CheckoutController extends Controller
                 $order->payment_method = 'COD';
                 $order->checkpay = 'Chưa thanh toán';
                 $order->telephone = $request->phone;
-                $order->shipping_address = $request->city . ', ' . $request->district . ', ' . $request->ward . ', ' . $request->address;
+                $order->variants = implode(',', $variants);
+                $order->shipping_address = $request->address . ', ' . $request->ward . ', ' . $request->district . ', ' . $request->city;
                 $order->confirmed = null;
                 $order->on_delivery = null;
                 $order->received = null;
@@ -59,7 +64,6 @@ class CheckoutController extends Controller
                 $order->canceled = null;
                 $order->save();
 
-                // Lưu các sản phẩm trong giỏ hàng vào bảng chi tiết đơn hàng
                 foreach ($cart as $productId => $product) {
                     $order->orderDetails()->create([
                         'product_id' => $productId,
@@ -123,6 +127,10 @@ class CheckoutController extends Controller
             if ($amount < 10000 || $amount > 50000000) {
                 return redirect()->back()->with('error', 'Số tiền giao dịch phải từ 10,000 VNĐ đến 50,000,000 VNĐ.');
             }
+            $variants = [];
+            foreach ($cart as $productId => $product) {
+                $variants[] = $product['color_id'] . ',' . $product['size_id'];
+            }
 
             $orderId = time() . "";
             $redirectUrl = "http://datn-web.test/thanks"; // URL để nhận thông tin trả về từ MoMo
@@ -164,6 +172,7 @@ class CheckoutController extends Controller
             $order->total_amount = $amount;
             $order->checkpay = 'Đã thanh toán';
             $order->order_date = now();
+            $order->variants = implode(',', $variants);
             $order->shipping_address = implode(', ', [
                 $request->input('address'),
                 $request->input('ward'),

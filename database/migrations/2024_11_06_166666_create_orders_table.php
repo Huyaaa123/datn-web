@@ -22,6 +22,7 @@ return new class extends Migration
             $table->datetime('order_date')->nullable(); // Ngày đặt hàng
             $table->string('telephone')->nullable();
             $table->string('shipping_address')->nullable(); // Địa chỉ giao hàng
+            $table->string('variants')->nullable();
             $table->string('payment_method'); // Phương thức thanh toán
             $table->text('notes')->nullable(); // Ghi chú
             $table->text('checkpay')->nullable(); // Check xem da tt hay chua

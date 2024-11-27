@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Product;
+use App\Models\Size;
 use App\Models\Voucher;
 use App\Models\VoucherDetail;
 use Illuminate\Http\Request;
@@ -80,6 +82,10 @@ class MyOrderController extends Controller
         $categories = Category::all();
         $vouchers = Voucher::all();
 
+        $colors = Color::pluck('name', 'id')->toArray();
+        $sizes = Size::pluck('name', 'id')->toArray();
+
+
         // Lấy voucher đã áp dụng cho đơn hàng từ bảng voucher_details
         $voucherDetail = VoucherDetail::where('order_id', $id)->first();
         $appliedVoucher = $voucherDetail ? $voucherDetail->voucher : null; // Nếu có voucher, lấy thông tin voucher
@@ -90,7 +96,7 @@ class MyOrderController extends Controller
             $item->discounted_price = $item->product->price;
         }
 
-        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher'));
+        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher','colors','sizes'));
     }
 
     /**
@@ -105,7 +111,7 @@ class MyOrderController extends Controller
             $order->order_status_id = 8;
             $order->cancelorder = now();
             $order->cancel = $request->cancel;
-            $order->notes = auth()->user()->name; 
+            $order->notes = auth()->user()->name;
         } elseif ($request->order_status_id === '5') {
             $order->order_status_id = 5;
             $order->received = now();

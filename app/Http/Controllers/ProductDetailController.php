@@ -26,7 +26,7 @@ class ProductDetailController extends Controller
     public function show($slug)
     {
         // Lấy sản phẩm dựa trên slug
-        $product = Product::with( 'galleries')->where('slug', $slug)->firstOrFail();
+        $product = Product::with('galleries', 'colors', 'sizes')->where('slug', $slug)->firstOrFail();
 
         // Lấy danh mục của sản phẩm
         $category = $product->category; // Giả sử bạn đã định nghĩa quan hệ trong model Product

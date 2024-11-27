@@ -342,7 +342,7 @@
                                 <div class="order-item-image mr-3">
                                     @if ($item->product->image_path)
                                         <img src="{{ Storage::url($item->product->image_path) }}"
-                                            alt="{{ $item->product->name }}" class="img-fluid" style="max-width: 80px;">
+                                            alt="{{ $item->product->name }}" class="img-fluid" style="max-width: 100px;">
                                     @else
                                         Không có hình ảnh
                                     @endif
@@ -354,11 +354,24 @@
                                         {{ $item->product->name }}
                                     </div>
                                     <!-- Hiển thị danh mục sản phẩm -->
-                                    <div class="order-item-category text-muted">
-                                        Phân loại: {{ $item->product->category->name ?? 'Không có danh mục' }}
+                                    <div style=" color:black;" class="order-item-category">
+                                     {{ $item->product->category->name ?? 'Không có danh mục' }}
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="order-item-date text-muted">
+                                    @php
+                                    // Tách chuỗi variants thành mảng
+                                    $variants = explode(',', $order->variants);
+
+                                    // Lấy thông tin màu sắc và kích thước từ cơ sở dữ liệu
+                                    $color = \App\Models\Color::find($variants[0]); // Tìm màu theo color_id
+                                    $size = \App\Models\Size::find($variants[1]);  // Tìm kích thước theo size_id
+                                @endphp
+
+                                <div style=" color:black;" class="order-item-variants">
+                                    {{ $size->name ?? 'Không xác định' }}, {{ $color->name ?? 'Không xác định' }}
+                                </div>
+
+                                    <div style=" color:black;" class="d-flex justify-content-between align-items-center">
+                                        <div class="order-item-date">
                                             x{{ $item->quantity }}
                                         </div>
 
@@ -437,8 +450,8 @@
                                 <tbody>
                                     <!-- Hiển thị tổng tiền hàng (chưa giảm giá) -->
                                     <tr>
-                                        <td class="col-8 text-end border-end">Tổng tiền hàng</td>
-                                        <td class="col-4 text-end">{{ number_format($totalOriginalPrice, 0, ',', '.') }} đ
+                                        <td class="col-8 text-end border-end"><strong>Tổng tiền hàng</strong></td>
+                                        <td class="col-4 text-end"><strong>{{ number_format($totalOriginalPrice, 0, ',', '.') }} đ</strong>
                                         </td>
                                     </tr>
 
@@ -457,7 +470,7 @@
                                         </tr>
                                     @else
                                         <tr>
-                                            <td class="col-8 text-end border-end">Giảm giá</td>
+                                            <td class="col-8 text-end border-end"><strong>Giảm giá</strong></td>
                                             <td class="col-4 text-end" style="font-weight: bold;">0 đ</td>
                                         </tr>
                                     @endif

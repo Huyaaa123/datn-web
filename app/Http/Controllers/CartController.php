@@ -27,12 +27,14 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-
         $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1',
+            'color_id' => 'required|integer|exists:colors,id',
+            'size_id' => 'required|integer|exists:sizes,id',
         ]);
 
+        // Lấy giỏ hàng hiện tại từ session
         $cart = session()->get('cart', []);
 
         $product = Product::find($request->product_id);
@@ -41,46 +43,45 @@ class CartController extends Controller
         }
 
         $quantity = $request->quantity;
+        $color_id = $request->color_id;
+        $size_id = $request->size_id;
 
+        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
         if (isset($cart[$request->product_id])) {
-            // Tăng số lượng trong session
+            // Tăng số lượng sản phẩm trong giỏ hàng
             $cart[$request->product_id]['quantity'] += $quantity;
-
-            // Cập nhật số lượng trong cơ sở dữ liệu
-            $cartItem = Cart::where('user_id', auth()->id())
-                ->where('product_id', $request->product_id)
-                ->first();
-
-            if ($cartItem) {
-                $cartItem->quantity += $quantity;
-                $cartItem->total_price = $cartItem->quantity * $product->price;
-                $cartItem->save();
-            }
         } else {
+            // Thêm sản phẩm mới vào giỏ hàng
             $cart[$request->product_id] = [
                 'name' => $product->name,
                 'quantity' => $quantity,
                 'price' => $product->price,
                 'image' => $product->image_path,
+                'color_id' => $color_id,  // Lưu màu sắc người dùng chọn vào giỏ hàng
+                'size_id' => $size_id,    // Lưu kích thước người dùng chọn vào giỏ hàng
             ];
-
-            try {
-                Cart::create([
-                    'user_id' => auth()->id(),
-                    'product_id' => $request->product_id,
-                    'quantity' => $quantity,
-                    'total_price' => $product->price * $quantity,
-                ]);
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm: ' . $e->getMessage());
-            }
         }
 
         // Cập nhật lại giỏ hàng trong session
         session()->put('cart', $cart);
 
+        // Nếu bạn muốn lưu vào cơ sở dữ liệu thì có thể thêm phần này
+        try {
+            Cart::create([
+                'user_id' => auth()->id(),
+                'product_id' => $request->product_id,
+                'quantity' => $quantity,
+                'total_price' => $product->price * $quantity,
+                'color_id' => $color_id,  // Lưu màu sắc vào giỏ hàng
+                'size_id' => $size_id,    // Lưu kích thước vào giỏ hàng
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: ' . $e->getMessage());
+        }
+
         return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     }
+
 
     public function cong(Request $request)
     {

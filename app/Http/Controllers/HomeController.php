@@ -31,17 +31,14 @@ class HomeController extends Controller
     {
         $user = auth()->user();
 
-        // Nếu người dùng là admin, chuyển hướng tới trang admin
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
 
-        // Lấy sản phẩm và danh mục
         $products = Product::paginate(4);
         $categories = Category::all();
         $vouchers = Voucher::all();
 
-        // Cập nhật giỏ hàng trong session từ cơ sở dữ liệu
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {

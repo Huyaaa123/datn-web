@@ -32,23 +32,6 @@
             transition: transform 0.3s ease;
             /* Hiệu ứng mờ dần khi hover */
         }
-
-        /* Định nghĩa vị trí ban đầu của overlay */
-        .overlay {
-            position: absolute;
-            bottom: -100%;
-            /* Ẩn overlay hoàn toàn bên dưới khối */
-            left: 0;
-            right: 0;
-            background-color: rgba(49, 47, 47, 0.7);
-            /* Nền tối với độ trong suốt */
-            color: white;
-            text-align: center;
-            padding: 20px;
-            transition: all 0.5s ease;
-            /* Hiệu ứng di chuyển */
-        }
-
         /* Hiển thị overlay khi hover */
         .block-4-image:hover .overlay {
             bottom: 0;
@@ -58,13 +41,6 @@
         .block-4-image:hover .product-image {
             transform: scale(1.1);
             /* Tăng kích thước ảnh một chút khi hover */
-        }
-
-        .overlay a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
         }
 
         .d-flex {
@@ -144,12 +120,25 @@
                                                         <img src="{{ Storage::url($product['image']) }}"
                                                             alt="{{ $product['name'] }}" style="width: 80px; height: auto;">
                                                     </div>
-                                                    <div class="col-md-3 col-lg-3 col-xl-3">
-                                                        <h6 class="text-muted">{{ $product['name'] }}</h6>
-                                                        {{ number_format($product['price']) }} đ
+                                                    <div class="col-md-4 col-lg-4 col-xl-4">
+                                                        <h6 style="font-size: 14px;" class="text-muted mb-1">
+                                                            {{ $product['name'] }}</h6>
+                                                        @php
+                                                            $color = \DB::table('colors')
+                                                                ->where('id', $product['color_id'])
+                                                                ->first();
+                                                            $size = \DB::table('sizes')
+                                                                ->where('id', $product['size_id'])
+                                                                ->first();
+                                                        @endphp
+
+                                                        <p class="mb-1">{{ $size->name ?? 'Màu không xác định' }},
+                                                            {{ $color->name ?? 'Kích thước không xác định' }}</p>
+                                                        <p class="mb-0">{{ number_format($product['price']) }} đ</p>
                                                     </div>
+
                                                     <div
-                                                        class="col-md-3 col-lg-3 col-xl-2 d-flex items-center border border-gray-300 rounded-lg">
+                                                        class="col-md-2 col-lg-2 col-xl-2 d-flex items-center border border-gray-300 rounded-lg">
                                                         <!-- Giảm số lượng -->
                                                         <form action="{{ route('cart.tru') }}" method="POST"
                                                             style="display:inline;">
@@ -164,7 +153,7 @@
 
                                                         <!-- Số lượng -->
                                                         <span
-                                                            class="form-control form-control-sm text-center px-3">{{ $product['quantity'] }}</span>
+                                                            class="form-control form-control-sm px">{{ $product['quantity'] }}</span>
 
                                                         <!-- Tăng số lượng -->
                                                         <form action="{{ route('cart.cong') }}" method="POST"
@@ -179,11 +168,15 @@
                                                         </form>
                                                     </div>
 
-                                                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                        <h6 style="font-size: 15px;" class="mb-0">
+                                                    <div class="col-md-2 col-lg-2 col-xl-2 text-end">
+                                                        <!-- Giảm độ rộng cho cột giá -->
+                                                        <h6 style="font-size: 15px; line-height: 1.5; white-space: nowrap; text-align: right;"
+                                                            class="mb-0">
                                                             {{ number_format($product['quantity'] * $product['price'], 0, ',', '.') }}
-                                                            đ</h6>
+                                                            đ
+                                                        </h6>
                                                     </div>
+
                                                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                         <form action="{{ route('cart.remove') }}" method="POST"
                                                             style="display: inline;">
@@ -197,6 +190,7 @@
                                                 </div>
                                                 <hr class="my-4">
                                             @endforeach
+
 
                                             <div class="pt-5">
                                                 <h6 class="mb-0"><a href="/" class="text-body"><i
@@ -236,7 +230,7 @@
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content">
-                                                        <div class="modal-header" >
+                                                        <div class="modal-header">
                                                             <h5 class="modal-title" id="exampleModalLabel">Chọn Voucher</h5>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close">
@@ -263,8 +257,7 @@
                                                                                     @if ($voucher->discount_percent)
                                                                                         Giảm
                                                                                         {{ $voucher->discount_percent }}%
-                                                                                        @elseif($voucher->discount_amount)
-
+                                                                                    @elseif($voucher->discount_amount)
                                                                                         Giảm
                                                                                         {{ number_format($voucher->discount_amount) }}
                                                                                         VND
@@ -289,9 +282,11 @@
                                                             </form>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <form action="{{ route('cart.removeVoucher') }}" method="POST" style="display: inline;">
+                                                            <form action="{{ route('cart.removeVoucher') }}"
+                                                                method="POST" style="display: inline;">
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-secondary">Không dùng </button>
+                                                                <button type="submit" class="btn btn-secondary">Không
+                                                                    dùng </button>
                                                             </form>
                                                             <!-- Nút OK để submit form -->
                                                             <button type="button" class="btn btn-danger"
@@ -341,62 +336,28 @@
                 </div> <br>
                 <div class="row">
                     @foreach ($products as $product)
-                        <div class="col-md-3 mb-4">
-                            <div class="card" style="width: 100%;">
-                                <figure class="block-4-image">
-                                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
-                                        class="card-img-top" style="height: 200px; object-fit: cover;">
-                                    <div class="overlay">
-                                        <a href="" data-product-id="{{ $product->id }}"><i
-                                                class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng</a>
-                                    </div>
-                                </figure>
-                                <div class="card-body text-center">
-                                    <h5 class="card-title" style="font-weight: bold; color:black;">
-                                        <a style="font-size:16px; font-weight: bold; color:rgb(0, 0, 0);"
-                                            href="{{ route('product.show', $product->slug) }}">{{ $product->name }}
-                                            ({{ $product->sku }})
-                                        </a>
-                                    </h5>
-                                    <p class="card-text" style=" font-weight: bold; color:rgb(144, 29, 29);">
-                                        {{ number_format($product->price) }} đ</p>
-                                </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow-sm rounded border-2">
+                            <figure class="block-4-image mb-0">
+                                <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
+                                    class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 2px solid #eee;">
+                            </figure>
+                            <div class="card-body text-center" style="padding-top: 10px;">
+                                <h5 class="card-title" style="font-size: 16px; font-weight: bold; color: #333; margin-top: 5px;">
+                                    <a href="{{ route('product.show', $product->slug) }}" style="font-size: 16px; font-weight: bold; color: rgb(0, 0, 0); text-decoration: none;">
+                                        {{ $product->name }} ({{ $product->sku }})
+                                    </a>
+                                </h5>
+                                <p class="product-category text-muted" style="font-weight: bold; font-size: 14px; color: #777; margin-top: -5px;">
+                                    {{ $product->category->name }}
+                                </p>
+                                <p class="card-text" style="font-weight: bold; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
+                                    {{ number_format($product->price) }} đ
+                                </p>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-        {{-- modal --}}
-        <div class="modal" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document"> <!-- Thêm lớp này -->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="quantityModalLabel">Chọn số lượng</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                     </div>
-                    <div class="modal-body">
-                        <form id="add-to-cart-form" method="POST" action="{{ route('cart.add') }}">
-                            @csrf
-                            <input type="hidden" name="product_id" id="modal_product_id">
-                            <div class="form-group">
-                                <div class="form-group d-flex align-items-center">
-                                    <label for="quantity" class="mr-2">Số lượng:</label>
-                                    <button type="button" class="btn btn-secondary" id="decrement">-</button>
-                                    <input type="number" name="quantity" id="quantity" value="1" min="1"
-                                        max="10" class="form-control mx-2" required style="width: 50px;">
-                                    <button type="button" class="btn btn-secondary" id="increment">+</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" class="btn btn-success" id="confirm-add-to-cart">Xác nhận</button>
-                    </div>
+                @endforeach
                 </div>
             </div>
         </div>

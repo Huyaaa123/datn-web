@@ -20,6 +20,7 @@ class Order extends Model
         'checkpay',
         'notes',
         'cancel',
+        'variants',
         'confirmed',
         'on_delivery',
         'delivered',

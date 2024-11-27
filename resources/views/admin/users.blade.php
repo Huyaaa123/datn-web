@@ -153,18 +153,26 @@
                         </td>
                         <td>
                             @if ($user->gender)
-                                {{ Str::limit($user->gender, 15, '...') }}
+                                @if ($user->gender == 'male')
+                                    Nam
+                                @elseif ($user->gender == 'female')
+                                    Nữ
+                                @else
+                                    Khác
+                                @endif
                             @else
                                 ...
                             @endif
                         </td>
+
                         <td>
                             @if ($user->birth_date)
-                                {{ Str::limit($user->birth_date, 15, '...') }}
+                                {{ \Carbon\Carbon::parse($user->birth_date)->format('d/m/Y') }}
                             @else
                                 ...
                             @endif
                         </td>
+
                         <td>
                             @if ($user->addresses->isNotEmpty())
                                 @foreach ($user->addresses as $address)

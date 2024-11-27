@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Color;
 use App\Models\Product;
+use App\Models\Size;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,6 +19,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Product::class)->constrained();
+            $table->foreignIdFor(Color::class)->constrained();
+            $table->foreignIdFor(Size::class)->constrained();
             $table->integer('quantity');
             $table->decimal('total_price', 10, 2);
             $table->timestamps();

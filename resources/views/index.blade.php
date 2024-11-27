@@ -15,22 +15,6 @@
             /* Hiệu ứng mờ dần khi hover */
         }
 
-        /* Định nghĩa vị trí ban đầu của overlay */
-        .overlay {
-            position: absolute;
-            bottom: -100%;
-            /* Ẩn overlay hoàn toàn bên dưới khối */
-            left: 0;
-            right: 0;
-            background-color: rgba(49, 47, 47, 0.7);
-            /* Nền tối với độ trong suốt */
-            color: white;
-            text-align: center;
-            padding: 20px;
-            transition: all 0.5s ease;
-            /* Hiệu ứng di chuyển */
-        }
-
         /* Hiển thị overlay khi hover */
         .block-4-image:hover .overlay {
             bottom: 0;
@@ -40,13 +24,6 @@
         .block-4-image:hover .product-image {
             transform: scale(1.1);
             /* Tăng kích thước ảnh một chút khi hover */
-        }
-
-        .overlay a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
         }
 
         a:hover {
@@ -170,28 +147,30 @@
         <div class="row">
             @foreach ($products as $product)
                 <div class="col-md-3 mb-4">
-                    <div class="card" style="width: 100%;">
-                        <figure class="block-4-image">
+                    <div class="card shadow-sm rounded border-2">
+                        <figure class="block-4-image mb-0">
                             <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
-                                class="card-img-top" style="height: 200px; object-fit: cover;">
-                            <div class="overlay">
-                                <a href="" data-product-id="{{ $product->id }}"><i
-                                        class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng</a>
-                            </div>
+                                class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 2px solid #eee;">
                         </figure>
-                        <div class="card-body text-center">
-                            <h5 class="card-title" style="font-weight: bold; color:black;">
-                                <a style="font-size:16px; font-weight: bold; color:rgb(0, 0, 0);"
-                                    href="{{ route('product.show', $product->slug) }}">{{ $product->name }}
-                                    ({{ $product->sku }})</a>
+                        <div class="card-body text-center" style="padding-top: 10px;">
+                            <h5 class="card-title" style="font-size: 16px; font-weight: bold; color: #333; margin-top: 5px;">
+                                <a href="{{ route('product.show', $product->slug) }}" style="font-size: 16px; font-weight: bold; color: rgb(0, 0, 0); text-decoration: none;">
+                                    {{ $product->name }} ({{ $product->sku }})
+                                </a>
                             </h5>
-                            <p class="card-text" style=" font-weight: bold; color:rgb(144, 29, 29);">
-                                {{ number_format($product->price) }} đ</p>
+                            <p class="product-category text-muted" style="font-weight: bold; font-size: 14px; color: #777; margin-top: -5px;">
+                                {{ $product->category->name }}
+                            </p>
+                            <p class="card-text" style="font-weight: bold; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
+                                {{ number_format($product->price) }} đ
+                            </p>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
+        
+
         <div class="d-flex justify-content-center ">
             <button id="prev-btn" class="btn btn-primary mx-1" disabled>
                 <i class="fa-solid fa-arrow-left"></i>
@@ -202,40 +181,6 @@
         </div>
 
     </div> <br>
-
-    <!-- Modal -->
-    <div class="modal" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="quantityModalLabel">Chọn số lượng</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="add-to-cart-form" method="POST" action="{{ route('cart.add') }}">
-                        @csrf
-                        <input type="hidden" name="product_id" id="modal_product_id">
-                        <div class="form-group">
-                            <div class="form-group d-flex align-items-center">
-                                <label for="quantity" class="mr-2">Số lượng:</label>
-                                <button type="button" class="btn btn-secondary " id="decrement">-</button>
-                                <input type="number" name="quantity" id="quantity" value="1" min="1"
-                                    max="10" class="form-control mx-2" required style="width: 50px;">
-                                <button type="button" class="btn btn-secondary" id="increment">+</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-success" id="confirm-add-to-cart">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         let slideIndex = 0;
