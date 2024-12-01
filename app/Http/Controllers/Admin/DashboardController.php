@@ -20,19 +20,22 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $totalSales = Order::whereDate('created_at', Carbon::today())
-            ->sum('total_amount');
+            $totalSales = Order::whereDate('created_at', Carbon::today())  // Lọc đơn hàng của hôm nay
+            ->where('order_status_id', 6)  // Chỉ tính các đơn hàng đã hoàn thành (order_status_id = 6)
+            ->sum('total_amount');  // Tính tổng doanh thu của các đơn hàng đã hoàn thành
 
-        $yesterdaySales = Order::whereDate('created_at', Carbon::yesterday())
-            ->sum('total_amount');
+        $yesterdaySales = Order::whereDate('created_at', Carbon::yesterday())  // Lọc đơn hàng của hôm qua
+            ->where('order_status_id', 6)  // Chỉ tính các đơn hàng đã hoàn thành (order_status_id = 6)
+            ->sum('total_amount');  // Tính tổng doanh thu của các đơn hàng đã hoàn thành
 
         // Tính phần trăm thay đổi
         if ($yesterdaySales > 0) {
-            $salesChangePercentage = (($totalSales - $yesterdaySales) / $yesterdaySales) * 100;
+            $salesChangePercentage = (($totalSales - $yesterdaySales) / $yesterdaySales) * 100;  // Tính thay đổi phần trăm doanh thu
         } else {
             // Nếu hôm qua không có doanh thu, coi như tăng 100% hoặc giữ nguyên 0% tuỳ ý
             $salesChangePercentage = $totalSales > 0 ? 100 : 0;
         }
+
 
         $topCustomers = User::where('type', 'member')  // Kiểm tra loại người dùng là 'member'
         ->withCount(['orders' => function($query) {
