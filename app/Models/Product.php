@@ -30,8 +30,10 @@ class Product extends Model
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class, 'order_details');
+        return $this->belongsToMany(Order::class, 'order_details', 'product_id', 'order_id')
+                    ->withPivot('quantity'); // Để lấy thông tin số lượng sản phẩm
     }
+
     public function orderDetail()
     {
         return $this->hasMany(OrderDetail::class, 'product_id');
@@ -44,5 +46,10 @@ class Product extends Model
     public function colors()
     {
         return $this->belongsToMany(Color::class, 'product_color');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

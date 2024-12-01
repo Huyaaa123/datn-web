@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Color;
-use App\Models\Discount;
 use App\Models\Gallery;
 use App\Models\Size;
 use Illuminate\Support\Facades\DB;

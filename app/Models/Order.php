@@ -32,7 +32,7 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id'); // Liên kết với bảng users qua cột user_id
     }
 
     public function orderDetails()
@@ -47,9 +47,10 @@ class Order extends Model
     {
         return $this->belongsTo(OrderStatus::class);
     }
-    public function product()
+    public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')
+                    ->withPivot('quantity'); // Để lấy thông tin số lượng sản phẩm
     }
     public function voucher()
     {

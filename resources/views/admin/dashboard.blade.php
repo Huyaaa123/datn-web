@@ -1,53 +1,78 @@
 @extends('admin.layouts.master')
 @section('content')
+<style>
+    circle.positive {
+    stroke: green; /* Màu xanh cho giá trị dương */
+    transition: stroke 0.3s ease;
+}
 
+circle.negative {
+    stroke: red; /* Màu đỏ cho giá trị âm */
+    transition: stroke 0.3s ease;
+}
+
+</style>
 <h1>Bảng điều khiển</h1>
     <!-- Analyses -->
     <div class="analyse">
         <div class="sales">
             <div class="status">
                 <div class="info">
-                    <h3>Total Sales</h3>
-                    <h1>$65,024</h1>
+                    <h3>Doanh thu hôm nay</h3>
+                    <h1>{{ number_format($totalSales, 0, ',', '.') }}₫</h1> <!-- Hiển thị tổng doanh thu của ngày hôm nay -->
                 </div>
                 <div class="progresss">
                     <svg>
                         <circle cx="38" cy="38" r="36"></circle>
                     </svg>
                     <div class="percentage">
-                        <p>+81%</p>
+                        <p style="font-size: 16px; color: {{ $salesChangePercentage < 0 ? 'red' : 'green' }};">
+                            @if($salesChangePercentage > 0)
+                                +{{ number_format($salesChangePercentage, 0) }}%
+                            @elseif($salesChangePercentage < 0)
+                                {{ number_format($salesChangePercentage, 0) }}%
+                            @else
+                                0%
+                            @endif
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="sales">
+            <div class="status">
+                <div class="info">
+                    <h3>Đơn hàng mới hôm nay</h3>
+                    <h1 style="text-align: center;">{{ $newOrdersToday }}</h1> <!-- Hiển thị số đơn hàng hôm nay -->
+                </div>
+                <div class="progresss">
+                    <svg>
+                        <circle cx="38" cy="38" r="36"></circle>
+                    </svg>
+                    <div class="percentage">
+                        <p style="font-size: 16px; color: {{ $orderChangePercentage < 0 ? 'red' : 'green' }}">
+                            {{ $orderChangePercentage > 0 ? '+' : '' }}{{ number_format($orderChangePercentage, 0) }}%
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="visits">
             <div class="status">
                 <div class="info">
-                    <h3>Site Visit</h3>
-                    <h1>24,981</h1>
+                    <h3>Người dùng mới đăng ký</h3>
+                    <h1 style="text-align: center;">{{ number_format($totalUsersToday) }}</h1>
                 </div>
                 <div class="progresss">
                     <svg>
                         <circle cx="38" cy="38" r="36"></circle>
                     </svg>
                     <div class="percentage">
-                        <p>-48%</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="searches">
-            <div class="status">
-                <div class="info">
-                    <h3>Searches</h3>
-                    <h1>14,147</h1>
-                </div>
-                <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+21%</p>
+                        <p style="font-size: 16px; color: {{ $usersGrowthPercentage < 0 ? 'red' : 'green' }}">
+                            {{ number_format($usersGrowthPercentage, 0) }}%
+                        </p>
                     </div>
                 </div>
             </div>
@@ -57,39 +82,24 @@
 
     <!-- New Users Section -->
     <div class="new-users">
-        <h2>Người dùng mới</h2>
+        <h2>Top khách hàng tiềm năng</h2>
         <div class="user-list">
-            @if ($newUsers->isEmpty())
+            @if ($topCustomers->isEmpty())
                 <div class="user">
-                    <h2>No new members registered recently.</h2>
+                    <h2>Chưa có khách hàng tiềm năng mới.</h2>
                 </div>
             @else
-                @foreach ($newUsers as $user)
+                @foreach ($topCustomers as $key => $user)
                     <div class="user">
-                        @php
-                            // Array of available profile images
-                            $images = [
-                                'profile-2.jpg',
-                                'profile-3.jpg',
-                                'profile-4.jpg',
-                                'profile-5.jpg',
-                                'profile-6.jpg',
-                                'profile-7.jpg',
-                                'profile-8.jpg'
-                            ];
-                            // Select a random image from the array
-                            $randomImage = $images[array_rand($images)];
-                        @endphp
-                        <img src="{{ asset('admindb/images/' . $randomImage) }}" alt="{{ $user->name }}">
-                        <h2>{{ $user->name }}</h2>
-                        <p>{{ $user->created_at->diffForHumans() }}</p>
+                        <h2 style="color:black;">(#{{$user->id}}){{ $user->name }}</h2>
+                        <p style="font-size:16px; color:black; font-weight:500">Đã tham gia: <span style="color:rgb(54, 54, 55); font-weight:bold;font-size:16px;">{{ $user->created_at->diffForHumans() }}</span></p>
+                        <p style="font-size:16px; color:black; font-weight:500">Đã mua: <span  style="color:rgb(0, 38, 255); font-weight:bold;font-size:16px;">{{ $user->orders_count }} đơn hàng</span></p> <!-- Số lượng đơn hàng -->
+                        <p style="font-size:16px; color:black; font-weight:500">Tổng: <span style="color:red; font-weight:bold;font-size:16px;">{{ number_format($user->orders_sum_total_amount, 0, ',', '.') }}₫</span></p> <!-- Tổng giá trị đơn hàng -->
                     </div>
                 @endforeach
             @endif
         </div>
     </div>
-
-
     <!-- End of New Users Section -->
 
     <!-- Recent Orders Table -->

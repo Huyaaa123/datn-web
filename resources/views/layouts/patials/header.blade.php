@@ -1,5 +1,5 @@
 <style>
-    
+
 </style>
 <div class="site-navbar-top">
     <div class="container">
@@ -28,7 +28,7 @@
                         </li>
                         <li><a href="../client/blog.html">Tin Tức</a></li>
                         <li><a href="../client/blog.html">Liên Hệ</a></li>
-                        <li><a href="{{route('index.vouchers')}}">Kho Voucher</a></li>
+                        <li><a href="{{route('index.vouchers')}}">Hướng dẫn mua hàng</a></li>
                     </ul>
                 </nav>
             </div>

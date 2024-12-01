@@ -83,37 +83,8 @@
         <div class="col-md-12 mb-0">
             <strong class="text-black">Trang chủ</strong>
             <span class="mx-2 mb-0">/</span>
-            <strong class="text-black">Kho Vouchers</strong>
+            <strong class="text-black">Hướng dẫn mua hàng</strong>
         </div>
         <br>
-
-        <div class="voucher-row">
-            @foreach ($vouchers as $voucher)
-                <div class="voucher-col">
-                    <div class="voucher-card">
-                        <div class="voucher-left">
-                            <img src="https://cdn.iconscout.com/icon/free/png-256/free-rolex-logo-icon-download-in-svg-png-gif-file-formats--brand-fashion-pack-logos-icons-2854283.png?f=webp&w=256"
-                                alt="Voucher Image">
-                        </div>
-                        <div class="voucher-right">
-                            <div class="voucher-title">{{ $voucher->code }} -
-
-                                @if ($voucher->discount_percent)
-                                    Giảm {{ $voucher->discount_percent }}%
-                                @elseif ($voucher->discount_amount)
-                                    Giảm {{ number_format($voucher->discount_amount) }}
-                                @else
-                                    Không có giảm giá
-                                @endif
-                            </div>
-                            <div class="voucher-info">
-                                <p>Đơn Tối Thiểu {{ number_format($voucher->min_order_value) }} VND</p>
-                                <p>Hạn sử dụng: {{ \Carbon\Carbon::parse($voucher->end_date)->format('d/m/Y') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
     </div>
 @endsection

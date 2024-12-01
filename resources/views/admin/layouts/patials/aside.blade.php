@@ -29,6 +29,12 @@
         </span>
         <h3>Danh mục</h3>
     </a>
+    <a href="{{ route('admin.colors.index') }}">
+        <span class="material-icons-sharp">
+            palette
+        </span>
+        <h3>Màu sắc</h3>
+    </a>
     <a href="{{ route('admin.product.index') }}">
         <span class="material-icons-sharp">
             inventory_2
@@ -48,19 +54,6 @@
         </span>
         <h3>Mã giảm giá</h3>
         {{-- <span class="message-count">27</span> --}}
-    </a>
-    <a href="{{ route('admin.statistic.index') }}">
-        <span class="material-icons-sharp">
-            trending_up
-            </span>
-        <h3>Thống kê</h3>
-        {{-- <span class="message-count">27</span> --}}
-    </a>
-    <a href="#">
-        <span class="material-icons-sharp">
-            settings
-        </span>
-        <h3>Cài đặt</h3>
     </a>
     {{--
     <a href="#">

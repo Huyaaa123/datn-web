@@ -2,6 +2,16 @@
 
 @section('content')
     <style>
+        .card {
+            border: none;
+            box-shadow: none;
+        }
+
+        .card-img-top {
+            border-radius: 50%;
+            /* Đảm bảo hình ảnh có hình tròn */
+        }
+
         .main-image {
             position: relative;
             /* Để kiểm soát các nút điều khiển */
@@ -129,6 +139,7 @@
             background-color: rgba(0, 0, 0, 0.7);
         }
     </style>
+
     <div class="container">
         <div class="col-md-12 mb-0">
             <strong class="text-black">Trang chủ</strong>
@@ -138,9 +149,8 @@
             <strong class="text-black">{{ $product->name }}</strong>
         </div>
         <br>
-
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <!-- Hiển thị ảnh chính -->
                 <div class="main-image position-relative mb-3">
                     <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" id="mainImage"
@@ -159,30 +169,35 @@
                             style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; display: inline-block;"
                             onclick="updateMainImage({{ $index }})">
                     @endforeach
-                </div>
-                {{ $product->description }}
+                </div> <br>
             </div>
-            <div class="col-md-6">
-                <h2 style="color:black;font-weight:bold;">{{ $product->name }} ({{ $product->sku }})</h2>
-                <p style="font-weight: bold; font-size: 16px; color: #777;">
+            <div class="col-md-7">
+                <p style="font-weight: bold; font-size: 16px; color: #777; margin-bottom: 5px;">
                     {{ $product->category->name }}
                 </p>
-                <h4 style="color:#990000;font-weight:bold;">{{ number_format($product->final_price) }} đ</h4>
+                <h2 style="color:black;font-weight:500;">{{ $product->name }}</h2>
+
+                <p style="color:black; font-size: 18px; margin-bottom: 5px;">Mã sản phẩm: <span
+                        style="font-weight:500; color: #ffb700">{{ $product->sku }}</span></p>
+                <h3 style="color:#990000;font-weight:500; ">{{ number_format($product->price) }}₫</h3>
 
                 <form id="add-to-cart-form" action="{{ route('cart.add') }}" method="POST">
                     @csrf
                     <div class="form-group d-flex align-items-center"
-                        style="display: flex; align-items: center; margin-bottom: 15px;">
+                        style="display: flex; align-items: center; margin-bottom: 5px;">
                         <label for="color"
-                            style="color:black; margin-right: 15px; text-align: center; line-height: 30px; display: inline-flex; align-items: center; margin-top: -10px;">
+                            style="color:black; margin-right: 20px; text-align: center; line-height: 30px; display: inline-flex; align-items: center; margin-top: -10px;">
                             Màu sắc:
                         </label>
                         <div id="color-options" style="display: flex; align-items: center; justify-content: center;">
                             @foreach ($product->colors as $color)
                                 <label class="color-option" style="margin-right: 10px;">
-                                    <input type="radio" name="color_id" value="{{ $color->id }}" style="display: none;" required>
-                                    <span style="display: inline-block; width: 30px; height: 30px; background-color: {{ $color->code }};
-                                    border-radius: 50%; border: 2px solid #ddd; cursor: pointer;" title="{{ $color->name }}">
+                                    <input type="radio" name="color_id" value="{{ $color->id }}"
+                                        style="display: none;" required>
+                                    <span
+                                        style="display: inline-block; width: 30px; height: 30px; background-color: {{ $color->code }};
+                                    border-radius: 50%; border: 2px solid #ddd; cursor: pointer;"
+                                        title="{{ $color->name }}">
                                     </span>
                                 </label>
                             @endforeach
@@ -190,45 +205,84 @@
                     </div>
 
                     <div class="form-group d-flex align-items-center">
-                        <label for="size" style="color:black;  margin-right: 10px;">Kích cỡ:</label>
-                        <select name="size_id" id="size" class="form-control" style="width: 150px; height:40px; display: inline-block;" required>
+                        <label for="size" style="color:black;  margin-right: 35px;">Kích cỡ:</label>
+                        <select name="size_id" id="size" class="form-control"
+                            style="width: 150px; height:40px; display: inline-block;" required>
                             @foreach ($product->sizes as $size)
                                 <option value="{{ $size->id }}" style="text-align:center; width: 50px;">
                                     {{ $size->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <a href="" style="margin-left: 10px; text-decoration: underline; font-weight:bold; color:black;  font-size:13px;">
+                        <a href=""
+                            style="margin-left: 10px; text-decoration: underline; font-weight:500; color:black;  font-size:13px;">
                             Hướng dẫn chọn size</a>
                     </div>
 
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                     <div class="form-group d-flex align-items-center">
+                        <label for="size" style="color:black;  margin-right: 25px;">Số lượng:</label>
                         <div class="input-group" style="width: 150px; border: 1px solid #dcdcdc; border-radius: 5px;">
                             <button class="btn-light border-0" type="button" id="decrement"
                                 style="width: 40px; height: 40px; font-size: 20px; padding: 0;">-</button>
-                            <input type="text" name="quantity" id="quantity" value="1" min="1" max="10" class="form-control text-center" required
+                            <input type="text" name="quantity" id="quantity" value="1" min="1"
+                                max="10" class="form-control text-center" required
                                 style="height: 40px; font-size: 18px; border: none; outline: none;"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             <button class="btn-light border-0" type="button" id="increment"
                                 style="width: 40px; height: 40px; font-size: 20px; padding: 0;">+</button>
                         </div>
-
                         <button type="submit" id="add-to-cart-button"
-                            style="background-color: white; border: 2px solid black; color: black; padding: 5px 50px; font-size: 16px; cursor: pointer; transition: all 0.3s; margin-left: 10px;">
+                            style="background-color: white; border: 1px solid black; color: black; padding: 5px 50px; font-size: 16px; cursor: pointer; transition: all 0.3s; margin-left: 10px;">
                             THÊM VÀO GIỎ
                         </button>
                     </div>
                 </form>
-                 <br>
 
-                <div class="product-policises-wrapper" style="border: 1px solid #000; border-radius: 2px;">
+                <div class="mt-4">
+                    <p style="color: black; font-weight: 500;">Sản phẩm tương tự</p>
+                    <div class="row justify-content-center">
+                        @foreach ($similarProducts as $similarProduct)
+                            <div class="col-md-2 mb-4">
+                                <div class="card text-center">
+                                    <!-- Thêm đường dẫn vào hình ảnh -->
+                                    <a href="{{ route('product.show', $similarProduct->slug) }}"
+                                        class="product-image-link">
+                                        <img src="{{ Storage::url($similarProduct->image_path) }}" class="card-img-top"
+                                            alt="{{ $similarProduct->name }}">
+                                    </a>
+                                </div>
+
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div style="border: 1px solid #e0b344; border-radius: 5px; overflow: hidden;">
+                    <!-- Phần tiêu đề -->
+                    <div
+                        style="text-align:center; background-color: #e0b344; color: black; padding: 10px; font-weight: 500;">
+                        Mô tả sản phẩm
+                    </div>
+                    <!-- Phần nội dung mô tả -->
+                    <div style="padding: 10px; color:black;">
+                        {!! nl2br(e($product->description)) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="product-policises-wrapper" style="border: 1px solid #e0b344; border-radius: 2px;">
                     <h3
-                        style="font-size: 1rem; font-weight: bold; margin: 0; padding: 10px 0; text-align: center; background-color: #000000; color: #cb9866;">
+                        style="font-size: 1rem; font-weight: 500; margin: 0; padding: 10px 0; text-align: center; background-color: #e0b344; color: black;">
                         Chính sách mua hàng tại ROLEX</h3>
                     <ul class="product-policises list-unstyled py-sm-3 px-sm-3 m-0"
-                        style="display: flex; flex-wrap: wrap; padding-left: 0; list-style-type: none; background-color: #ffffee;">
+                        style="display: flex; flex-wrap: wrap; padding-left: 0; list-style-type: none; background-color: #ffffff;">
                         <li class="media" style="flex: 1 1 50%; padding-bottom: 10px; margin-bottom: 10px;">
                             <div style="margin-right: -20px;">
                                 <img class="img-fluid" decoding="async" width="48" height="48" alt="polici"
@@ -267,10 +321,9 @@
                         </li>
                     </ul>
                 </div>
-
             </div>
-        </div>
-        <br>
+        </div> <br>
+        @include('cart.comment')
         <script>
             let currentIndex = 0; // Chỉ số hình ảnh hiện tại
             const images = @json($product->galleries->pluck('image_path')); // Lấy đường dẫn của các hình ảnh

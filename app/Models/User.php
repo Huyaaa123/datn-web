@@ -73,4 +73,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Voucher::class, 'voucher_details');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

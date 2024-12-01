@@ -153,23 +153,23 @@
                                 class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 2px solid #eee;">
                         </figure>
                         <div class="card-body text-center" style="padding-top: 10px;">
-                            <h5 class="card-title" style="font-size: 16px; font-weight: bold; color: #333; margin-top: 5px;">
+                            <h5 class="card-title" style="font-size: 16px; font-weight: 500; color: #333; margin-top: 5px;">
                                 <a href="{{ route('product.show', $product->slug) }}" style="font-size: 16px; font-weight: bold; color: rgb(0, 0, 0); text-decoration: none;">
                                     {{ $product->name }} ({{ $product->sku }})
                                 </a>
                             </h5>
-                            <p class="product-category text-muted" style="font-weight: bold; font-size: 14px; color: #777; margin-top: -5px;">
+                            <p class="product-category text-muted" style="font-weight: 500; font-size: 14px; color: #777; margin-top: -5px;">
                                 {{ $product->category->name }}
                             </p>
-                            <p class="card-text" style="font-weight: bold; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
-                                {{ number_format($product->price) }} đ
+                            <p class="card-text" style="font-weight: 500; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
+                                {{ number_format($product->price) }}₫
                             </p>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-        
+
 
         <div class="d-flex justify-content-center ">
             <button id="prev-btn" class="btn btn-primary mx-1" disabled>

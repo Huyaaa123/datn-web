@@ -4,12 +4,14 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryDetailController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MyOrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductDetailController;
@@ -37,7 +39,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.index');
-Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.dashboard');
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.dashboard');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
 
@@ -51,7 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
 
     Route::resource('vouchers', VoucherController::class);
 
-    Route::resource('statistic', StatisticsController::class);
+    Route::resource('colors', ColorController::class);
 });
 
 
@@ -61,7 +63,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 
-Route::get('/product/{slug}', [ProductDetailController::class, 'show'])->name('product.show');
+Route::get('/products/{slug}', [ProductDetailController::class, 'show'])->name('product.show');
+
+Route::get('/product/{slug}/', [CommentController::class, 'index'])->name('product.comments');
+Route::post('/product/{slug}/comments', [CommentController::class, 'store'])->name('product.comments.store');
 
 Route::get('/', [ProductDetailController::class, 'index'])->name('product.index');
 

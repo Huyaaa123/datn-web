@@ -110,7 +110,7 @@
                                             @endif
                                             <div class="d-flex justify-content-between align-items-center mb-5">
                                                 <h1 class="fw-bold mb-0" style="font-size: 24px;">Giỏ Hàng</h1>
-                                                <h6 class="mb-0 text-muted">{{ count($cart) }} sản phẩm</h6>
+                                                <h6 class="mb-0 ">{{ count($cart) }} sản phẩm</h6>
                                             </div>
                                             <hr class="my-4">
 
@@ -121,7 +121,7 @@
                                                             alt="{{ $product['name'] }}" style="width: 80px; height: auto;">
                                                     </div>
                                                     <div class="col-md-4 col-lg-4 col-xl-4">
-                                                        <h6 style="font-size: 14px;" class="text-muted mb-1">
+                                                        <h6 style="font-size: 14px; font-weight:500; color:black;" class=" mb-1">
                                                             {{ $product['name'] }}</h6>
                                                         @php
                                                             $color = \DB::table('colors')
@@ -134,7 +134,7 @@
 
                                                         <p class="mb-1">{{ $size->name ?? 'Màu không xác định' }},
                                                             {{ $color->name ?? 'Kích thước không xác định' }}</p>
-                                                        <p class="mb-0">{{ number_format($product['price']) }} đ</p>
+                                                        <p class="mb-0">{{ number_format($product['price']) }}₫</p>
                                                     </div>
 
                                                     <div
@@ -172,8 +172,7 @@
                                                         <!-- Giảm độ rộng cho cột giá -->
                                                         <h6 style="font-size: 15px; line-height: 1.5; white-space: nowrap; text-align: right;"
                                                             class="mb-0">
-                                                            {{ number_format($product['quantity'] * $product['price'], 0, ',', '.') }}
-                                                            đ
+                                                            {{ number_format($product['quantity'] * $product['price'], 0, ',', '.') }}₫
                                                         </h6>
                                                     </div>
 
@@ -191,7 +190,6 @@
                                                 <hr class="my-4">
                                             @endforeach
 
-
                                             <div class="pt-5">
                                                 <h6 class="mb-0"><a href="/" class="text-body"><i
                                                             class="fas fa-long-arrow-alt-left me-2"></i>Trở lại cửa hàng</a>
@@ -206,7 +204,7 @@
 
                                             <div class="d-flex justify-content-between mb-4">
                                                 <h5 style="font-size: 16px;">Phí vận chuyển</h5>
-                                                <p>Miễn phí</p>
+                                                <p >Miễn phí</p>
                                             </div>
                                             @if (session()->has('voucher_code'))
                                                 <div
@@ -259,14 +257,12 @@
                                                                                         {{ $voucher->discount_percent }}%
                                                                                     @elseif($voucher->discount_amount)
                                                                                         Giảm
-                                                                                        {{ number_format($voucher->discount_amount) }}
-                                                                                        VND
+                                                                                        {{ number_format($voucher->discount_amount) }}₫
                                                                                     @endif
                                                                                 </div>
                                                                                 <div style="color: #555; font-size: 14px;">
                                                                                     <p style="margin: 0;">Đơn Tối Thiểu:
-                                                                                        {{ number_format($voucher->min_order_value) }}
-                                                                                        VND</p>
+                                                                                        {{ number_format($voucher->min_order_value) }}₫</p>
                                                                                     <p style="margin: 0;">Hạn sử dụng:
                                                                                         {{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y') }}
                                                                                     </p>
@@ -300,7 +296,7 @@
                                                 <div class="d-flex justify-content-between mb-4">
                                                     <h5 style="font-size: 16px;">Đã giảm</h5>
                                                     <h5 style="color: green; font-size: 16px;">
-                                                        -{{ number_format(session('discount_amount')) }} đ
+                                                        -{{ number_format(session('discount_amount')) }}₫
                                                     </h5>
                                                 </div>
                                             @endif
@@ -308,8 +304,7 @@
                                             <div class="d-flex justify-content-between mb-5">
                                                 <h5 style="font-size: 16px;">Tổng thanh toán</h5>
                                                 <h5 class="text-danger" style="font-size: 20px; color:#990000;">
-                                                    {{ number_format(array_sum(array_map(function ($product) {return $product['quantity'] * $product['price'];}, $cart))) }}
-                                                    đ</h5>
+                                                    {{ number_format(array_sum(array_map(function ($product) {return $product['quantity'] * $product['price'];}, $cart))) }}₫</h5>
                                             </div>
 
                                             <a href="{{ route('checkout.index') }}" class="btn btn-dark btn-block btn-lg"
@@ -343,16 +338,16 @@
                                     class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 2px solid #eee;">
                             </figure>
                             <div class="card-body text-center" style="padding-top: 10px;">
-                                <h5 class="card-title" style="font-size: 16px; font-weight: bold; color: #333; margin-top: 5px;">
+                                <h5 class="card-title" style="font-size: 16px; font-weight: 500; color: #333; margin-top: 5px;">
                                     <a href="{{ route('product.show', $product->slug) }}" style="font-size: 16px; font-weight: bold; color: rgb(0, 0, 0); text-decoration: none;">
                                         {{ $product->name }} ({{ $product->sku }})
                                     </a>
                                 </h5>
-                                <p class="product-category text-muted" style="font-weight: bold; font-size: 14px; color: #777; margin-top: -5px;">
+                                <p class="product-category text-muted" style="font-weight: 500; font-size: 14px; color: #777; margin-top: -5px;">
                                     {{ $product->category->name }}
                                 </p>
-                                <p class="card-text" style="font-weight: bold; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
-                                    {{ number_format($product->price) }} đ
+                                <p class="card-text" style="font-weight: 500; color: rgb(144, 29, 29); font-size: 18px; margin-top: 5px;">
+                                    {{ number_format($product->price) }}₫
                                 </p>
                             </div>
                         </div>
