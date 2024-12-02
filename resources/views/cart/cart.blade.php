@@ -150,7 +150,6 @@
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </form>
-
                                                         <!-- Số lượng -->
                                                         <span
                                                             class="form-control form-control-sm px">{{ $product['quantity'] }}</span>
@@ -237,41 +236,31 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <!-- Form để áp dụng voucher -->
-                                                            <form id="applyVoucherForm"
-                                                                action="{{ route('cart.applyVoucher') }}" method="POST">
+                                                            <form id="applyVoucherForm" action="{{ route('cart.applyVoucher') }}" method="POST">
                                                                 @csrf
                                                                 <!-- Danh sách voucher radio -->
-                                                                <div class="voucher-list"
-                                                                    style="max-height: 300px; overflow-y: auto;">
+                                                                <div class="voucher-list" style="max-height: 300px; overflow-y: auto;">
                                                                     @foreach ($vouchers as $voucher)
-                                                                        <div
-                                                                            style="display: flex; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
-                                                                            <img src="https://down-vn.img.susercontent.com/file/aa73f8aa302834aa9fc6adbf6e704cf2"
-                                                                                alt="Voucher Logo"
-                                                                                style="width: 80px; height: auto;">
+                                                                        <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+                                                                            <img src="https://down-vn.img.susercontent.com/file/aa73f8aa302834aa9fc6adbf6e704cf2" alt="Voucher Logo" style="width: 80px; height: auto;">
                                                                             <div style="flex-grow: 1; padding-left: 10px;">
                                                                                 <div style="font-weight: bold;">
                                                                                     {{ $voucher->code }} -
                                                                                     @if ($voucher->discount_percent)
-                                                                                        Giảm
-                                                                                        {{ $voucher->discount_percent }}%
+                                                                                        Giảm {{ $voucher->discount_percent }}%
+                                                                                        @if ($voucher->max_discount_amount)
+                                                                                            (Tối đa: {{ number_format($voucher->max_discount_amount) }}₫)
+                                                                                        @endif
                                                                                     @elseif($voucher->discount_amount)
-                                                                                        Giảm
-                                                                                        {{ number_format($voucher->discount_amount) }}₫
+                                                                                        Giảm {{ number_format($voucher->discount_amount) }}₫
                                                                                     @endif
                                                                                 </div>
                                                                                 <div style="color: #555; font-size: 14px;">
-                                                                                    <p style="margin: 0;">Đơn Tối Thiểu:
-                                                                                        {{ number_format($voucher->min_order_value) }}₫</p>
-                                                                                    <p style="margin: 0;">Hạn sử dụng:
-                                                                                        {{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y') }}
-                                                                                    </p>
+                                                                                    <p style=" color:black;margin: 0;">Đơn Tối Thiểu: {{ number_format($voucher->min_order_value) }}₫</p>
+                                                                                    <p style="color:black; margin: 0;">Hạn sử dụng: {{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y') }}</p>
                                                                                 </div>
                                                                             </div>
-                                                                            <input type="radio" name="voucher_id"
-                                                                                {{ session('voucher_id') == $voucher->id ? 'checked' : '' }}
-                                                                                value="{{ $voucher->id }}"
-                                                                                style="margin-left: auto;">
+                                                                            <input type="radio" name="voucher_id" {{ session('voucher_id') == $voucher->id ? 'checked' : '' }} value="{{ $voucher->id }}" style="margin-left: auto;">
                                                                         </div>
                                                                     @endforeach
                                                                 </div>

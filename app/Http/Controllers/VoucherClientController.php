@@ -105,6 +105,12 @@ class VoucherClientController extends Controller
             $discountPercent = $voucher->discount_percent;
             $totalDiscountAmount = $orderValue * $discountPercent / 100;
 
+            // Kiểm tra giảm giá tối đa
+            if ($voucher->max_discount_amount) {
+                $totalDiscountAmount = min($totalDiscountAmount, $voucher->max_discount_amount);
+            }
+
+            // Áp dụng giảm giá cho giỏ hàng
             foreach ($cart as $index => $item) {
                 $itemDiscount = $item['price'] * $discountPercent / 100;
                 $cart[$index]['price'] -= $itemDiscount;
@@ -130,6 +136,7 @@ class VoucherClientController extends Controller
         // Thông báo thành công
         return back()->with('success', 'Voucher đã được áp dụng thành công.');
     }
+
 
     private function calculateCartTotal($cart)
     {

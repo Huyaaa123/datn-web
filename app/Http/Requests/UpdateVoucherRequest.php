@@ -29,6 +29,7 @@ class UpdateVoucherRequest extends FormRequest
             'discount_type' => 'required|in:amount,percent', // Loại giảm giá phải là "amount" hoặc "percent"
             'discount_amount' => 'nullable|numeric|min:0|max:1000000', // Giảm giá theo số tiền (nếu có)
             'discount_percent' => 'nullable|numeric|min:0|max:50', // Giảm giá theo phần trăm (nếu có)
+            'max_discount_amount' => 'nullable|numeric|min:10000|max:1000000|required_if:discount_type,percent',
             'min_order_value' => 'required|numeric|min:0|max:1000000', // Giá trị đơn hàng tối thiểu
             'usage_limit' => 'required|numeric|min:1', // Số lượng sử dụng tối đa
             'start_date' => 'required|date|after_or_equal:today', // Ngày bắt đầu phải là ngày hôm nay hoặc sau đó
@@ -52,7 +53,7 @@ class UpdateVoucherRequest extends FormRequest
             'discount_amount.required_if' => 'Giá trị giảm giá là bắt buộc .',
             'discount_amount.numeric' => 'Giá trị giảm giá phải là số.',
             'discount_amount.min' => 'Giá trị giảm giá phải lớn hơn hoặc bằng 0.',
-            'discount_amount.max' => 'Giá trị giảm giá tối đa là 1,000,000.',
+            'discount_amount.max' => 'Giá trị giảm giá tối đa là 1,000,000 .',
             'discount_percent.required_if' => 'Phần trăm giảm giá là bắt buộc .',
             'discount_percent.numeric' => 'Phần trăm giảm giá phải là số.',
             'discount_percent.min' => 'Phần trăm giảm giá phải lớn hơn hoặc bằng 0.',
@@ -61,6 +62,10 @@ class UpdateVoucherRequest extends FormRequest
             'min_order_value.numeric' => 'Giá trị đơn hàng tối thiểu phải là số.',
             'min_order_value.min' => 'Giá trị đơn hàng tối thiểu lớn hơn hoặc bằng 0.',
             'min_order_value.max' => 'Giá trị đơn hàng tối thiểu tối đa là 1,000,000.',
+            'max_discount_amount.required_if' => 'Giảm giá tối đa là bắt buộc .',
+            'max_discount_amount.numeric' => 'Giảm giá tối đa phải là số.',
+            'max_discount_amount.min' => 'Giảm giá tối đa phải lớn hơn hoặc bằng 10000.',
+            'max_discount_amount.max' => 'Giảm giá tối đa không thể vượt quá 1000000.',
             'usage_limit.required' => 'Giới hạn sử dụng là bắt buộc.',
             'usage_limit.numeric' => 'Giới hạn sử dụng phải là số.',
             'usage_limit.min' => 'Giới hạn sử dụng lớn hơn 0.',

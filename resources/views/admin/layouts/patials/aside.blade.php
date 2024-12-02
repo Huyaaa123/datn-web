@@ -41,6 +41,12 @@
         </span>
         <h3>Sản phẩm</h3>
     </a>
+    <a href="{{ route('admin.comments.index') }}">
+        <span class="material-icons-sharp">
+            chat
+        </span>
+        <h3>Đánh giá</h3>
+    </a>
     <a href="{{ route('admin.orders.index') }}">
         <span class="material-icons-sharp">
             shopping_bag
@@ -53,6 +59,13 @@
             sell
         </span>
         <h3>Mã giảm giá</h3>
+        {{-- <span class="message-count">27</span> --}}
+    </a>
+    <a href="{{ route('admin.statistic') }}">
+        <span class="material-icons-sharp">
+            trending_up
+        </span>
+        <h3>Thống kê</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
     {{--

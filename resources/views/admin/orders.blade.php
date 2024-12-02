@@ -272,22 +272,22 @@
         <tbody>
             @foreach ($orders as $order)
                 <tr>
-                    <td>{{ Str::limit($order->orderStatus->name, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->user->name, 10, '...') }}</td>
-                    <td>
+                    <td style="color:black;">{{ Str::limit($order->orderStatus->name, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($order->user->name, 10, '...') }}</td>
+                    <td style="color:black;">
                         @foreach ($order->orderDetails as $item)
                             <div>
                                 {{ Str::limit($item->product->name, 10, '...') }} (x{{ $item->quantity }}) ({{number_format($item->price)}})
                             </div>
                         @endforeach
                     </td>
-                    <td>{{ number_format($order->total_amount) }} VND</td>
-                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y ') }}</td>
-                    <td>{{$order->telephone }}, {{ Str::limit($order->shipping_address, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->payment_method, 15, '...') }}</td>
-                    <td>{{ Str::limit($order->checkpay, 15, '...') }}</td>
+                    <td style="color:black;">{{ number_format($order->total_amount) }}₫</td>
+                    <td style="color:black;">{{ \Carbon\Carbon::parse($order->order_date)->format('H:i:s d/m/Y ') }}</td>
+                    <td style="color:black;">{{$order->telephone }}, {{ Str::limit($order->shipping_address, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($order->payment_method, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($order->checkpay, 15, '...') }}</td>
                     <td>
-                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-primary">Xem</a>
+                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-success">Xem</a>
                     </td>
 
                 </tr>

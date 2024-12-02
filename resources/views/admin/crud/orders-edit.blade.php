@@ -386,15 +386,15 @@
                                     <div class="product-category">
                                         {{ $item->product->category->name ?? 'Không có danh mục' }}</div>
                                     <div class="product-quantity">
-                                        {{ number_format($item->product->price) }} đ x{{ $item->quantity }} =
-                                        <strong>{{ number_format($item->product->price * $item->quantity) }} đ</strong>
+                                        {{ number_format($item->product->price) }}₫ x{{ $item->quantity }} =
+                                        <strong>{{ number_format($item->product->price * $item->quantity) }}₫</strong>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="total-price"><strong>Tổng tiền:</strong> {{ number_format($order->total_amount) }} đ</div>
+                    <div class="total-price"><strong>Tổng tiền:</strong> {{ number_format($order->total_amount) }}₫</div>
                 </div>
 
                 <div class="order-summary">
@@ -420,11 +420,11 @@
                         <button type="submit" name="order_status_id" value="9" class="btn btn-success">Đồng ý
                             hủy</button>
                     @elseif($order->order_status_id == 9)
-                        <strong style="font-weight: bold; color:black;">Đơn hàng đã bị hủy.</strong>
+                        <strong style="font-weight: 500; color:red;">Đơn hàng đã bị hủy.</strong>
                         <p style="color:black;"><strong style="font-weight: bold; color:black;">Người hủy:</strong>  {{$order->notes}}</p>
                         <p style="color:black;"><strong style="font-weight: bold; color:black;">Lý do: </strong> {{ $order->cancel }}</p>
                     @elseif($order->order_status_id == 6)
-                        <p class="text-success">Đơn hàng đã hoàn thành</p>
+                        <p style="color: green" class="text-success">Đơn hàng đã hoàn thành</p>
                     @endif
                     <div id="cancel-reason-container" style="display:none;">
                         <strong>Lý do hủy</strong>

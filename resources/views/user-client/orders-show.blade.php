@@ -389,14 +389,14 @@
                                             @if ($item->original_price && $item->price < $item->original_price)
                                                 <span class="text-muted"
                                                     style="font-size:14px; text-decoration: line-through; opacity: 0.5;">
-                                                    {{ number_format($originalTotalPrice, 0, ',', '.') }} đ
+                                                    {{ number_format($originalTotalPrice, 0, ',', '.') }}₫
                                                 </span>
                                                 <span>
-                                                    {{ number_format($item->price * $item->quantity, 0, ',', '.') }} đ
+                                                    {{ number_format($item->price * $item->quantity, 0, ',', '.') }}₫
                                                 </span>
                                             @else
                                                 <span>
-                                                    {{ number_format($originalTotalPrice, 0, ',', '.') }} đ
+                                                    {{ number_format($originalTotalPrice, 0, ',', '.') }}₫
                                                 </span>
                                             @endif
                                         </div>
@@ -451,35 +451,38 @@
                                     <!-- Hiển thị tổng tiền hàng (chưa giảm giá) -->
                                     <tr>
                                         <td class="col-8 text-end border-end"><strong>Tổng tiền hàng</strong></td>
-                                        <td class="col-4 text-end"><strong>{{ number_format($totalOriginalPrice, 0, ',', '.') }} đ</strong>
+                                        <td class="col-4 text-end"><strong>{{ number_format($totalOriginalPrice, 0, ',', '.') }}₫</strong>
                                         </td>
                                     </tr>
 
                                     @if ($appliedVoucher)
-                                        <tr>
-                                            <td class="col-8 text-end border-end">Giảm giá</td>
-                                            <td class="col-4 text-end">
-                                                @if ($appliedVoucher->discount_type == 'amount')
-                                                    -{{ number_format($appliedVoucher->discount_amount, 0, ',', '.') }} đ
-                                                @elseif($appliedVoucher->discount_type == 'percent')
-                                                    -{{ $appliedVoucher->discount_percent }}%
-                                                @else
-                                                    0 đ
+                                    <tr>
+                                        <td style="font-weight:400;" class="col-8 text-end border-end">Giảm giá</td>
+                                        <td style="font-weight:400;" class="col-4 text-end ">
+                                            @if ($appliedVoucher->discount_type == 'amount')
+                                                -{{ number_format($appliedVoucher->discount_amount, 0, ',', '.') }}₫
+                                            @elseif($appliedVoucher->discount_type == 'percent')
+                                                -{{ $appliedVoucher->discount_percent }}%
+                                                @if ($appliedVoucher->max_discount_amount)
+                                                    (Tối đa {{ number_format($appliedVoucher->max_discount_amount, 0, ',', '.') }}₫)
                                                 @endif
-                                            </td>
-                                        </tr>
-                                    @else
-                                        <tr>
-                                            <td class="col-8 text-end border-end"><strong>Giảm giá</strong></td>
-                                            <td class="col-4 text-end" style="font-weight: bold;">0 đ</td>
-                                        </tr>
-                                    @endif
+                                            @else
+                                                0₫
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td class="col-8 text-end border-end"><strong>Giảm giá</strong></td>
+                                        <td class="col-4 text-end" style="font-weight: bold;">0₫</td>
+                                    </tr>
+                                @endif
 
                                     <!-- Hiển thị thành tiền -->
                                     <tr>
                                         <td class="col-8 text-end border-end"><strong>Thành tiền</strong></td>
                                         <td class="col-4 text-end text-danger font-weight-bold">
-                                            {{ number_format($order->total_amount, 0, ',', '.') }} đ</td>
+                                            {{ number_format($order->total_amount, 0, ',', '.') }}₫</td>
                                     </tr>
 
                                     <!-- Hiển thị phương thức thanh toán -->

@@ -1,19 +1,17 @@
 <?php
-
-namespace App\Http\Controllers\Admin;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
+use App\Models\Category;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
-class DashboardController extends Controller
+class AdminController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         $newUsers = User::where('type', 'member')->orderBy('created_at', 'desc')->take(3)->get();
+        $today = Carbon::today();
 
         $activeVouchers = Voucher::where('status', 1)
             ->orderBy('created_at', 'desc')
@@ -49,6 +47,18 @@ class DashboardController extends Controller
         ->take(5)
         ->get();
 
+        $topSellingProducts = Product::select('products.id', 'products.name', 'products.image_path')
+        ->join('order_details', 'products.id', '=', 'order_details.product_id')
+        ->join('orders', 'order_details.order_id', '=', 'orders.id')
+        ->where('orders.order_status_id', 6) // Chỉ tính đơn hàng hoàn thành
+        ->whereDate('orders.created_at', $today) // Lọc theo ngày hôm nay
+        ->selectRaw('SUM(order_details.quantity) as total_quantity')
+        ->groupBy('products.id', 'products.name', 'products.image_path')
+        ->orderByDesc('total_quantity')
+        ->take(5) // Lấy top 5 sản phẩm bán chạy
+        ->get();
+
+
         $newOrdersToday = Order::whereDate('created_at', Carbon::today())->count(); // Số đơn hàng hôm nay
         $newOrdersYesterday = Order::whereDate('created_at', Carbon::yesterday())->count(); // Số đơn hàng hôm qua
 
@@ -74,6 +84,6 @@ class DashboardController extends Controller
         }
 
 
-        return view("admin.dashboard", compact("newUsers", "activeVouchers", "totalSales", "salesChangePercentage", "topCustomers","newOrdersToday", "orderChangePercentage",'totalUsersToday', 'usersGrowthPercentage'));
+        return view("admin.dashboard", compact("newUsers", "activeVouchers","topSellingProducts", "totalSales", "salesChangePercentage", "topCustomers","newOrdersToday", "orderChangePercentage",'totalUsersToday', 'usersGrowthPercentage'));
     }
 }

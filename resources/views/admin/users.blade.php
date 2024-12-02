@@ -136,22 +136,23 @@
                 <th>Giới tính</th>
                 <th>Ngày sinh</th>
                 <th>Địa chỉ</th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($users as $user)
                 @if ($user->type === 'member')
-                    <tr>
-                        <td>{{ Str::limit($user->name, 15, '...') }}</td>
-                        <td>{{ Str::limit($user->email, 15, '...') }}</td>
-                        <td>
+                    <tr >
+                        <td style="color:black;">{{ Str::limit($user->name, 15, '...') }}</td>
+                        <td style="color:black;">{{ Str::limit($user->email, 15, '...') }}</td>
+                        <td style="color:black;">
                             @if ($user->phone)
                                 {{ Str::limit($user->phone, 15, '...') }}
                             @else
                                 ...
                             @endif
                         </td>
-                        <td>
+                        <td style="color:black;">
                             @if ($user->gender)
                                 @if ($user->gender == 'male')
                                     Nam
@@ -165,7 +166,7 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td style="color:black;">
                             @if ($user->birth_date)
                                 {{ \Carbon\Carbon::parse($user->birth_date)->format('d/m/Y') }}
                             @else
@@ -173,7 +174,7 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td style="color:black;">
                             @if ($user->addresses->isNotEmpty())
                                 @foreach ($user->addresses as $address)
                                 {{ Str::limit($user->addresses->first()->address, 15) }},
@@ -184,6 +185,9 @@
                             @else
                                 ...
                             @endif
+                        </td>
+                        <td style="color:black;">
+                            <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-success">Show</a>
                         </td>
 
                     </tr>

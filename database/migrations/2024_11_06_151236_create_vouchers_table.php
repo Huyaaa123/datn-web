@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('discount_amount', 10, 2)->nullable(); // Giá trị giảm giá cố định
             $table->integer('discount_percent')->nullable(); // Phần trăm giảm giá
             $table->decimal('min_order_value', 10, 2)->default(0); // Giá trị đơn hàng tối thiểu
+            $table->decimal('max_discount_amount', 10, 2)->nullable(); // Giá trị đơn hàng tối thiểu
             $table->integer('usage_limit')->nullable(); // Giới hạn số lần sử dụng
             $table->integer('used')->default(0); // Số lần đã sử dụng
             $table->dateTime('start_date')->nullable(); // Ngày bắt đầu áp dụng

@@ -147,9 +147,9 @@
         <tbody>
             @foreach ($categories as $category)
                 <tr>
-                    <td>{{ Str::limit($category->name, 15, '...') }}</td>
-                    <td>{{ Str::limit($category->slug, 15, '...') }}</td>
-                    <td>
+                    <td style="color:black;"> {{ Str::limit($category->name, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($category->slug, 15, '...') }}</td>
+                    <td style="color:black;">
                         <a href="{{ route('admin.category.show', $category->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Sửa</a>
                         <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">

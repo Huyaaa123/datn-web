@@ -273,12 +273,12 @@
         <tbody>
             @foreach ($data as $product)
                 <tr>
-                    <td>{{ $product->sku }}</td>
-                    <td>{{ Str::limit($product->name, 5, '...') }}</td>
-                    <td>
+                    <td style="color:black;">{{ $product->sku }}</td>
+                    <td style="color:black;">{{ Str::limit($product->name, 5, '...') }}</td>
+                    <td style="color:black;">
                         <img src="{{ Storage::url($product->image_path) }}" style="width: 100px; height: auto;">
                     </td>
-                    <td>
+                    <td  style="color:black;">
                         @foreach ($product->colors as $color)
                             <span
                                 style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->code }}; border-radius: 50%; margin-right: 5px;"
@@ -287,9 +287,9 @@
                         @endforeach
                     </td>
 
-                    <td>{{ number_format($product->price) }}đ</td>
-                    <td>{{ Str::limit($product->description, 10, '...') }}</td>
-                    <td>{{ Str::limit($product->category->name, 10, '...') }}</td>
+                    <td style="color:black;">{{ number_format($product->price) }}₫</td>
+                    <td style="color:black;">{{ Str::limit($product->description, 10, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($product->category->name, 10, '...') }}</td>
                     <td>
                         <a href="{{ route('admin.product.show', $product->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-primary">Sửa</a>

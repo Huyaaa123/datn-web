@@ -332,6 +332,7 @@
                 <th>Mã</th>
                 <th>Giảm giá</th>
                 <th>Giá trị tối thiểu</th>
+                <th>Giảm tối đa</th>
                 <th>Đã dùng</th>
                 <th>Tối đa</th>
                 <th>Bắt đầu</th>
@@ -343,17 +344,25 @@
         <tbody>
             @foreach ($vouchers as $voucher)
                 <tr data-voucher-id="{{ $voucher->id }}">
-                    <td>{{ $voucher->code }}</td>
-                    <td>
+                    <td style="color:black;">{{ $voucher->code }}</td>
+                    <td style="color:black;">
                         @if ($voucher->discount_amount)
-                            {{ number_format($voucher->discount_amount) }} VND
+                            {{ number_format($voucher->discount_amount) }}₫
                         @elseif ($voucher->discount_percent)
                             {{ number_format($voucher->discount_percent) }}%
                         @endif
                     </td>
 
-                    <td>{{ number_format($voucher->min_order_value) }} VND</td>
-                    <td>{{ $voucher->used }}
+                    <td style="color:black;">{{ number_format($voucher->min_order_value) }}₫</td>
+                    <td style="color:black;">
+                        @if ($voucher->discount_type === 'percent' && $voucher->max_discount_amount)
+                            {{ number_format($voucher->max_discount_amount) }}₫
+                        @else
+                            Không 
+                        @endif
+                    </td>
+
+                    <td style="color:black;">{{ $voucher->used }}
                         <a href="#" data-bs-toggle="modal" data-bs-target="#usedUsersModal{{ $voucher->id }}">
                             <i class="fas fa-info-circle"></i>
                         </a>
@@ -390,9 +399,9 @@
                             </div>
                         </div>
                     </td>
-                    <td>{{ $voucher->usage_limit }}</td>
-                    <td>{{ \Carbon\Carbon::parse($voucher->start_date)->format('H:i:s d/m/Y ') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y ') }}</td>
+                    <td style="color:black;">{{ $voucher->usage_limit }}</td>
+                    <td style="color:black;">{{ \Carbon\Carbon::parse($voucher->start_date)->format('H:i:s d/m/Y ') }}</td>
+                    <td style="color:black;">{{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y ') }}</td>
                     <td class="voucher-status">
                         <span
                             class="

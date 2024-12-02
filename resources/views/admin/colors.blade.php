@@ -147,9 +147,9 @@
         <tbody>
             @foreach ($colors as $color)
                 <tr>
-                    <td>{{ Str::limit($color->name, 15, '...') }}</td>
-                    <td>{{ Str::limit($color->code, 15, '...') }}</td>
-                    <td>
+                    <td style="color:black;">{{ Str::limit($color->name, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($color->code, 15, '...') }}</td>
+                    <td >
                         <a href="{{ route('admin.colors.show', $color->id) }}" class="btn btn-success">Show</a>
                         <a href="{{ route('admin.colors.edit', $color->id) }}" class="btn btn-primary">Sửa</a>
                         <form action="{{ route('admin.colors.destroy', $color->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">

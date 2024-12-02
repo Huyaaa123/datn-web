@@ -118,10 +118,35 @@
             @endif
         </div>
     </div>
+    <div class="new-users">
+        <h2>Top sản phẩm bán chạy </h2>
+        <div class="user-list">
+            @if ($topCustomers->isEmpty())
+                <div class="user">
+                    <h2>Chưa có sản phẩm nào bán chạy.</h2>
+                </div>
+            @else
+            @foreach ($topSellingProducts as $product)
+            <div class="product">
+                <img src="{{ Storage::url($product->image_path) }}"
+                 alt="{{ $product->name }}"
+                 style="width: 70px; height: auto; display: block; margin: 0 auto;">
+                <p style="font-size:16px;  color:black;">{{ Str::limit($product->name, 20, '...') }}</p>
+                <p style="font-size:16px; color:black; font-weight:500">Đã bán:
+                    <span style="color:rgb(0, 38, 255); font-weight:bold;font-size:16px;">
+                        {{ $product->total_quantity }} sản phẩm
+                    </span>
+                </p>
+            </div>
+        @endforeach
+            @endif
+        </div>
+    </div>
+
     <!-- End of New Users Section -->
 
     <!-- Recent Orders Table -->
-    <div class="recent-orders">
+    {{-- <div class="recent-orders">
         <h2>Mã giảm giá</h2>
         <table>
             <thead>
@@ -156,7 +181,7 @@
             </tbody>
         </table>
         <a href="{{ route('admin.vouchers.index') }}">Show All</a>
-    </div>
+    </div> --}}
 
     <!-- End of Recent Orders -->
 @endsection

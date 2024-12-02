@@ -59,16 +59,8 @@ class VoucherController extends Controller
      */
     public function store(StoreVoucherRequest $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|unique:vouchers,code|regex:/^[a-zA-Z0-9]+$/',
-            'discount_type' => 'required|in:amount,percent',
-            'discount_amount' => 'nullable|numeric',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            'min_order_value' => 'required|numeric',
-            'usage_limit' => 'required|numeric',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
-        ]);
+        // Dữ liệu đã được xác thực tự động từ StoreVoucherRequest
+        $validated = $request->validated();
 
         // Tính toán trạng thái voucher
         $start_date = Carbon::parse($request->start_date);
@@ -93,15 +85,18 @@ class VoucherController extends Controller
             'usage_limit' => $validated['usage_limit'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
+            'max_discount_amount' => $validated['max_discount_amount'] ?? null, // Nếu không có, gán null
         ];
 
         // Lưu giá trị giảm giá tùy theo loại discount_type
         if ($validated['discount_type'] === 'amount') {
             $voucherData['discount_amount'] = $validated['discount_amount'];
-            $voucherData['discount_percent'] = null; // Không lưu phần trăm giảm giá
+            $voucherData['max_discount_amount'] = null;
+            $voucherData['discount_percent'] = null;
         } elseif ($validated['discount_type'] === 'percent') {
             $voucherData['discount_percent'] = $validated['discount_percent'];
-            $voucherData['discount_amount'] = null; // Không lưu giá giảm cố định
+            $voucherData['max_discount_amount'] = $validated['max_discount_amount']; // Giữ giá trị max_discount_amount
+            $voucherData['discount_amount'] = null;
         }
 
         // Lưu voucher vào cơ sở dữ liệu
@@ -142,12 +137,31 @@ class VoucherController extends Controller
         // Kiểm tra loại giảm giá và xử lý
         if ($validated['discount_type'] === 'percent') {
             $validated['discount_amount'] = null;  // Xóa số tiền khi chọn giảm giá theo phần trăm
+            // Cập nhật max_discount_amount khi discount_type là percent
+            $validated['max_discount_amount'] = $validated['max_discount_amount'] ?? null; // Gán null nếu không có giá trị
         } elseif ($validated['discount_type'] === 'amount') {
             $validated['discount_percent'] = null;  // Xóa phần trăm khi chọn giảm giá theo số tiền
+            // Reset max_discount_amount nếu discount_type là amount
+            $validated['max_discount_amount'] = null;
+        }
+
+        // Tính toán trạng thái voucher
+        $start_date = Carbon::parse($validated['start_date']);
+        $end_date = Carbon::parse($validated['end_date']);
+        $current_date = Carbon::now();
+
+        // Xác định trạng thái
+        if ($current_date < $start_date) {
+            $status = 2; // Chưa bắt đầu
+        } elseif ($current_date >= $start_date && $current_date <= $end_date) {
+            $status = 1; // Còn hạn
+        } else {
+            $status = 0; // Hết hạn
         }
 
         // Cập nhật voucher
         $voucher->update([
+            'status' => $status,  // Cập nhật trạng thái voucher
             'code' => $validated['code'],
             'discount_type' => $validated['discount_type'],
             'discount_amount' => $validated['discount_amount'],
@@ -156,11 +170,13 @@ class VoucherController extends Controller
             'usage_limit' => $validated['usage_limit'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
+            'max_discount_amount' => $validated['max_discount_amount'], // Cập nhật max_discount_amount
         ]);
 
         // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công!');
     }
+
 
     /**
      * Remove the specified resource from storage.

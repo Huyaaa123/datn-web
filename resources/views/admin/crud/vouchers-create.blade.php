@@ -113,7 +113,7 @@
 
             <div class="form-group-container">
                 <div class="form-group" id="discount_amount_group" style="display: none;">
-                    <label for="discount_amount">Giảm theo giá</label>
+                    <label for="discount_amount">Giảm theo giá (₫)</label>
                     <input type="text" id="discount_amount" name="discount_amount" class="form-control" value="{{ old('discount_amount') }}">
                     @error('discount_amount')
                     <div class="text-danger mt-1">{{ $message }}</div>
@@ -121,9 +121,14 @@
                 </div>
 
                 <div class="form-group" id="discount_percent_group" style="display: none;">
-                    <label for="discount_percent">Giảm theo phần trăm</label>
-                    <input type="text" id="discount_percent" name="discount_percent" class="form-control" value="{{ old('discount_percent') }}" min="0" max="100">
+                    <label for="discount_percent">Giảm theo phần trăm (%)</label>
+                    <input type="text" id="discount_percent" name="discount_percent" class="form-control" value="{{ old('discount_percent') }}">
                     @error('discount_percent')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                    <label for="max_discount_amount">Giảm tối đa (₫)</label>
+                    <input type="text" id="max_discount_amount" name="max_discount_amount" class="form-control" value="{{ old('max_discount_amount') }}" >
+                    @error('max_discount_amount')
                     <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>

@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\StatisticController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
@@ -39,7 +41,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.index');
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.dashboard');
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.dashboard');
+Route::get('/admin/statistic', [StatisticController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.statistic');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
 
@@ -54,6 +57,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('vouchers', VoucherController::class);
 
     Route::resource('colors', ColorController::class);
+
+    Route::resource('comments', AdminCommentController::class);
 });
 
 
