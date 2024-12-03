@@ -119,6 +119,10 @@ class VoucherController extends Controller
     public function edit(string $id)
     {
         $voucher = Voucher::findOrFail($id);
+        if ($voucher->voucherDetail()->exists()) {
+            return redirect()->route('admin.vouchers.index')
+                ->with('error', 'Không thể chỉnh sửa mã giảm giá vì đã có người sử dụng.');
+        }
 
         return view('admin.crud.vouchers-edit', compact('voucher'));
     }
@@ -134,15 +138,19 @@ class VoucherController extends Controller
         // Tìm voucher theo ID
         $voucher = Voucher::findOrFail($id);
 
+        // Kiểm tra xem mã giảm giá đã được sử dụng hay chưa
+        if ($voucher->voucherDetail()->exists()) {
+            return redirect()->route('admin.vouchers.index')
+                ->with('error', 'Không thể chỉnh sửa mã giảm giá vì đã có người sử dụng.');
+        }
+
         // Kiểm tra loại giảm giá và xử lý
         if ($validated['discount_type'] === 'percent') {
-            $validated['discount_amount'] = null;  // Xóa số tiền khi chọn giảm giá theo phần trăm
-            // Cập nhật max_discount_amount khi discount_type là percent
+            $validated['discount_amount'] = null; // Xóa số tiền khi chọn giảm giá theo phần trăm
             $validated['max_discount_amount'] = $validated['max_discount_amount'] ?? null; // Gán null nếu không có giá trị
         } elseif ($validated['discount_type'] === 'amount') {
-            $validated['discount_percent'] = null;  // Xóa phần trăm khi chọn giảm giá theo số tiền
-            // Reset max_discount_amount nếu discount_type là amount
-            $validated['max_discount_amount'] = null;
+            $validated['discount_percent'] = null; // Xóa phần trăm khi chọn giảm giá theo số tiền
+            $validated['max_discount_amount'] = null; // Reset max_discount_amount nếu discount_type là amount
         }
 
         // Tính toán trạng thái voucher
@@ -150,7 +158,6 @@ class VoucherController extends Controller
         $end_date = Carbon::parse($validated['end_date']);
         $current_date = Carbon::now();
 
-        // Xác định trạng thái
         if ($current_date < $start_date) {
             $status = 2; // Chưa bắt đầu
         } elseif ($current_date >= $start_date && $current_date <= $end_date) {
@@ -161,7 +168,7 @@ class VoucherController extends Controller
 
         // Cập nhật voucher
         $voucher->update([
-            'status' => $status,  // Cập nhật trạng thái voucher
+            'status' => $status,
             'code' => $validated['code'],
             'discount_type' => $validated['discount_type'],
             'discount_amount' => $validated['discount_amount'],
@@ -170,12 +177,13 @@ class VoucherController extends Controller
             'usage_limit' => $validated['usage_limit'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
-            'max_discount_amount' => $validated['max_discount_amount'], // Cập nhật max_discount_amount
+            'max_discount_amount' => $validated['max_discount_amount'],
         ]);
 
         // Quay lại trang danh sách với thông báo thành công
         return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công!');
     }
+
 
 
     /**

@@ -100,9 +100,6 @@
                             <button type="submit" name="payUrl" value="momo" class="btn border">
                                 <i class="fab fa-cc-mastercard"></i> Thanh toán Momo
                             </button>
-                            <button type="submit" name="vnpay" value="vnpay" class="btn border">
-                                <i class="fab fa-cc-visa"></i> Thanh toán VNPay
-                            </button>
                         </div>
                     </div>
                     {{-- ord --}}

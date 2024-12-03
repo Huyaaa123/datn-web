@@ -458,13 +458,14 @@
                                     @if ($appliedVoucher)
                                     <tr>
                                         <td style="font-weight:400;" class="col-8 text-end border-end">Giảm giá</td>
-                                        <td style="font-weight:400;" class="col-4 text-end ">
+                                        <td style="font-weight:400;" class="col-4 text-end">
                                             @if ($appliedVoucher->discount_type == 'amount')
                                                 -{{ number_format($appliedVoucher->discount_amount, 0, ',', '.') }}₫
                                             @elseif($appliedVoucher->discount_type == 'percent')
-                                                -{{ $appliedVoucher->discount_percent }}%
+                                                -{{ number_format($totalDiscount, 0, ',', '.') }}₫ <br>
                                                 @if ($appliedVoucher->max_discount_amount)
-                                                    (Tối đa {{ number_format($appliedVoucher->max_discount_amount, 0, ',', '.') }}₫)
+                                                ({{ $appliedVoucher->discount_percent }}%
+                                                     - Tối đa {{ number_format($appliedVoucher->max_discount_amount, 0, ',', '.') }}₫)
                                                 @endif
                                             @else
                                                 0₫
@@ -477,7 +478,6 @@
                                         <td class="col-4 text-end" style="font-weight: bold;">0₫</td>
                                     </tr>
                                 @endif
-
                                     <!-- Hiển thị thành tiền -->
                                     <tr>
                                         <td class="col-8 text-end border-end"><strong>Thành tiền</strong></td>

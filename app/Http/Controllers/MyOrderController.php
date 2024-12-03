@@ -40,9 +40,6 @@ class MyOrderController extends Controller
         return view('user-client.orders', compact('orders', 'categories', 'orderStatus'));
     }
 
-
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -75,9 +72,8 @@ class MyOrderController extends Controller
         $product = Product::all();
         $orderStatus = OrderStatus::all();
 
-        // Lấy thông tin đơn hàng, bao gồm thông tin chi tiết về sản phẩm
-        $order = Order::with('orderDetails.product') // Lấy thông tin chi tiết sản phẩm
-            ->findOrFail($id); // Lấy thông tin đơn hàng và sản phẩm
+        // Lấy thông tin đơn hàng và chi tiết sản phẩm
+        $order = Order::with('orderDetails.product')->findOrFail($id);
 
         $categories = Category::all();
         $vouchers = Voucher::all();
@@ -85,19 +81,49 @@ class MyOrderController extends Controller
         $colors = Color::pluck('name', 'id')->toArray();
         $sizes = Size::pluck('name', 'id')->toArray();
 
-
-        // Lấy voucher đã áp dụng cho đơn hàng từ bảng voucher_details
+        // Lấy voucher đã áp dụng
         $voucherDetail = VoucherDetail::where('order_id', $id)->first();
-        $appliedVoucher = $voucherDetail ? $voucherDetail->voucher : null; // Nếu có voucher, lấy thông tin voucher
+        $appliedVoucher = $voucherDetail ? $voucherDetail->voucher : null;
 
-        // Nếu không có voucher, giữ nguyên giá gốc cho sản phẩm
-        foreach ($order->orderDetails as $item) {
-            $item->original_price = $item->product->price;
-            $item->discounted_price = $item->product->price;
+        $totalDiscount = 0; // Tổng số tiền giảm giá
+
+        if ($appliedVoucher) {
+            foreach ($order->orderDetails as $item) {
+                $item->original_price = $item->product->price;
+
+                if ($appliedVoucher->discount_type == 'percent') {
+                    // Tính giảm giá theo phần trăm
+                    $discount = ($item->product->price * $appliedVoucher->discount_percent) / 100;
+
+                    // Kiểm tra mức giảm tối đa (nếu có)
+                    if ($appliedVoucher->max_discount_amount) {
+                        $discount = min($discount, $appliedVoucher->max_discount_amount);
+                    }
+
+                    $item->discounted_price = $item->product->price - $discount; // Giá sau giảm
+                    $item->discount_amount = $discount; // Số tiền đã giảm
+                    $totalDiscount += $discount; // Cộng tổng giảm giá
+                } elseif ($appliedVoucher->discount_type == 'amount') {
+                    // Giảm giá cố định
+                    $item->discounted_price = $item->product->price - $appliedVoucher->discount_amount;
+                    $item->discount_amount = $appliedVoucher->discount_amount;
+                    $totalDiscount += $appliedVoucher->discount_amount;
+                } else {
+                    $item->discounted_price = $item->product->price;
+                    $item->discount_amount = 0;
+                }
+            }
+        } else {
+            foreach ($order->orderDetails as $item) {
+                $item->original_price = $item->product->price;
+                $item->discounted_price = $item->product->price;
+                $item->discount_amount = 0;
+            }
         }
 
-        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher','colors','sizes'));
+        return view('user-client.orders-show', compact('order', 'categories', 'orderStatus', 'product', 'vouchers', 'appliedVoucher', 'totalDiscount', 'colors', 'sizes'));
     }
+
 
     /**
      * Update the specified resource in storage.

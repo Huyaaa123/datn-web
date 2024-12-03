@@ -358,7 +358,7 @@
                         @if ($voucher->discount_type === 'percent' && $voucher->max_discount_amount)
                             {{ number_format($voucher->max_discount_amount) }}₫
                         @else
-                            Không 
+                            Không
                         @endif
                     </td>
 
@@ -461,7 +461,7 @@
     </div>
     <script>
         function confirmDelete(event) {
-            if (!confirm('Are you sure?')) {
+            if (!confirm('Bạn chắc chứ?')) {
                 event.preventDefault();
             }
         }

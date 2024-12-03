@@ -323,7 +323,81 @@
                 </div>
             </div>
         </div> <br>
-        @include('cart.comment')
+
+        <div class="product-detail"
+            style="font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+
+            <h2 style="font-size: 24px; font-weight: bold; color: #333;">Bình luận</h2>
+
+            {{-- <div class="product-rating-filter" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <!-- Đánh giá sản phẩm -->
+                <div class="product-rating" style="display: flex; align-items: center;">
+                    <div
+                        style="font-size: 26px; font-weight: bold; color: #e9b800; margin-right: 10px;">
+                        {{ number_format($product->comments->avg('rating'), 1) }} / 5
+                    </div>
+                    <div class="rating-stars" style="display: inline-block;">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span
+                                style="font-size: 22px; color: {{ $i <= round($product->comments->avg('rating')) ? 'gold' : 'gray' }};">★</span>
+                        @endfor
+                    </div>
+                </div>
+
+                <!-- Bộ lọc đánh giá -->
+                <div class="rating-filter" style="display: flex;margin-right: 110px; gap: 10px;">
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}" style="text-decoration: none; color: #333;">Tất
+                            Cả</a>
+                    </button>
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}?rating=5"
+                            style="text-decoration: none; color: #333;">5 Sao</a>
+                    </button>
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}?rating=4"
+                            style="text-decoration: none; color: #333;">4 Sao</a>
+                    </button>
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}?rating=3"
+                            style="text-decoration: none; color: #333;">3 Sao</a>
+                    </button>
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}?rating=2"
+                            style="text-decoration: none; color: #333;">2 Sao</a>
+                    </button>
+                    <button
+                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
+                        <a href="{{ route('product.show', $product->slug) }}?rating=1"
+                            style="text-decoration: none; color: #333;">1 Sao</a>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hiển thị bình luận -->
+            <div class="comments-container" style="margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                @foreach ($comments as $comment)
+                    <div class="comment"
+                        style="margin-top: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+                        <div class="comment-header" >
+                            <strong style="color: black">{{ $comment->user->name }}</strong> -
+                            <span style="font-size: 14px; color: gray;">{{ $comment->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div class="comment-rating" style="margin-bottom: 10px;">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <span style="font-size: 15px; color: {{ $i <= $comment->rating ? 'gold' : 'gray' }};">★</span>
+                            @endfor
+                        </div>
+                        <p style="margin: 10px 0; color: #333;">{{ $comment->content }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div> --}}
         <script>
             let currentIndex = 0; // Chỉ số hình ảnh hiện tại
             const images = @json($product->galleries->pluck('image_path')); // Lấy đường dẫn của các hình ảnh

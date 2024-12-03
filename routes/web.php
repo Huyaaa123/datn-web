@@ -13,9 +13,9 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryDetailController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MyOrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductCommentController;
 use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserInformationController;
@@ -66,12 +66,9 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-
 Route::get('/products/{slug}', [ProductDetailController::class, 'show'])->name('product.show');
+Route::post('/products/{slug}/comments', [ProductDetailController::class, 'store'])->name('comments.store');
 
-Route::get('/product/{slug}/', [CommentController::class, 'index'])->name('product.comments');
-Route::post('/product/{slug}/comments', [CommentController::class, 'store'])->name('product.comments.store');
 
 Route::get('/', [ProductDetailController::class, 'index'])->name('product.index');
 
@@ -113,7 +110,7 @@ Route::post('/cart/apply-voucher', [VoucherClientController::class, 'applyVouche
 Route::post('/cart/remove-voucher', [VoucherClientController::class, 'removeVoucher'])->name('cart.removeVoucher');
 
 
-
-
 Route::get('/thanks', [PaymentController::class, 'thankYou'])->name('order.success');
+Route::get('/sorry', [PaymentController::class, 'sorry'])->name('order.danger');
+Route::match(['get', 'post'], '/payment-callback', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
 

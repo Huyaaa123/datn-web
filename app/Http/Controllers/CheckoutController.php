@@ -127,14 +127,15 @@ class CheckoutController extends Controller
             if ($amount < 10000 || $amount > 50000000) {
                 return redirect()->back()->with('error', 'Số tiền giao dịch phải từ 10,000 VNĐ đến 50,000,000 VNĐ.');
             }
+
             $variants = [];
             foreach ($cart as $productId => $product) {
                 $variants[] = $product['color_id'] . ',' . $product['size_id'];
             }
 
             $orderId = time() . "";
-            $redirectUrl = "http://datn-web.test/thanks"; // URL để nhận thông tin trả về từ MoMo
-            $ipnUrl = "http://datn-web.test/"; // URL để MoMo gửi thông tin giao dịch
+            $redirectUrl = route('payment.callback'); // URL để nhận thông tin trả về từ MoMo
+            $ipnUrl = 'http://datn-web.test/'; // URL để MoMo gửi thông tin giao dịch
             $extraData = ""; // Dữ liệu bổ sung nếu cần
 
             $requestId = time() . "";
@@ -164,13 +165,18 @@ class CheckoutController extends Controller
             // Gửi yêu cầu đến MoMo
             $result = $this->execPostRequest($endpoint, json_encode($data));
             $jsonResult = json_decode($result, true); // Giải mã JSON
-
-            // Lưu đơn hàng vào cơ sở dữ liệu
+            
+            $resultCode = $request->get('resultCode');
             $order = new Order();
             $order->user_id = auth()->id(); // Nếu người dùng đã đăng nhập
-            $order->order_status_id = 1; // Hoặc trạng thái khác
+            if ($resultCode == '0') { // Nếu giao dịch thành công
+                $order->order_status_id = 1; // Trạng thái "Chờ xử lý" (hoặc trạng thái bạn muốn)
+                $order->checkpay = 'Đã thanh toán';
+            } else { // Nếu giao dịch thất bại
+                $order->order_status_id = 9; // Trạng thái "Đã hủy" (hoặc trạng thái bạn muốn)
+                $order->checkpay = 'Chưa thanh toán';
+            }
             $order->total_amount = $amount;
-            $order->checkpay = 'Đã thanh toán';
             $order->order_date = now();
             $order->variants = implode(',', $variants);
             $order->shipping_address = implode(', ', [
@@ -232,75 +238,6 @@ class CheckoutController extends Controller
                 \Log::error('MoMo response error', ['response' => $jsonResult]);
                 return redirect()->back()->with('error', 'Đã xảy ra lỗi khi xử lý giao dịch: ' . ($jsonResult['message'] ?? 'Lỗi không xác định.'));
             }
-
-        }
-
-        // Kiểm tra nếu phương thức thanh toán là VNPay
-        elseif ($request->has('vnpay')) {
-            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            $vnp_Returnurl = "https://localhost/vnpay_php/vnpay_return.php";
-            $vnp_TmnCode = "BA3K87AH";//Mã website tại VNPAY
-            $vnp_HashSecret = "RWHBOVNYWN7HTYWQRXALNNAMVKXJWHT9"; //Chuỗi bí mật
-
-            $vnp_TxnRef = time() . "";
-            $vnp_OrderInfo = 'nd thanh toan';
-            $vnp_OrderType = 'billpayment';
-            $vnp_Amount = 10000 * 100;
-            $vnp_Locale = 'VN';
-            $vnp_BankCode = 'NCB';
-            $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-            $inputData = array(
-                "vnp_Version" => "2.1.0",
-                "vnp_TmnCode" => $vnp_TmnCode,
-                "vnp_Amount" => $vnp_Amount,
-                "vnp_Command" => "pay",
-                "vnp_CreateDate" => date('YmdHis'),
-                "vnp_CurrCode" => "VND",
-                "vnp_IpAddr" => $vnp_IpAddr,
-                "vnp_Locale" => $vnp_Locale,
-                "vnp_OrderInfo" => $vnp_OrderInfo,
-                "vnp_OrderType" => $vnp_OrderType,
-                "vnp_ReturnUrl" => $vnp_Returnurl,
-                "vnp_TxnRef" => $vnp_TxnRef,
-
-            );
-
-            if (isset($vnp_BankCode) && $vnp_BankCode != "") {
-                $inputData['vnp_BankCode'] = $vnp_BankCode;
-            }
-            ksort($inputData);
-            $query = "";
-            $i = 0;
-            $hashdata = "";
-            foreach ($inputData as $key => $value) {
-                if ($i == 1) {
-                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
-                } else {
-                    $hashdata .= urlencode($key) . "=" . urlencode($value);
-                    $i = 1;
-                }
-                $query .= urlencode($key) . "=" . urlencode($value) . '&';
-            }
-
-            $vnp_Url = $vnp_Url . "?" . $query;
-            if (isset($vnp_HashSecret)) {
-                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);//
-                $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
-            }
-            $returnData = array(
-                'code' => '00'
-                ,
-                'message' => 'success'
-                ,
-                'data' => $vnp_Url
-            );
-            if (isset($_POST['vnpay'])) {
-                header('Location: ' . $vnp_Url);
-                die();
-            } else {
-                echo json_encode($returnData);
-            }
-            // vui lòng tham khảo thêm tại code demo
 
         }
         $user = Auth::user();

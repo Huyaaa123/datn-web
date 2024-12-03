@@ -26,19 +26,18 @@
   <body>
 
     <div class="site-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <span class="icon-check_circle display-3 text-success"></span>
-            <h2 class="text-black">Cảm ơn bạn!</h2>
-            <p class="lead mb-3 text-black">Đơn hàng của bạn đã được xử lý thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
-            <p><a href="{{route('order.client.user')}}" class="btn btn-sm btn-success"> Đơn hàng của bạn </a></p>
-
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <span class="icon-cancel display-3 text-danger"></span>
+              <h2 class="text-black">Đơn hàng đã bị hủy!</h2>
+              <p class="lead mb-3 text-black">Đơn hàng của bạn đã bị hủy. Chúng tôi rất tiếc vì trải nghiệm không hài lòng của bạn.</p>
+              <p><a href="/" class="btn btn-sm btn-secondary">Quay lại </a></p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
   <script src="../client/js/jquery-3.3.1.min.js"></script>
   <script src="../client/js/jquery-ui.js"></script>

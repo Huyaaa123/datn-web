@@ -12,7 +12,43 @@ class PaymentController extends Controller
     public function thankYou()
     {
         $categories = Category::all();
-        return view('thanks',compact('categories'));
+        return view('thanks', compact('categories'));
+    }
+    public function sorry()
+    {
+        $categories = Category::all();
+        return view('sorry', compact('categories'));
+    }
+    // Controller
+    public function paymentCallback(Request $request)
+    {
+        $resultCode = $request->input('resultCode');
+        $message = $request->input('message');
+        $orderId = $request->input('orderId');
+        $amount = $request->input('amount');
+
+        // Tìm đơn hàng theo orderId
+        $order = Order::where('id', $orderId)->first();
+
+        if (!$order) {
+            return redirect()->route('home')->with('error', 'Đơn hàng không tồn tại.');
+        }
+
+        if ($resultCode == '0') {
+            // Giao dịch thành công
+            $order->order_status_id = 1; // Chờ xử lý
+            $order->checkpay = 'Đã thanh toán';
+            $order->save();
+
+            return redirect()->route('order.success')->with('success', 'Thanh toán thành công.');
+        } else {
+            // Giao dịch thất bại
+            $order->order_status_id = 9; // Đã hủy
+            $order->checkpay = 'Chưa thanh toán';
+            $order->save();
+
+            return redirect()->route('order.danger')->with('error', 'Thanh toán thất bại: ' . $message);
+        }
     }
 
     public function storeOrder(Request $request)

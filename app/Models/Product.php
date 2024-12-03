@@ -22,6 +22,11 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
 
     public function galleries()
     {
@@ -31,7 +36,7 @@ class Product extends Model
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'order_details', 'product_id', 'order_id')
-                    ->withPivot('quantity'); // Để lấy thông tin số lượng sản phẩm
+            ->withPivot('quantity'); // Để lấy thông tin số lượng sản phẩm
     }
 
     public function orderDetail()

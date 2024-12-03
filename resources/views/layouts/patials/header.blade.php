@@ -38,7 +38,7 @@
                     <ul class="d-flex align-items-center" style="font-weight: 500;">
                         <li class="nav-link dropdown">
                             @if (auth()->check())
-                                <a href="#" data-toggle="dropdown">
+                                <a href="" data-toggle="dropdown">
                                     <span class="icon icon-person"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">

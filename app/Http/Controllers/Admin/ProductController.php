@@ -102,8 +102,13 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $product->load('category', 'galleries', 'colors', 'sizes');
+        // Kiểm tra nếu sản phẩm đang trong giỏ hàng
+        if ($product->cart()->exists()) {
+            return redirect()->route('admin.product.index')
+                ->with('error', 'Sản phẩm này đang được thêm vào giỏ hàng, không thể chỉnh sửa!');
+        }
 
+        $product->load('category', 'galleries', 'colors', 'sizes');
         $productColors = $product->colors->pluck('id')->all();
         $productSizes = $product->sizes->pluck('id')->all();
 
@@ -113,12 +118,17 @@ class ProductController extends Controller
 
         return view('admin.crud.product-edit', compact('categories', 'product', 'colors', 'sizes', 'productColors', 'productSizes'));
     }
-
+    
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
+        // Kiểm tra nếu sản phẩm đang trong giỏ hàng
+        if ($product->cart()->exists()) {
+            return redirect()->route('admin.product.index')->with('error', 'Sản phẩm này đang được thêm vào giỏ hàng, không thể chỉnh sửa!');
+        }
+
         DB::transaction(function () use ($request, $product) {
             $dataProduct = [
                 'category_id' => $request->category_id,
@@ -127,25 +137,26 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'price' => $request->price,
                 'sku' => $request->sku,
-
             ];
+
             if ($request->hasFile('image_path')) {
                 $dataProduct['image_path'] = Storage::put('products', $request->file('image_path'));
             }
 
             $product->update($dataProduct);
 
-            // Kiểm tra nếu có hình ảnh galleries mới
+            // Cập nhật thông tin liên quan
+            $product->colors()->sync($request->colors);
+            $product->sizes()->sync($request->sizes);
+
+            // Cập nhật galleries
             if ($request->hasFile('galleries')) {
-                // Xóa tất cả hình ảnh galleries hiện tại
                 foreach ($product->galleries as $gallery) {
                     if ($gallery->image_path && Storage::exists($gallery->image_path)) {
                         Storage::delete($gallery->image_path);
                     }
                     $gallery->delete();
                 }
-
-                // Thêm các hình ảnh galleries mới
                 foreach ($request->galleries as $image) {
                     Gallery::create([
                         'product_id' => $product->id,
@@ -153,8 +164,6 @@ class ProductController extends Controller
                     ]);
                 }
             }
-            $product->colors()->sync($request->colors);
-            $product->sizes()->sync($request->sizes);
         });
 
         return redirect()->route('admin.product.index')->with('success', 'Cập nhật sản phẩm thành công!');
