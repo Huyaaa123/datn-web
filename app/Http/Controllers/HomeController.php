@@ -39,6 +39,18 @@ class HomeController extends Controller
         $categories = Category::all();
         $vouchers = Voucher::all();
 
+         // Lấy danh mục 'Đồng hồ nam'
+         $menCategory = Category::where('name', 'Đồng hồ nam')->first();
+
+         // Lấy sản phẩm thuộc danh mục 'Đồng hồ nam'
+         $menProducts = $menCategory ? Product::where('category_id', $menCategory->id)->get() : [];
+
+         // Lấy danh mục 'Đồng hồ nữ'
+         $womenCategory = Category::where('name', 'Đồng hồ nữ')->first();
+
+         // Lấy sản phẩm thuộc danh mục 'Đồng hồ nữ'
+         $womenProducts = $womenCategory ? Product::where('category_id', $womenCategory->id)->get() : [];
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
@@ -54,9 +66,8 @@ class HomeController extends Controller
             session()->put('cart', $cart);
         }
 
-        return view('index', compact('products', 'categories','vouchers'));
+        return view('index', compact('products', 'categories','vouchers','menProducts','womenProducts'));
     }
-
 
 }
 

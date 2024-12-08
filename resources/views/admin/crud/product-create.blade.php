@@ -107,14 +107,6 @@
             @csrf
 
             <div class="form-group">
-                <label for="sku">Mã</label>
-                <input type="text" class="form-control" id="sku" name="sku" value="{{ old('sku') }}">
-                @error('sku')
-                <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
                 <label for="name">Tên</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
                 @error('name')
@@ -132,7 +124,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="galleries">Ảnh 2</label>
+                    <label for="galleries">Galleries</label>
                     <input type="file" class="form-control" id="galleries" name="galleries[]" multiple>
                     @error('galleries')
                     <div class="text-danger mt-1">{{ $message }}</div>

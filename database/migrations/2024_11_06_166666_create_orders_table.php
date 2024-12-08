@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->foreignIdFor(OrderStatus::class)->constrained();
+            $table->foreignIdFor(OrderStatus::class)->nullable()->constrained();
             $table->decimal('total_amount', 15, 2); // Tổng tiền
             $table->datetime('order_date')->nullable(); // Ngày đặt hàng
             $table->string('telephone')->nullable();

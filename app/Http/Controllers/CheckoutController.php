@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Voucher;
 use App\Models\VoucherDetail;
 use Illuminate\Http\Request;
@@ -65,12 +66,21 @@ class CheckoutController extends Controller
                 $order->save();
 
                 foreach ($cart as $productId => $product) {
-                    $order->orderDetails()->create([
-                        'product_id' => $productId,
-                        'quantity' => $product['quantity'],
-                        'price' => $product['price'],
-                        'total' => $product['quantity'] * $product['price'] // Calculate total if missing
-                    ]);
+                    // Ép kiểu product_id thành integer
+                    $productId = intval($productId);
+
+                    // Kiểm tra nếu product_id hợp lệ (là số dương và tồn tại trong bảng products)
+                    if ($productId > 0 && Product::find($productId)) {
+                        $order->orderDetails()->create([
+                            'product_id' => $productId,
+                            'quantity' => $product['quantity'],
+                            'price' => $product['price'],
+                            'total' => $product['quantity'] * $product['price'] // Tính tổng nếu chưa có
+                        ]);
+                    } else {
+                        // Nếu product_id không hợp lệ, có thể báo lỗi hoặc tiếp tục với các sản phẩm hợp lệ
+                        return redirect()->back()->with('error', 'Có lỗi xảy ra với một hoặc nhiều sản phẩm.');
+                    }
                 }
 
                 //check luot dung voucher
@@ -84,17 +94,15 @@ class CheckoutController extends Controller
                         $voucher->save();
                     }
 
-                VoucherDetail::create([
-                    'voucher_id' => $voucher->id,
-                    'user_id' => Auth::id(),
-                    'order_id' => $order->id,
-                ]);
+                    VoucherDetail::create([
+                        'voucher_id' => $voucher->id,
+                        'user_id' => Auth::id(),
+                        'order_id' => $order->id,
+                    ]);
                     // Xóa voucher khỏi session sau khi thanh toán thành công
                     session()->forget('voucher_code');
                     session()->forget('discount_amount');
                 }
-
-
 
                 // Xóa giỏ hàng khỏi session
                 session()->forget('cart');
@@ -109,10 +117,19 @@ class CheckoutController extends Controller
             }
             return redirect()->back()->with('error', 'Phương thức thanh toán không hợp lệ.');
         }
-
         // Kiểm tra nếu phương thức thanh toán là MoMo
         elseif ($request->has('payUrl')) {
             $cart = session()->get('cart', []);
+            session([
+                'checkout_address' => [
+                    'address' => $request->input('address'),
+                    'ward' => $request->input('ward'),
+                    'district' => $request->input('district'),
+                    'city' => $request->input('city'),
+                ],
+                'phone' => $request->input('phone'),
+            ]);
+
             $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
             $partnerCode = 'MOMOBKUN20180529';
             $accessKey = 'klm05TvNBzhg7h7j';
@@ -165,79 +182,81 @@ class CheckoutController extends Controller
             // Gửi yêu cầu đến MoMo
             $result = $this->execPostRequest($endpoint, json_encode($data));
             $jsonResult = json_decode($result, true); // Giải mã JSON
-            
-            $resultCode = $request->get('resultCode');
-            $order = new Order();
-            $order->user_id = auth()->id(); // Nếu người dùng đã đăng nhập
-            if ($resultCode == '0') { // Nếu giao dịch thành công
-                $order->order_status_id = 1; // Trạng thái "Chờ xử lý" (hoặc trạng thái bạn muốn)
-                $order->checkpay = 'Đã thanh toán';
-            } else { // Nếu giao dịch thất bại
-                $order->order_status_id = 9; // Trạng thái "Đã hủy" (hoặc trạng thái bạn muốn)
-                $order->checkpay = 'Chưa thanh toán';
-            }
-            $order->total_amount = $amount;
-            $order->order_date = now();
-            $order->variants = implode(',', $variants);
-            $order->shipping_address = implode(', ', [
-                $request->input('address'),
-                $request->input('ward'),
-                $request->input('district'),
-                $request->input('city')
-            ]);
-            $order->telephone = $request->phone;
-            $order->payment_method = 'MoMo';
-            $order->confirmed = null;
-            $order->on_delivery = null;
-            $order->received = null;
-            $order->complete = null;
-            $order->cancelorder = null;
-            $order->canceled = null;
-            $order->save();
 
-            // Lưu các chi tiết đơn hàng
-            foreach ($cart as $productId => $product) {
-                $order->orderDetails()->create([
-                    'product_id' => $productId,
-                    'quantity' => $product['quantity'],
-                    'price' => $product['price'],
-                    'total' => $product['quantity'] * $product['price']
-                ]);
-            }
-
-            //check luot dung voucher
-            if (session()->has('voucher_code')) {
-                $voucherCode = session('voucher_code');
-                $voucher = Voucher::where('code', $voucherCode)->first();
-
-                // Cập nhật số lần sử dụng voucher
-                if ($voucher) {
-                    $voucher->increment('used'); // Tăng số lần sử dụng
-                    $voucher->save();
-                }
-                VoucherDetail::create([
-                    'voucher_id' => $voucher->id,
-                    'user_id' => Auth::id(),
-                    'order_id' => $order->id,
-                    ]);
-                // Xóa voucher khỏi session sau khi thanh toán thành công
-                session()->forget('voucher_code');
-                session()->forget('discount_amount');
-            }
-
-            session()->forget('cart');
-            $user = Auth::user();
-            $cartItems = $user->carts; // Lấy tất cả bản ghi giỏ hàng của người dùng
-            foreach ($cartItems as $cartItem) {
-                $cartItem->delete(); // Xóa từng bản ghi
-            }
+            // Nếu MoMo trả về URL thanh toán
             if (isset($jsonResult['payUrl'])) {
-                return redirect()->to($jsonResult['payUrl']); // Chuyển hướng đến URL thanh toán
+                return redirect()->to($jsonResult['payUrl']); // Chuyển hướng đến URL thanh toán MoMo
             } else {
-                // Ghi log phản hồi để dễ dàng gỡ lỗi
                 \Log::error('MoMo response error', ['response' => $jsonResult]);
                 return redirect()->back()->with('error', 'Đã xảy ra lỗi khi xử lý giao dịch: ' . ($jsonResult['message'] ?? 'Lỗi không xác định.'));
             }
+        }
+
+         elseif ($request->has('vnpay')) {
+            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+            $vnp_Returnurl = "https://localhost/vnpay_php/vnpay_return.php";
+            $vnp_TmnCode = "BA3K87AH";//Mã website tại VNPAY
+            $vnp_HashSecret = "RWHBOVNYWN7HTYWQRXALNNAMVKXJWHT9"; //Chuỗi bí mật
+
+            $vnp_TxnRef = time() . "";
+            $vnp_OrderInfo = 'nd thanh toan';
+            $vnp_OrderType = 'billpayment';
+            $vnp_Amount = 10000 * 100;
+            $vnp_Locale = 'VN';
+            $vnp_BankCode = 'NCB';
+            $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+            $inputData = array(
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $vnp_Amount,
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => date('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $vnp_IpAddr,
+                "vnp_Locale" => $vnp_Locale,
+                "vnp_OrderInfo" => $vnp_OrderInfo,
+                "vnp_OrderType" => $vnp_OrderType,
+                "vnp_ReturnUrl" => $vnp_Returnurl,
+                "vnp_TxnRef" => $vnp_TxnRef,
+
+            );
+
+            if (isset($vnp_BankCode) && $vnp_BankCode != "") {
+                $inputData['vnp_BankCode'] = $vnp_BankCode;
+            }
+            ksort($inputData);
+            $query = "";
+            $i = 0;
+            $hashdata = "";
+            foreach ($inputData as $key => $value) {
+                if ($i == 1) {
+                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+                } else {
+                    $hashdata .= urlencode($key) . "=" . urlencode($value);
+                    $i = 1;
+                }
+                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+
+            $vnp_Url = $vnp_Url . "?" . $query;
+            if (isset($vnp_HashSecret)) {
+                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);//
+                $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+            }
+            $returnData = array(
+                'code' => '00'
+                ,
+                'message' => 'success'
+                ,
+                'data' => $vnp_Url
+            );
+            if (isset($_POST['vnpay'])) {
+                header('Location: ' . $vnp_Url);
+                die();
+            } else {
+                echo json_encode($returnData);
+            }
+            // vui lòng tham khảo thêm tại code demo
 
         }
         $user = Auth::user();

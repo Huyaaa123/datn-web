@@ -133,7 +133,7 @@ class MyOrderController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2])) {
+        if ($request->order_status_id === '7' && in_array($order->order_status_id, [1, 2, 4])) {
             $order->order_status_id = 8;
             $order->cancelorder = now();
             $order->cancel = $request->cancel;
@@ -142,6 +142,11 @@ class MyOrderController extends Controller
             $order->order_status_id = 5;
             $order->received = now();
             $order['checkpay'] = 'Đã thanh toán';
+
+            if ($order['checkpay'] === 'Đã thanh toán') {
+                $order->order_status_id = 6; // Trạng thái "Thành công"
+                $order->complete = now(); // Lưu thời gian hoàn thành
+            }
         } else {
             return redirect()->route('order.client.show', $order->id)
                 ->with('error', 'Không thể cập nhật trạng thái đơn hàng.');
@@ -151,9 +156,6 @@ class MyOrderController extends Controller
         return redirect()->route('order.client.show', $order->id)
             ->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
     }
-
-
-
 
     /**
      * Remove the specified resource from storage.

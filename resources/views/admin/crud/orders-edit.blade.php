@@ -304,46 +304,73 @@
                     </svg>
                 </svg>
             @else
-                <svg width="100%" height="160" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Đường kết nối giữa các bước -->
-                    <line x1="195" y1="100" x2="400" y2="100"
-                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
+            <svg width="100%" height="160" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Đoạn đường kẻ từ Chờ xác nhận hủy đến Đã hủy đơn -->
+                <line x1="260" y1="100" x2="605" y2="100"
+                    stroke="{{ $order->orderStatus->id >= 8 ? 'green' : 'gray' }}" stroke-width="5" />
+                <line x1="580" y1="100" x2="840" y2="100"
+                    stroke="{{ $order->orderStatus->id >= 9 ? 'green' : 'gray' }}" stroke-width="5" />
 
-                    <!-- Bước 1: Đơn hàng đã đặt -->
-                    <circle cx="150" cy="100" r="45" fill="white"
-                        stroke="{{ $order->orderStatus->id >= 1 ? 'green' : 'gray' }}" stroke-width="5" />
-                    <text x="150" y="170" font-size="18" text-anchor="middle" fill="black">Đơn hàng đã đặt</text>
+                <circle cx="300" cy="100" r="45" fill="white"
+                    stroke="{{ $order->orderStatus->id >= 7 ? 'green' : 'gray' }}" stroke-width="5" />
+                <text x="300" y="170" font-size="18" text-anchor="middle" fill="black">Yêu cầu hủy </text>
 
-                    <text x="150" y="200" font-size="18" text-anchor="middle" fill="black">
-                        {{ $order->created_at->format(' H:i:s d/m/Y') }}
-                    </text>
+                <text x="300" y="200" font-size="18" text-anchor="middle" fill="black">
+                    @if ($order->cancelorder)
+                        {{ \Carbon\Carbon::parse($order->cancelorder)->format('H:i:s d/m/Y ') }}
+                    @else
+                        ___
+                    @endif
 
-                    <svg x="126" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
-                        fill="{{ $order->orderStatus->id >= 1 ? '#00CD00' : '#808080' }}">
-                        <path
-                            d="M222-80q-43.75 0-74.37-30.63Q117-141.25 117-185v-125h127v-570l59.8 60 59.8-60 59.8 60 59.8-60 59.8 60 60-60 60 60 60-60 60 60 60-60v695q0 43.75-30.62 74.37Q781.75-80 738-80H222Zm516-60q20 0 32.5-12.5T783-185v-595H304v470h389v125q0 20 12.5 32.5T738-140ZM357-622v-60h240v60H357Zm0 134v-60h240v60H357Zm333-134q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9Zm0 129q-12 0-21-9t-9-21q0-12 9-21t21-9q12 0 21 9t9 21q0 12-9 21t-21 9ZM221-140h412v-110H177v65q0 20 12.65 32.5T221-140Zm-44 0v-110 110Z" />
-                    </svg>
+                </text>
 
-                    <!-- Bước 3: Đã hủy đơn -->
-                    <circle cx="400" cy="100" r="45" fill="white"
-                        stroke="{{ $order->orderStatus->id >= 9 ? 'green' : 'gray' }}" stroke-width="5" />
-                    <text x="400" y="170" font-size="18" text-anchor="middle" fill="black">Đã hủy đơn</text>
-
-                    <text x="400" y="200" font-size="18" text-anchor="middle" fill="black">
-                        @if ($order->canceled)
-                            {{ \Carbon\Carbon::parse($order->canceled)->format('H:i:s d/m/Y ') }}
-                        @else
-                            ___
-                        @endif
-
-                    </text>
-
-                    <svg x="376" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
-                        fill="{{ $order->orderStatus->id >= 9 ? '#00CD00' : '#808080' }}">
-                        <path
-                            d="m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z" />
-                    </svg>
+                <svg x="276" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                    fill="{{ $order->orderStatus->id >= 7 ? '#00CD00' : '#808080' }}">
+                    <path
+                        d="m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z" />
                 </svg>
+
+
+                <!-- Bước 2: Chờ xác nhận hủy -->
+                <circle cx="550" cy="100" r="45" fill="white"
+                    stroke="{{ $order->orderStatus->id >= 8 ? 'green' : 'gray' }}" stroke-width="5" />
+                <text x="550" y="170" font-size="18" text-anchor="middle" fill="black">Chờ xác nhận hủy</text>
+
+                <text x="550" y="200" font-size="18" text-anchor="middle" fill="black">
+                    @if ($order->cancelorder)
+                        {{ \Carbon\Carbon::parse($order->cancelorder)->format('H:i:s d/m/Y ') }}
+                    @else
+                        ___
+                    @endif
+
+                </text>
+
+                <svg x="526" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                    fill="{{ $order->orderStatus->id >= 8 ? '#00CD00' : '#808080' }}">
+                    <path
+                        d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-60q68 0 130.62-25.81Q673.24-191.61 721-240L480-480v-340q-142 0-241 98.81T140-480q0 142.37 98.81 241.19Q337.63-140 480-140Z" />
+                </svg>
+
+                <!-- Bước 3: Đã hủy đơn -->
+                <circle cx="800" cy="100" r="45" fill="white"
+                    stroke="{{ $order->orderStatus->id >= 9 ? 'green' : 'gray' }}" stroke-width="5" />
+                <text x="800" y="170" font-size="18" text-anchor="middle" fill="black">Đã hủy đơn</text>
+
+                <text x="800" y="200" font-size="18" text-anchor="middle" fill="black">
+                    @if ($order->canceled)
+                        {{ \Carbon\Carbon::parse($order->canceled)->format('H:i:s d/m/Y ') }}
+                    @else
+                        ___
+                    @endif
+
+                </text>
+
+                <svg x="776" y="76" width="48px" height="48px" viewBox="0 -960 960 960"
+                    fill="{{ $order->orderStatus->id >= 9 ? '#00CD00' : '#808080' }}">
+                    <path
+                        d="m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z" />
+                </svg>
+            </svg>
             @endif
             <svg width="930" height="2" xmlns="http://www.w3.org/2000/svg">
                 <rect width="40" height="50" fill="#0088ff" />
@@ -394,7 +421,22 @@
                         @endforeach
                     </div>
 
-                    <div class="total-price"><strong>Tổng tiền:</strong> {{ number_format($order->total_amount) }}₫</div>
+
+    <div class="total-price">
+        {{-- Tổng tiền chưa giảm giá --}}
+        <strong>Tổng tiền chưa giảm giá:</strong> {{ number_format($order->total_amount_without_discount) }}₫<br>
+
+        {{-- Số tiền giảm --}}
+        @if ($order->voucher)
+            <strong>Số tiền giảm:</strong> {{ number_format($order->voucher->discount_amount) }}₫<br>
+        @else
+            <strong>Số tiền giảm:</strong> 0₫<br>
+        @endif
+
+        {{-- Tổng tiền phải trả --}}
+        <strong>Tổng tiền phải trả:</strong>
+        <strong>{{ number_format($order->total_amount_after_discount) }}₫</strong>
+    </div>
                 </div>
 
                 <div class="order-summary">
@@ -403,22 +445,24 @@
                     <p style="color:black;"><strong style="font-weight: bold; color:black;">Phương thức:</strong> {{ $order->payment_method }}</p>
                     <p style="color:black;"><strong style="font-weight: bold; color:black;">Trạng thái:</strong> {{ $order->checkpay }}</p>
                     @if ($order->order_status_id == 1)
-                        <button type="submit" name="order_status_id" value="2" class="btn btn-secondary">Xác
+                        <button type="submit" name="order_status_id" value="2" style="color:rgb(0, 0, 0);border-radius:10px;height:30px;background-color: rgb(0, 255, 72);" class="btn btn-secondary">Xác
                             nhận</button>
-                        <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
+                        <button type="button" id="cancel-button" style="color:rgb(255, 255, 255);border-radius:10px;height:30px;background-color: rgb(255, 0, 0);" class="btn btn-danger">Hủy đơn</button>
                     @elseif($order->order_status_id == 2)
-                        <button type="submit" name="order_status_id" value="3" class="btn btn-info">Giao
+                        <button type="submit" name="order_status_id" value="3" style="color:rgb(0, 0, 0);border-radius:10px;height:30px;background-color: rgb(0, 255, 72);" class="btn btn-info">Giao
                             hàng</button>
-                        <button type="button" id="cancel-button" class="btn btn-danger">Hủy đơn</button>
+                        <button type="button" id="cancel-button" style="color:rgb(255, 255, 255);border-radius:10px;height:30px;background-color: rgb(255, 0, 0);" class="btn btn-danger">Hủy đơn</button>
                     @elseif($order->order_status_id == 3)
-                        <button type="submit" name="order_status_id" value="4" class="btn btn-warning">Đã giao
+                        <button type="submit" name="order_status_id" value="4" style="color:rgb(0, 0, 0);border-radius:10px;height:30px;background-color: rgb(0, 255, 72);" class="btn btn-warning">Đã giao
                             hàng</button>
                     @elseif($order->order_status_id == 5)
-                        <button type="submit" name="order_status_id" value="6" class="btn btn-success">Hoàn
+                        <button type="submit" name="order_status_id" value="6" style="color:rgb(0, 0, 0);border-radius:10px;height:30px;background-color: rgb(0, 255, 72);" class="btn btn-success">Hoàn
                             thành</button>
                     @elseif($order->order_status_id == 8)
-                        <button type="submit" name="order_status_id" value="9" class="btn btn-success">Đồng ý
+                        <button type="submit" name="order_status_id" value="9" style="color:rgb(0, 0, 0);border-radius:10px;height:30px;background-color: rgb(0, 255, 72);" class="btn btn-success">Đồng ý
                             hủy</button>
+                        <p style="color:black;"><strong style="font-weight: bold; color:black;">Người yêu cầu hủy:</strong>  {{$order->notes}}</p>
+                        <p style="color:black;"><strong style="font-weight: bold; color:black;">Lý do: </strong> {{ $order->cancel }}</p>
                     @elseif($order->order_status_id == 9)
                         <strong style="font-weight: 500; color:red;">Đơn hàng đã bị hủy.</strong>
                         <p style="color:black;"><strong style="font-weight: bold; color:black;">Người hủy:</strong>  {{$order->notes}}</p>

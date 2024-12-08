@@ -56,6 +56,21 @@ class Order extends Model
     {
         return $this->belongsTo(Voucher::class, 'voucher_code', 'code'); // Liên kết đơn hàng với voucher qua mã voucher
     }
+    public function getTotalAmountWithoutDiscountAttribute()
+    {
+        return $this->orderDetails->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
+    }
+
+    public function getTotalAmountAfterDiscountAttribute()
+    {
+        $total = $this->total_amount_without_discount;
+        if ($this->voucher) {
+            $total -= $this->voucher->discount_amount;
+        }
+        return $total;
+    }
 
 
 }

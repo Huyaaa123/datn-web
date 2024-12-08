@@ -86,4 +86,11 @@ class AdminController extends Controller
 
         return view("admin.dashboard", compact("newUsers", "activeVouchers","topSellingProducts", "totalSales", "salesChangePercentage", "topCustomers","newOrdersToday", "orderChangePercentage",'totalUsersToday', 'usersGrowthPercentage'));
     }
+
+    public function contacts()
+{
+    $contacts = \App\Models\Contact::latest()->paginate(5); // Lấy danh sách liên hệ
+    return view('admin.contact', compact('contacts'));
+}
+
 }

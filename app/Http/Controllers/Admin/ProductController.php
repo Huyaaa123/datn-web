@@ -69,7 +69,6 @@ class ProductController extends Controller
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'price' => $request->price,
-                'sku' => $request->sku,
             ];
             if ($request->hasFile('image_path')) {
                 $dataProduct['image_path'] = Storage::put('products', $request->file('image_path'));
@@ -118,7 +117,7 @@ class ProductController extends Controller
 
         return view('admin.crud.product-edit', compact('categories', 'product', 'colors', 'sizes', 'productColors', 'productSizes'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
@@ -136,7 +135,6 @@ class ProductController extends Controller
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'price' => $request->price,
-                'sku' => $request->sku,
             ];
 
             if ($request->hasFile('image_path')) {

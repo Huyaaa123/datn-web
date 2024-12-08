@@ -123,18 +123,23 @@
                                                     <div class="col-md-4 col-lg-4 col-xl-4">
                                                         <h6 style="font-size: 14px; font-weight:500; color:black;" class=" mb-1">
                                                             {{ $product['name'] }}</h6>
-                                                        @php
-                                                            $color = \DB::table('colors')
-                                                                ->where('id', $product['color_id'])
-                                                                ->first();
-                                                            $size = \DB::table('sizes')
-                                                                ->where('id', $product['size_id'])
-                                                                ->first();
+                                                            @php
+                                                            $color_id = $product['color_id'] ?? null;
+                                                            $size_id = $product['size_id'] ?? null;
+
+                                                            $color = $color_id
+                                                                ? \DB::table('colors')->where('id', $color_id)->first()
+                                                                : null;
+
+                                                            $size = $size_id
+                                                                ? \DB::table('sizes')->where('id', $size_id)->first()
+                                                                : null;
                                                         @endphp
 
-                                                        <p class="mb-1">{{ $size->name ?? 'Màu không xác định' }},
-                                                            {{ $color->name ?? 'Kích thước không xác định' }}</p>
+                                                        <p class="mb-1">{{ $size->name ?? 'Kích thước không xác định' }},
+                                                            {{ $color->name ?? 'Màu không xác định' }}</p>
                                                         <p class="mb-0">{{ number_format($product['price']) }}₫</p>
+
                                                     </div>
 
                                                     <div
@@ -175,16 +180,26 @@
                                                         </h6>
                                                     </div>
 
+
                                                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                        <form action="{{ route('cart.remove') }}" method="POST"
-                                                            style="display: inline;">
+                                                        <form action="{{ route('cart.remove') }}" method="POST" style="display: inline;">
                                                             @csrf
-                                                            <input type="hidden" name="product_id"
-                                                                value="{{ $id }}">
-                                                            <button type="submit" class="btn btn-link text-muted"><i
-                                                                    class="fas fa-times"></i></button>
+                                                            @foreach ($cart as $key => $item)
+                                                            <!-- Sản phẩm ID -->
+                                                            <input type="hidden" name="product_id" value="{{ explode('-', $key)[0] }}">
+
+                                                            <!-- Thêm color_id và size_id vào form -->
+                                                            <input type="hidden" name="color_id" value="{{ explode('-', $key)[1] }}">
+                                                            <input type="hidden" name="size_id" value="{{ explode('-', $key)[2] }}">
+                                                            @endforeach
+                                                            <!-- Nút xóa sản phẩm -->
+                                                            <button type="submit" class="btn btn-link text-muted">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
                                                         </form>
                                                     </div>
+
+
                                                 </div>
                                                 <hr class="my-4">
                                             @endforeach
@@ -241,6 +256,7 @@
                                                                 <!-- Danh sách voucher radio -->
                                                                 <div class="voucher-list" style="max-height: 300px; overflow-y: auto;">
                                                                     @foreach ($vouchers as $voucher)
+                                                                    @if ($voucher->isValid() && $voucher->used < $voucher->usage_limit)
                                                                         <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
                                                                             <img src="https://down-vn.img.susercontent.com/file/aa73f8aa302834aa9fc6adbf6e704cf2" alt="Voucher Logo" style="width: 80px; height: auto;">
                                                                             <div style="flex-grow: 1; padding-left: 10px;">
@@ -256,13 +272,15 @@
                                                                                     @endif
                                                                                 </div>
                                                                                 <div style="color: #555; font-size: 14px;">
-                                                                                    <p style=" color:black;margin: 0;">Đơn Tối Thiểu: {{ number_format($voucher->min_order_value) }}₫</p>
+                                                                                    <p style="color:black;margin: 0;">Đơn Tối Thiểu: {{ number_format($voucher->min_order_value) }}₫</p>
                                                                                     <p style="color:black; margin: 0;">Hạn sử dụng: {{ \Carbon\Carbon::parse($voucher->end_date)->format('H:i:s d/m/Y') }}</p>
                                                                                 </div>
                                                                             </div>
                                                                             <input type="radio" name="voucher_id" {{ session('voucher_id') == $voucher->id ? 'checked' : '' }} value="{{ $voucher->id }}" style="margin-left: auto;">
                                                                         </div>
-                                                                    @endforeach
+                                                                    @endif
+                                                                @endforeach
+
                                                                 </div>
                                                             </form>
                                                         </div>

@@ -147,20 +147,35 @@
         <tbody>
             @foreach ($categories as $category)
                 <tr>
-                    <td style="color:black;"> {{ Str::limit($category->name, 15, '...') }}</td>
-                    <td style="color:black;">{{ Str::limit($category->slug, 15, '...') }}</td>
+                    <td style="color:black;">{{ Str::limit($category->name, 15, '...') }}</td>
+
+                    {{-- Kiểm tra nếu danh mục không phải "Chưa phân loại" mới hiển thị slug --}}
                     <td style="color:black;">
-                        <a href="{{ route('admin.category.show', $category->id) }}" class="btn btn-success">Show</a>
-                        <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Sửa</a>
-                        <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                        </form>
+                        @if ($category->name !== 'Chưa phân loại')
+                            {{ Str::limit($category->slug, 15, '...') }}
+                        @else
+                            ___
+                        @endif
+                    </td>
+
+                    <td style="color:black;">
+                        @if ($category->name !== 'Chưa phân loại') {{-- Kiểm tra điều kiện --}}
+                            <a href="{{ route('admin.category.show', $category->id) }}" class="btn btn-success">Show</a>
+                            <a href="{{ route('admin.category.edit', $category->id) }}" class="btn btn-primary">Sửa</a>
+                            <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            </form>
+                        @else
+                            ___
+                        @endif
                     </td>
                 </tr>
             @endforeach
         </tbody>
+
+
     </table>
     <script>
         function confirmDelete(event) {

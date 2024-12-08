@@ -111,21 +111,12 @@
             @csrf
             @method('PUT')
 
-            <div class="form-group-container">
-            <div class="form-group">
-                <label for="sku">Mã</label>
-                <input type="text" name="sku" id="sku" value="{{ $product->sku }}">
-                @error('sku')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
             <div class="form-group">
                 <label for="name">Tên</label>
                 <input type="text" name="name" id="name" value="{{ $product->name }}">
                 @error('name')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
-            </div>
             </div>
             <div class="form-group-container">
             <div class="form-group">

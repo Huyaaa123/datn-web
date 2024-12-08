@@ -77,7 +77,6 @@ class OrderController extends Controller
                 $dataOrder = [
                     'order_status_id' => 9, // Chuyển sang trạng thái "Đã hủy"
                     'canceled' => now(),
-                    'notes' => auth()->user()->name, // Lưu tên người yêu cầu hủy
                 ];
             } else {
                 // Trường hợp khác (cập nhật trạng thái thông thường)
@@ -122,4 +121,6 @@ class OrderController extends Controller
     {
 
     }
+
+
 }

@@ -35,6 +35,15 @@
                 box-sizing: border-box;
             }
 
+            /* Custom styling for color input */
+            input[type="color"] {
+                width: 50px; /* Adjust the width */
+                height: 50px; /* Adjust the height */
+                padding: 0;
+                border: none;
+                cursor: pointer;
+            }
+
             .text-danger {
                 color: #dc3545;
                 margin-top: 5px;
@@ -65,22 +74,22 @@
         </style>
     </head>
 
-    <body style=" font-family: 'Playfair Display', serif;">
-        <h1>Thêm danh mục</h1>
+    <body style="font-family: 'Playfair Display', serif;">
+        <h1>Thêm màu sắc</h1>
 
-        <form action="{{ route('admin.category.store') }}" method="POST">
+        <form action="{{ route('admin.colors.store') }}" method="POST">
             @csrf
-
             <div class="form-group">
                 <label for="name">Tên</label>
-                <input type="text" id="name" name="name" class="form-control" >
-                @error('name')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
+                <input type="text" id="name" name="name" class="form-control" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Thêm</button>
-            <a href="{{ route('admin.category.index') }}" class="btn btn-success">Cancel</a>
+            <div class="form-group">
+                <label for="code">Mã màu</label>
+                <input type="color" id="code" name="code" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Save</button>
         </form>
         @if (session('success'))
             <p>{{ session('success') }}</p>

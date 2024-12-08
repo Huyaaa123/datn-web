@@ -7,7 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-        <link rel="stylesheet" href="../../admindb/style.css">
+        <link rel="stylesheet" href="../../../admindb/style.css">
         <style>
             h1 {
                 font-size: 24px;
@@ -33,6 +33,15 @@
                 border: 1px solid #ced4da;
                 border-radius: 4px;
                 box-sizing: border-box;
+            }
+
+            /* Custom styling for color input */
+            input[type="color"] {
+                width: 50px; /* Adjust the width */
+                height: 50px; /* Adjust the height */
+                padding: 0;
+                border: none;
+                cursor: pointer;
             }
 
             .text-danger {
@@ -66,24 +75,26 @@
     </head>
 
     <body style=" font-family: 'Playfair Display', serif;">
-        <h1>Thêm danh mục</h1>
 
-        <form action="{{ route('admin.category.store') }}" method="POST">
+        <h1>Cập nhật màu sắc</h1>
+
+        <form action="{{ route('admin.colors.update', $color->id) }}" method="POST">
             @csrf
-
+            @method('PUT')
             <div class="form-group">
-                <label for="name">Tên</label>
-                <input type="text" id="name" name="name" class="form-control" >
-                @error('name')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
+                <label for="name">Color Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ $color->name }}" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Thêm</button>
-            <a href="{{ route('admin.category.index') }}" class="btn btn-success">Cancel</a>
+            <div class="form-group">
+                <label for="code">Color Code</label>
+                <input type="color" id="code" name="code" value="{{ $color->code }}" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
         </form>
         @if (session('success'))
-            <p>{{ session('success') }}</p>
+            <p class="text-success">{{ session('success') }}</p>
         @endif
     </body>
 

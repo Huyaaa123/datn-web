@@ -19,7 +19,8 @@ class CategorySeeder extends Seeder
             'Đồng hồ nữ',
             'Đồng hồ thể thao',
             'Đồng hồ thông minh',
-            'Luxury'
+            'Luxury',
+            'Chưa phân loại'
         ];
 
         foreach ($categories as $category) {

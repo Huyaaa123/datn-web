@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->string('image_path')->nullable();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->string('sku')->unique();
             $table->foreignIdFor(Category::class)->constrained();
             $table->timestamps();
         });

@@ -20,15 +20,17 @@
                             <a href="">Menu</a>
                             <ul class="dropdown" style="font-weight: 500;">
                                 @foreach ($categories as $category)
-                                    <li>
-                                        <a href="../categories/{{ $category->slug }}">{{ $category->name }}</a>
-                                    </li>
+                                    @if ($category->name !== 'Chưa phân loại') {{-- Kiểm tra tên danh mục --}}
+                                        <li>
+                                            <a href="../categories/{{ $category->slug }}">{{ $category->name }}</a>
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </li>
-                        <li><a href="../client/blog.html">Tin Tức</a></li>
-                        <li><a href="../client/blog.html">Liên Hệ</a></li>
-                        <li><a href="{{route('index.vouchers')}}">Hướng dẫn mua hàng</a></li>
+                        <li><a href="{{route('index.gioithieu')}}">Giới thiệu</a></li>
+                        <li><a href="{{route('index.lienhe')}}">Liên Hệ</a></li>
+                        <li><a href="{{route('index.huongdan')}}">Hướng dẫn mua hàng</a></li>
                     </ul>
                 </nav>
             </div>
@@ -55,7 +57,7 @@
                                 </div>
                             @else
                                 <a href="{{ route('login') }}" class="nav-link">
-                                    <span class="icon icon-person"></span>
+                                    <span style="margin-right: -15px" class="icon icon-person"></span>
                                 </a>
                             @endif
                         </li>
@@ -66,7 +68,17 @@
                                 <span class="count">{{ session('cart') ? count(session('cart')) : 0 }}</span>
                             </a>
                         </li>
-                        <li><a href=""><span class="icon icon-search"></span></a></li>
+                        <li class="nav-item position-relative" style="margin-left: -10px">
+                            <a href="#" class="nav-link" id="searchIcon" onclick="toggleSearchInput(event)">
+                                <span class="icon icon-search"></span>
+                            </a>
+                            <div id="searchInputContainer" class="position-absolute d-none" style="top: 100%; right: 0; z-index: 1000; min-width: 300px;">
+                                <form action="{{ route('product.search') }}" method="GET" class="p-2 bg-white border rounded">
+                                    <input type="text" name="q" class="form-control" placeholder="Tìm kiếm sản phẩm..." required>
+                                </form>
+                            </div>
+                        </li>
+
                         <li class="d-inline-block d-md-none ml-md-0">
                             <a href="../client/#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a>
                         </li>
@@ -76,3 +88,19 @@
         </div>
     </div>
 </div>
+<script>
+    function toggleSearchInput(event) {
+        event.preventDefault();
+        const searchInputContainer = document.getElementById('searchInputContainer');
+        searchInputContainer.classList.toggle('d-none'); // Hiển thị hoặc ẩn input
+    }
+
+    // Ẩn input khi nhấn ra ngoài
+    document.addEventListener('click', function (event) {
+        const searchIcon = document.getElementById('searchIcon');
+        const searchInputContainer = document.getElementById('searchInputContainer');
+        if (!searchIcon.contains(event.target) && !searchInputContainer.contains(event.target)) {
+            searchInputContainer.classList.add('d-none');
+        }
+    });
+</script>

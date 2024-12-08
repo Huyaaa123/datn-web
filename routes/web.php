@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryDetailController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HeaderViewController;
 use App\Http\Controllers\MyOrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductCommentController;
@@ -43,6 +45,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.index');
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.dashboard');
 Route::get('/admin/statistic', [StatisticController::class, 'index'])->middleware(['auth', IsAdmin::class])->name('admin.statistic');
+Route::get('/admin/contacts', [AdminController::class, 'contacts'])->middleware(['auth', IsAdmin::class])->name('admin.contacts.index');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
 
@@ -61,16 +64,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('comments', AdminCommentController::class);
 });
 
-
 Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/products/{slug}', [ProductDetailController::class, 'show'])->name('product.show');
-Route::post('/products/{slug}/comments', [ProductDetailController::class, 'store'])->name('comments.store');
-
+Route::match(['get', 'post'], '/products/{slug}', [ProductDetailController::class, 'show'])->name('product.show');
 
 Route::get('/', [ProductDetailController::class, 'index'])->name('product.index');
+Route::get('/search', [ProductDetailController::class, 'search'])->name('product.search');
+
 
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -82,6 +84,7 @@ Route::post('/cart/tru', [CartController::class, 'tru'])->name('cart.tru');
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout/online_checkout', [CheckoutController::class, 'online_checkout'])->name('checkout.online_checkout');
+Route::get('/payment/callback', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
 
 
 // thong tin user
@@ -109,8 +112,13 @@ Route::get('/vouchers', [VoucherClientController::class, 'index'])->name('index.
 Route::post('/cart/apply-voucher', [VoucherClientController::class, 'applyVoucher'])->name('cart.applyVoucher');
 Route::post('/cart/remove-voucher', [VoucherClientController::class, 'removeVoucher'])->name('cart.removeVoucher');
 
+Route::get('/huong-dan-mua-hang', [HeaderViewController::class, 'huongdan'])->name('index.huongdan');
+Route::get('/gioi-thieu', [HeaderViewController::class, 'index'])->name('index.gioithieu');
+Route::get('/lien-he', [HeaderViewController::class, 'lienhe'])->name('index.lienhe');
+
+Route::post('lien-he', [ContactController::class, 'store'])->name('contacts.store');
 
 Route::get('/thanks', [PaymentController::class, 'thankYou'])->name('order.success');
 Route::get('/sorry', [PaymentController::class, 'sorry'])->name('order.danger');
-Route::match(['get', 'post'], '/payment-callback', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
+
 

@@ -61,6 +61,13 @@
         <h3>Mã giảm giá</h3>
         {{-- <span class="message-count">27</span> --}}
     </a>
+    <a href="{{ route('admin.contacts.index') }}">
+        <span class="material-icons-sharp">
+            contact_support
+        </span>
+        <h3>Liên hệ hỗ trợ</h3>
+        {{-- <span class="message-count">27</span> --}}
+    </a>
     <a href="{{ route('admin.statistic') }}">
         <span class="material-icons-sharp">
             trending_up

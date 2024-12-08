@@ -13,7 +13,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart');
+        $cart = session()->get('cart',[]);
         $vouchers =Voucher::all();
         // dd($cart);
         $products = Product::inRandomOrder()->take(8)->get();
@@ -27,6 +27,12 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
+        // Kiểm tra người dùng đã đăng nhập hay chưa
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
+        }
+
+        // Xác thực dữ liệu yêu cầu
         $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1',
@@ -37,6 +43,8 @@ class CartController extends Controller
         // Lấy giỏ hàng hiện tại từ session
         $cart = session()->get('cart', []);
 
+        // dd(session()->get('cart'));
+        // Lấy thông tin sản phẩm
         $product = Product::find($request->product_id);
         if (!$product) {
             return redirect()->back()->with('error', 'Sản phẩm không tồn tại.');
@@ -46,13 +54,16 @@ class CartController extends Controller
         $color_id = $request->color_id;
         $size_id = $request->size_id;
 
+        // Tạo một key riêng cho sản phẩm với color_id và size_id để phân biệt
+        $cartKey = $request->product_id . '-' . $color_id . '-' . $size_id;
+
         // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-        if (isset($cart[$request->product_id])) {
+        if (isset($cart[$cartKey])) {
             // Tăng số lượng sản phẩm trong giỏ hàng
-            $cart[$request->product_id]['quantity'] += $quantity;
+            $cart[$cartKey]['quantity'] += $quantity;
         } else {
             // Thêm sản phẩm mới vào giỏ hàng
-            $cart[$request->product_id] = [
+            $cart[$cartKey] = [
                 'name' => $product->name,
                 'quantity' => $quantity,
                 'price' => $product->price,
@@ -79,9 +90,9 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: ' . $e->getMessage());
         }
 
+        // Quay lại trang giỏ hàng với thông báo thành công
         return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     }
-
 
     public function cong(Request $request)
     {
@@ -100,33 +111,38 @@ class CartController extends Controller
         }
         return redirect()->back();
     }
-
-
     public function remove(Request $request)
     {
         // Lấy giỏ hàng từ session
         $cart = session()->get('cart');
 
-        // Nếu giỏ hàng có sản phẩm
-        if (isset($cart[$request->product_id])) {
-            // Lấy ID sản phẩm
-            $productId = $request->product_id;
+        // Tạo khóa sản phẩm từ dữ liệu request
+        $key = $request->product_id . '-' . $request->color_id . '-' . $request->size_id;
 
-            // Xóa sản phẩm khỏi giỏ hàng trong session
-            unset($cart[$productId]);
+        // Kiểm tra sản phẩm có tồn tại trong giỏ hàng
+        if (isset($cart[$key])) {
+            // Xóa sản phẩm
+            unset($cart[$key]);
 
-            // Cập nhật lại giỏ hàng trong session
+            // Cập nhật lại session
             session()->put('cart', $cart);
+
+            // Xóa các thông tin liên quan (voucher, nếu có)
             session()->forget('voucher_code');
             session()->forget('voucher_id');
             session()->forget('discount_amount');
 
-            // Xóa sản phẩm khỏi cơ sở dữ liệu (giả sử bạn đã lưu thông tin giỏ hàng trong database)
-            Cart::where('product_id', $productId)->where('user_id', auth()->id())->delete();
+            // Xóa sản phẩm khỏi cơ sở dữ liệu
+            Cart::where('product_id', $request->product_id)
+                ->where('color_id', $request->color_id)
+                ->where('size_id', $request->size_id)
+                ->where('user_id', auth()->id())
+                ->delete();
+
+            return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
         }
 
-        // Quay lại trang giỏ hàng với thông báo thành công
-        return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
+        return redirect()->route('cart.index')->with('error', 'Sản phẩm không tồn tại trong giỏ hàng.');
     }
 
 }

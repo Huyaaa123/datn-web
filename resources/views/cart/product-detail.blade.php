@@ -138,6 +138,27 @@
         .btn-secondary:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
+
+        /* Hiệu ứng hover cho hình ảnh */
+        /* Viền mặc định cho hình ảnh */
+        .product-image {
+            border: 2px solid #ddd;
+            width: 90px;
+            height: auto;
+            /* Viền màu xám nhạt khi chưa hover */
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            /* Thêm hiệu ứng chuyển tiếp cho viền */
+        }
+
+        /* Hiệu ứng hover cho hình ảnh */
+        .product-image:hover {
+            transform: scale(1.1);
+            /* Phóng to hình ảnh khi hover */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            /* Thêm bóng đổ */
+            border: 2px solid #ffb700;
+            /* Thêm viền màu vàng khi hover */
+        }
     </style>
 
     <div class="container">
@@ -176,10 +197,7 @@
                     {{ $product->category->name }}
                 </p>
                 <h2 style="color:black;font-weight:500;">{{ $product->name }}</h2>
-
-                <p style="color:black; font-size: 18px; margin-bottom: 5px;">Mã sản phẩm: <span
-                        style="font-weight:500; color: #ffb700">{{ $product->sku }}</span></p>
-                <h3 style="color:#990000;font-weight:500; ">{{ number_format($product->price) }}₫</h3>
+                <h3 style="color:#990000;font-weight:500; ">{{ number_format($product->price) }}₫</h3><br>
 
                 <form id="add-to-cart-form" action="{{ route('cart.add') }}" method="POST">
                     @csrf
@@ -239,29 +257,29 @@
                         </button>
                     </div>
                 </form>
-
                 <div class="mt-4">
                     <p style="color: black; font-weight: 500;">Sản phẩm tương tự</p>
-                    <div class="row justify-content-center">
-                        @foreach ($similarProducts as $similarProduct)
-                            <div class="col-md-2 mb-4">
-                                <div class="card text-center">
-                                    <!-- Thêm đường dẫn vào hình ảnh -->
-                                    <a href="{{ route('product.show', $similarProduct->slug) }}"
-                                        class="product-image-link">
-                                        <img src="{{ Storage::url($similarProduct->image_path) }}" class="card-img-top"
-                                            alt="{{ $similarProduct->name }}">
-                                    </a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Danh sách sản phẩm -->
+                        <div class="row justify-content-center overflow-auto" style="max-width: 90%; white-space: nowrap;">
+                            @foreach ($similarProducts as $similarProduct)
+                                <div class="col-md-2 mb-4">
+                                    <div class="card text-center">
+                                        <!-- Thêm đường dẫn vào hình ảnh -->
+                                        <a href="{{ route('product.show', $similarProduct->slug) }}"
+                                            class="product-image-link">
+                                            <img src="{{ Storage::url($similarProduct->image_path) }}"
+                                                class="card-img-top product-image" alt="{{ $similarProduct->name }}">
+                                        </a>
+                                    </div>
                                 </div>
+                            @endforeach
+                        </div>
 
-                            </div>
-                        @endforeach
                     </div>
                 </div>
-
             </div>
         </div>
-
         <div class="row">
             <div class="col-6">
                 <div style="border: 1px solid #e0b344; border-radius: 5px; overflow: hidden;">
@@ -323,81 +341,8 @@
                 </div>
             </div>
         </div> <br>
+        @include('cart._comment')
 
-        <div class="product-detail"
-            style="font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-
-            <h2 style="font-size: 24px; font-weight: bold; color: #333;">Bình luận</h2>
-
-            {{-- <div class="product-rating-filter" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                <!-- Đánh giá sản phẩm -->
-                <div class="product-rating" style="display: flex; align-items: center;">
-                    <div
-                        style="font-size: 26px; font-weight: bold; color: #e9b800; margin-right: 10px;">
-                        {{ number_format($product->comments->avg('rating'), 1) }} / 5
-                    </div>
-                    <div class="rating-stars" style="display: inline-block;">
-                        @for ($i = 1; $i <= 5; $i++)
-                            <span
-                                style="font-size: 22px; color: {{ $i <= round($product->comments->avg('rating')) ? 'gold' : 'gray' }};">★</span>
-                        @endfor
-                    </div>
-                </div>
-
-                <!-- Bộ lọc đánh giá -->
-                <div class="rating-filter" style="display: flex;margin-right: 110px; gap: 10px;">
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}" style="text-decoration: none; color: #333;">Tất
-                            Cả</a>
-                    </button>
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}?rating=5"
-                            style="text-decoration: none; color: #333;">5 Sao</a>
-                    </button>
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}?rating=4"
-                            style="text-decoration: none; color: #333;">4 Sao</a>
-                    </button>
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}?rating=3"
-                            style="text-decoration: none; color: #333;">3 Sao</a>
-                    </button>
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}?rating=2"
-                            style="text-decoration: none; color: #333;">2 Sao</a>
-                    </button>
-                    <button
-                        style="background-color: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; color: #333;">
-                        <a href="{{ route('product.show', $product->slug) }}?rating=1"
-                            style="text-decoration: none; color: #333;">1 Sao</a>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Hiển thị bình luận -->
-            <div class="comments-container" style="margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                @foreach ($comments as $comment)
-                    <div class="comment"
-                        style="margin-top: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
-                        <div class="comment-header" >
-                            <strong style="color: black">{{ $comment->user->name }}</strong> -
-                            <span style="font-size: 14px; color: gray;">{{ $comment->created_at->diffForHumans() }}</span>
-                        </div>
-                        <div class="comment-rating" style="margin-bottom: 10px;">
-                            @for ($i = 1; $i <= 5; $i++)
-                                <span style="font-size: 15px; color: {{ $i <= $comment->rating ? 'gold' : 'gray' }};">★</span>
-                            @endfor
-                        </div>
-                        <p style="margin: 10px 0; color: #333;">{{ $comment->content }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div> --}}
         <script>
             let currentIndex = 0; // Chỉ số hình ảnh hiện tại
             const images = @json($product->galleries->pluck('image_path')); // Lấy đường dẫn của các hình ảnh
@@ -443,6 +388,64 @@
                 if (currentQuantity > parseInt(quantityInput.min)) {
                     quantityInput.value = currentQuantity - 1;
                 }
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const quantityInput = document.getElementById('quantity');
+                const incrementButton = document.getElementById('increment');
+                const decrementButton = document.getElementById('decrement');
+
+                // Giới hạn số lượng tối đa là 10 và tối thiểu là 1
+                incrementButton.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    if (currentValue < 10) {
+                        quantityInput.value = currentValue + 1;
+                    }
+                });
+
+                decrementButton.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    if (currentValue > 1) {
+                        quantityInput.value = currentValue - 1;
+                    }
+                });
+
+                // Kiểm tra khi người dùng nhập liệu để đảm bảo không vượt quá 10
+                quantityInput.addEventListener('input', function() {
+                    if (parseInt(quantityInput.value) > 10) {
+                        quantityInput.value = 10;
+                    } else if (parseInt(quantityInput.value) < 1) {
+                        quantityInput.value = 1;
+                    }
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('form'); // Hoặc bất kỳ form nào bạn sử dụng
+                const colorOptions = document.getElementsByName('color_id');
+                const colorError = document.getElementById('color-error');
+
+                form.addEventListener('submit', function(event) {
+                    let colorSelected = false;
+
+                    // Kiểm tra xem người dùng đã chọn màu chưa
+                    for (let i = 0; i < colorOptions.length; i++) {
+                        if (colorOptions[i].checked) {
+                            colorSelected = true;
+                            break;
+                        }
+                    }
+
+                    // Nếu chưa chọn màu, hiển thị thông báo và ngừng gửi form
+                    if (!colorSelected) {
+                        colorError.style.display = 'block';
+                        event.preventDefault(); // Ngừng gửi form
+                    } else {
+                        colorError.style.display = 'none';
+                    }
+                });
             });
         </script>
     @endsection

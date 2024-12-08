@@ -20,7 +20,7 @@ class VoucherSeeder extends Seeder
             'discount_percent' => 10,
             'min_order_value' => 100000,
             'max_discount_amount' => 150000,
-            'usage_limit' => 100,
+            'usage_limit' => 10,
             'used' => 0,
             'start_date' => now(),
             'end_date' => now()->addMonths(1),

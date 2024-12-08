@@ -358,7 +358,7 @@
                         @if ($voucher->discount_type === 'percent' && $voucher->max_discount_amount)
                             {{ number_format($voucher->max_discount_amount) }}₫
                         @else
-                            Không
+                            ___
                         @endif
                     </td>
 

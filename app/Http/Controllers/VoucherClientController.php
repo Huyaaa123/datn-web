@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class VoucherClientController extends Controller
 {
-    public function index()
-    {
-        $categories = Category::all();
-        $vouchers = Voucher::where('status', 1, 2)->get(); // Lấy tất cả mã giảm giá đang hoạt đ��ng
-
-        return view("vouchers", compact("categories", "vouchers"));
-    }
 
     public function applyVoucher(Request $request)
     {
@@ -53,21 +46,17 @@ class VoucherClientController extends Controller
         }
 
         session()->put('cart', $cart);
-        if ($voucherId) {
-            session()->put('voucher_id', $voucherId); // Lưu ID voucher vào session
-        }
+        session()->put('voucher_id', $voucherId); // Lưu ID voucher vào session
 
         // Tìm voucher dựa trên voucher_id
         $voucher = Voucher::find($voucherId);
 
         // Kiểm tra voucher hợp lệ
-        if (!$voucher || !$voucher->isValid()) {
-            // Xóa voucher và thông tin giảm giá nếu voucher không hợp lệ
+        if (!$voucher || !$voucher->isValid() || $voucher->used >= $voucher->usage_limit) {
             session()->forget('voucher_code');
             session()->forget('voucher_id');
             session()->forget('discount_amount');
 
-            // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
             foreach ($cart as $index => $item) {
                 if (isset($item['original_price'])) {
                     $cart[$index]['price'] = $item['original_price'];
@@ -80,12 +69,10 @@ class VoucherClientController extends Controller
 
         // Kiểm tra xem giá trị đơn hàng có đủ điều kiện để áp dụng voucher không
         if (!$voucher->isApplicable($orderValue)) {
-            // Xóa voucher và thông tin giảm giá nếu không đủ điều kiện
             session()->forget('voucher_code');
             session()->forget('voucher_id');
             session()->forget('discount_amount');
 
-            // Khôi phục giá gốc cho mỗi sản phẩm trong giỏ hàng
             foreach ($cart as $index => $item) {
                 if (isset($item['original_price'])) {
                     $cart[$index]['price'] = $item['original_price'];
@@ -100,8 +87,8 @@ class VoucherClientController extends Controller
         $totalDiscountAmount = 0;
         $discountPercent = 0;
 
-        // Áp dụng chiết khấu dựa trên loại voucher
         if ($voucher->discount_type == 'percent') {
+            // Nếu voucher là giảm theo phần trăm
             $discountPercent = $voucher->discount_percent;
             $totalDiscountAmount = $orderValue * $discountPercent / 100;
 
@@ -110,18 +97,32 @@ class VoucherClientController extends Controller
                 $totalDiscountAmount = min($totalDiscountAmount, $voucher->max_discount_amount);
             }
 
-            // Áp dụng giảm giá cho giỏ hàng
+            // Tính tổng giá trị giỏ hàng
+            $cartTotal = 0;
+            foreach ($cart as $item) {
+                $cartTotal += $item['price'] * $item['quantity'];
+            }
+
+            // Cập nhật giá sản phẩm trong giỏ hàng
             foreach ($cart as $index => $item) {
-                $itemDiscount = $item['price'] * $discountPercent / 100;
-                $cart[$index]['price'] -= $itemDiscount;
+                // Tính phần giảm giá cho mỗi sản phẩm, dựa trên số lượng
+                $itemDiscount = ($item['price'] * $item['quantity']) / $cartTotal * $totalDiscountAmount;
+                $cart[$index]['price'] = max(0, $item['price'] - $itemDiscount);
             }
         } elseif ($voucher->discount_type == 'amount') {
+            // Nếu voucher là giảm theo số tiền cố định
             $totalDiscountAmount = min($voucher->discount_amount, $orderValue);
 
-            // Tính tỷ lệ chiết khấu cho mỗi sản phẩm
-            $cartTotal = array_sum(array_column($cart, 'price'));
+            // Tính tổng giá trị giỏ hàng
+            $cartTotal = 0;
+            foreach ($cart as $item) {
+                $cartTotal += $item['price'] * $item['quantity'];
+            }
+
+            // Cập nhật giá sản phẩm trong giỏ hàng
             foreach ($cart as $index => $item) {
-                $itemDiscount = ($item['price'] / $cartTotal) * $totalDiscountAmount;
+                // Tính phần giảm giá cho mỗi sản phẩm
+                $itemDiscount = ($item['price'] * $item['quantity']) / $cartTotal * $totalDiscountAmount;
                 $cart[$index]['price'] -= $itemDiscount;
             }
         }
@@ -136,7 +137,6 @@ class VoucherClientController extends Controller
         // Thông báo thành công
         return back()->with('success', 'Voucher đã được áp dụng thành công.');
     }
-
 
     private function calculateCartTotal($cart)
     {
@@ -175,7 +175,6 @@ class VoucherClientController extends Controller
         // Xử lý thanh toán và chuyển hướng đến trang thành công
         return redirect()->route('order.success', ['order' => $order->id]);
     }
-
     public function removeVoucher()
     {
         // Lấy giỏ hàng từ session
@@ -199,7 +198,5 @@ class VoucherClientController extends Controller
         // Trả về trang trước đó với thông báo thành công
         return back()->with('success', 'Không áp dụng voucher.');
     }
-
-
 
 }
